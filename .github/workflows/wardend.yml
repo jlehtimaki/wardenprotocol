@@ -44,7 +44,7 @@ jobs:
         run: go test -race -v ${{ env.modules }}
 
   build-and-push:
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') || endsWith(github.ref,'-prerelease')
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') || github.event.release.prerelease == true
     needs: [lint, unit-test]
     uses: ./.github/workflows/build_push.yml
     with:
@@ -52,7 +52,7 @@ jobs:
     secrets: inherit
 
   build-and-push-faucet:
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') || endsWith(github.ref, '-prerelease')
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') || github.event.release.prerelease == true
     needs: [lint, unit-test]
     uses: ./.github/workflows/build_push.yml
     with:
