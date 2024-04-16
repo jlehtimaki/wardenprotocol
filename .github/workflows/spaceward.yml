@@ -4,7 +4,8 @@ name: spaceward
 on:
   push:
     paths:
-      - 'spaceward/**'
+      - "spaceward/**"
+  release:
 
 jobs:
   build:
@@ -25,15 +26,15 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-          cache-dependency-path: 'spaceward/pnpm-lock.yaml'
+          cache-dependency-path: "spaceward/pnpm-lock.yaml"
 
       - name: Install dependencies
         run: pnpm install
-        working-directory: 'spaceward/'
+        working-directory: "spaceward/"
 
       - name: Build
         run: pnpm build
-        working-directory: 'spaceward/'
+        working-directory: "spaceward/"
 
   build-and-push:
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
