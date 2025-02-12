@@ -7,6 +7,12 @@ dirty := `git diff --quiet || echo "-dirty"`
 version := tag + dirty
 ldflags := '-ldflags "-s -w -X github.com/cosmos/cosmos-sdk/version.Name=' + app_name + ' -X github.com/cosmos/cosmos-sdk/version.AppName=' + app_name + 'd -X github.com/cosmos/cosmos-sdk/version.Version=' + version + ' -X github.com/cosmos/cosmos-sdk/version.Commit=' + commit + ' -X github.com/warden-protocol/wardenprotocol/cmd/wardend/cmd.ChainID=' + chain_id + '"'
 output_dir := env("OUTPUT_DIR", "./build")
+# libwasm_version := `go list -m -f '{{ .Version }}' github.com/CosmWasm/wasmvm/v2`
+libwasm_version := 'v2.1.2'
+release := env("RELEASE", "false")
+github_token := env("GITHUB_TOKEN", "")
+skip := env("SKIP", "")
+current_dir := `pwd`
 
 # build (wardend|faucet|wardenkms|clichain). Eg. "just build wardend".
 build binary="wardend":
@@ -21,32 +27,45 @@ install binary="wardend":
         {{ ldflags }} \
         ./cmd/{{ binary }}
 
-_release-wardend-cross-arm64:
+release-dryrun:
     @docker run \
     	--rm \
     	-e CGO_ENABLED=1 \
+      -e LIBWASM_VERSION={{ libwasm_version }} \
+      -e RELEASE={{ release }} \
+      -e GITHUB_TOKEN={{ github_token }} \
     	-v /var/run/docker.sock:/var/run/docker.sock \
-    	-v {{ invocation_directory() }}:/go/src/wardend \
+    	-v {{ pwd }}:/go/src/wardend \
     	-w /go/src/wardend \
     	ghcr.io/goreleaser/goreleaser-cross:v1.22 \
-    	--clean --skip=validate --skip=publish
+      --clean \
+      --skip=validate,publish
 
-_release-wardend-linux-amd64:
+release:
     @docker run \
-    	--platform linux/amd64 \
     	--rm \
     	-e CGO_ENABLED=1 \
+      -e LIBWASM_VERSION={{ libwasm_version }} \
+      -e RELEASE={{ release }} \
+      -e GITHUB_TOKEN={{ github_token }} \
     	-v /var/run/docker.sock:/var/run/docker.sock \
-    	-v {{ invocation_directory() }}:/go/src/wardend \
+    	-v {{ pwd }}:/go/src/wardend \
+    	-w /go/src/wardend \
+    	ghcr.io/goreleaser/goreleaser-cross:v1.22 \
+      --clean \
+      --skip={{ skip }}
+
+release-amd64:
+    @docker run \
+    	--rm \
+    	-e CGO_ENABLED=1 \
+      -e LIBWASM_VERSION={{ libwasm_version }} \
+      -e RELEASE={{ release }} \
+      -e GITHUB_TOKEN={{ github_token }} \
+    	-v /var/run/docker.sock:/var/run/docker.sock \
+    	-v {{ pwd }}:/go/src/wardend \
     	-w /go/src/wardend \
     	ghcr.io/goreleaser/goreleaser:v2.1.0 \
-    	--clean --skip=validate --skip=publish -f ./.goreleaser-amd64.yaml
-
-release_tag := `git tag --points-at HEAD`
-
-# use goreleaser to build binaries, then create a GitHub release.
-release: _release-wardend-linux-amd64 _release-wardend-cross-arm64
-    cat dist-linux-amd64/wardend_*_checksums.txt dist/wardend_*_checksums.txt > dist/checksums.txt
-    if ! git diff-index --quiet HEAD -- || [ -z "{{release_tag}}" ]; then echo "Git working directory is dirty or current commit is not tagged"; exit 1; fi
-    gh release create {{release_tag}} --title {{release_tag}} --verify-tag dist-linux-amd64/wardend_Linux_x86_64.zip dist/wardend_*.zip dist/checksums.txt
-
+      -f ./.goreleaser-amd64.yaml \
+    	--clean \
+      --skip={{ skip }}
