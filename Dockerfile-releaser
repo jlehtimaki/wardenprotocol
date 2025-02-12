@@ -1,0 +1,12 @@
+FROM debian:bookworm-slim
+
+RUN apt update && \
+    apt install ca-certificates curl -y && \
+    rm -rf /var/lib/apt/lists/* && \
+    useradd -M -u 1000 -U -s /bin/sh -d /data warden && \
+    install -o 1000 -g 1000 -d /data
+COPY ./wardenprotocold /usr/bin/archwayd
+ADD --chmod=444 --checksum=sha256:015bdae5e70304f1e487981f90e3956754718fe7bdac4446aab0838fcb8b33e0 --chown=warden:warden https://github.com/CosmWasm/wasmvm/releases/download/v2.1.2/libwasmvm.x86_64.so /lib/libwasmvm.x86_64.so
+
+USER warden
+CMD ["wardend", "start"]
