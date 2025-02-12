@@ -1,6 +1,4 @@
-# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
-# vim: set ts=2 sw=2 tw=0 fo=cnqoj
-
+---
 version: 2
 
 project_name: wardend
@@ -10,6 +8,8 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
     # setup musl
+    - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.LIBWASM_VERSION }}/libwasmvm_muslc.aarch64.a -O /usr/local/lib/libwasmvm_muslc.aarch64.a
+    - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.LIBWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
     - apt update && apt install musl-dev=1.2.2-1
 env:
   - CGO_ENABLED=1
@@ -24,32 +24,25 @@ builds:
     env:
       - CC=aarch64-linux-gnu-gcc
       - CXX=aarch64-linux-gnu-g++
-    hooks:
-      pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/v2.1.2/libwasmvm_muslc.aarch64.a -O /lib/libwasmvm_muslc.aarch64.a
     flags:
       - -mod=readonly
       - -trimpath
     ldflags:
-      - -s -w
       - -X github.com/cosmos/cosmos-sdk/version.Name=warden
       - -X github.com/cosmos/cosmos-sdk/version.AppName=wardend
       - -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+      - -w -s
       - -linkmode=external
-      - -extldflags '-static'
+      - -extldflags '-Wl,-z,muldefs -static'
     tags:
       - netgo
       - muslc
-
   - id: wardend-darwin-arm64
     main: ./cmd/wardend
     env:
       - CC=oa64-clang
       - CGO_LDFLAGS=-L/lib
-    hooks:
-      pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/v2.1.2/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
     goos:
       - darwin
     goarch:
@@ -58,31 +51,117 @@ builds:
       - -mod=readonly
       - -trimpath
     ldflags:
-      - -s -w
+      - -X github.com/cosmos/cosmos-sdk/version.Name=warden
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=wardend
+      - -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}}
+      - -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger
+      - -w -s
+      - -linkmode=external
+      - -extldflags '-Wl,-z,muldefs -static'
+    tags:
+      - muslc
+      - netgo
+      - ledger
+  - id: wardend-darwin-amd64
+    main: ./cmd/wardend
+    env:
+      - CC=o64-clang
+      - CGO_LDFLAGS=-L/lib
+    goos:
+      - darwin
+    goarch:
+      - amd64
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=warden
       - -X github.com/cosmos/cosmos-sdk/version.AppName=wardend
       - -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
+      - -w -s
       - -linkmode=external
+      - -extldflags '-Wl,-z,muldefs -static'
     tags:
       - netgo
       - ledger
       - static_wasm
-
 release:
   mode: append
+universal_binaries:
+  - id: wardend-darwin-all
+    ids:
+      - wardend-darwin-amd64
+      - wardend-darwin-arm64
+    replace: false
+    name_template: "{{ .ProjectName }}d"
 
 archives:
-  - format: zip
-    # this name template makes the OS and Arch compatible with the results of `uname`.
-    name_template: >-
-      {{ .ProjectName }}_
-      {{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-      {{- if .Arm }}v{{ .Arm }}{{ end }}
+  - id: w/version
+    builds:
+      - wardend-linux-arm64
+      - wardend-darwin-amd64
+      - wardend-darwin-arm64
+      - wardend-darwin-all
+    name_template: "{{ .ProjectName }}d_v{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: false
+    format: zip
+    files:
+      - none*
+  - id: wo/version
+    builds:
+      - wardend-linux-arm64
+      - wardend-darwin-amd64
+      - wardend-darwin-arm64
+      - wardend-darwin-all
+    name_template: "{{ .ProjectName }}d_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: false
+    format: zip
+    files:
+      - none*
+  - id: binary
+    builds:
+      - wardend-linux-arm64
+      - wardend-darwin-amd64
+      - wardend-darwin-arm64
+      - wardend-darwin-all
+    name_template: "{{ .ProjectName }}d_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: false
+    format: binary
+    files:
+      - none*
+checksum:
+  name_template: "{{ .ProjectName }}d_v{{ .Version }}_cross_checksums.txt"
 
 changelog:
   disable: true
+
+dockers:
+  - use: buildx
+    goos: linux
+    goarch: arm64
+    dockerfile: Dockerfile-releaser
+    image_templates:
+      - 'ghcr.io/jlehtimaki/{{ .ProjectName }}:{{if eq .Env.RELEASE "true"}}v{{ .Version }}-arm64v8{{else}}{{ .ShortCommit }}-arm64v8{{end}}'
+    build_flag_templates:
+      - "--pull"
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}d"
+      - "--label=org.opencontainers.image.description={{.ProjectName}}d"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version=v{{.Version}}"
+      - "--label=org.opencontainers.image.url=https://wardenprotocol.org"
+      - "--label=org.opencontainers.image.source=https://github.com/warden-protocol/wardenprotocol"
+      - "--label=org.opencontainers.image.licenses=Apache-2.0"
+docker_manifests:
+  - name_template: 'ghcr.io/jlehtimaki/{{ .ProjectName }}:{{if eq .Env.RELEASE "true" }}v{{ .Version }}{{else}}{{ .ShortCommit }}{{end}}'
+    create_flags:
+      - --insecure
+    push_flags:
+      - --insecure
+    image_templates:
+      - 'ghcr.io/jlehtimaki/{{ .ProjectName }}:{{if eq .Env.RELEASE "true"}}v{{ .Version }}-amd64{{else}}{{ .ShortCommit }}-amd64{{end}}'
+      - 'ghcr.io/jlehtimaki/{{ .ProjectName }}:{{if eq .Env.RELEASE "true"}}v{{ .Version }}-arm64v8{{else}}{{ .ShortCommit }}-arm64v8{{end}}'
