@@ -22,7 +22,8 @@ import (
 )
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
-// channel keeper, wasm keeper and EvmOS keepers.
+// channel keeper, wasm keeper and EvmOS keepers
+// keep.
 type HandlerOptions struct {
 	ante.HandlerOptions
 
