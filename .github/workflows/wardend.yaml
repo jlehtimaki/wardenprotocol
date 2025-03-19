@@ -51,6 +51,10 @@ jobs:
     strategy:
       matrix:
         release: ["release"]
+    permissions:
+      actions: read
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout
@@ -84,5 +88,5 @@ jobs:
       - name: ${{ matrix.release }}
         run: just wardend ${{ matrix.release }}
         env:
-          SKIP: "--skip=validate"
+          SKIP: "${{ startsWith(github.head_ref, 'dependabot/') ? '--skip=validate,publish' : '--skip=validate' }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
