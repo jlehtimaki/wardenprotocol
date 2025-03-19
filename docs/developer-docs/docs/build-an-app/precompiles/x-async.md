@@ -6,13 +6,18 @@ sidebar_position: 3
 
 ## Overview
 
-The [`IAsync` precompile](https://github.com/warden-protocol/wardenprotocol/blob/main/precompiles/async/IAsync.sol) allows calling the [`x/async` module](/learn/warden-protocol-modules/x-async) from EVM smart contracts.
 
-In this article, you'll find a full list of available methods and events. You can use them for querying and managing the following components:
+The `IAsync.sol` precompile enables EVM smart contracts to interact with the [`x/async` module](/learn/warden-protocol-modules/x-async).
+
+In this article, you'll find a full list of available methods, allowing you to query and manage the following components:
 
 - [Futures](/learn/glossary#future)
 
 To learn how to use this precompile, refer to [Interact with `x/async`](../interact-with-warden-modules/interact-with-x-async).
+
+:::note Code
+You can find the `x/async` precomile code on GitHub: [`IAsync.sol`](https://github.com/warden-protocol/wardenprotocol/blob/main/precompiles/async/IAsync.sol)
+:::
 
 ## Precompile address
 
@@ -31,8 +36,12 @@ To reference the `IAsync` precompile in your code, use the following precompile 
 - **Parameters** :
   ```sol
   @param handler The unique name of the handler
-  @param input The handler's input  
+  @param input The handler's input
+  @param callback The address of callback contract
   ```
+  **Notes**:
+  - The following handlers are currently available: `pricepred`, `http`. To learn more, see [`x/async`: Handlers](/learn/warden-protocol-modules/x-async#handlers). 
+  - The `callback` parameter is optional. The callback contract must have a `cb()` function, allowing it to be invoked once the Future is ready.
 - **Output**:  
   ```sol
   @return futureId The id of the future
@@ -171,7 +180,8 @@ Rejected
 - **Description**: An event emitted when [a Future is created](#create-a-new-future).
 - **Parameters**:  
   ```sol
-  @param creator The address of the creator
-  @param futureId The future Id
-  @param handler The name of the handler
+  uint64 indexed futureId,
+  address indexed creator,
+  string handler,
+  address callbackAddress
   ```

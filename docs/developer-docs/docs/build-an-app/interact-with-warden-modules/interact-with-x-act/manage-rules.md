@@ -6,11 +6,11 @@ sidebar_position: 1
 
 ## Overview
 
-The [`IAct` precompile](https://github.com/warden-protocol/wardenprotocol/blob/main/precompiles/warden/IAct.sol) allows calling the [`x/act` module](/learn/warden-protocol-modules/x-act) from EVM smart contracts.
+The [`IAct` precompile](https://github.com/warden-protocol/wardenprotocol/blob/main/precompiles/act/IAct.sol) allows calling the [`x/act` module](/learn/warden-protocol-modules/x-act) from EVM smart contracts.
 
 This article explains how to use `x/act` to manage [Rules](/learn/glossary#approval-rule). You'll learn how to call the corresponding functions of the precompile and interact with them after deploying your contract.
 
-To understand how to set up and deploy your project, see [Get started](../get-started-with-precompiles).
+To understand how to set up and deploy your project, see [Get started with precompiles](../get-started-with-precompiles).
 
 :::tip
 For an overview of `x/act` functions, refer to [Precompiles: x/warden](../../precompiles/x-act#rules)
