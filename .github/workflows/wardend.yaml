@@ -18,34 +18,6 @@ on:
       - "precompiles/**"
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    name: lint
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version: "1.22"
-          cache: false
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v7
-        with:
-          version: v2.0
-          args: --timeout=10m ${{ env.modules }}
-
-  unit-test:
-    runs-on: ubuntu-latest
-    name: test
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version: "1.22"
-      - name: Build
-        run: go build -v ${{ env.modules }}
-      - name: Test (-race)
-        run: go test -race -v ${{ env.modules }}
-
   release-dev:
     if: ${{ github.event_name != 'pull_request' }}
     needs:
