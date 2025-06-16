@@ -20,13 +20,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/crisis"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	evmosclient "github.com/evmos/evmos/v20/client"
-	"github.com/evmos/evmos/v20/client/debug"
-	evmosserver "github.com/evmos/evmos/v20/server"
+	evmclient "github.com/cosmos/evm/client"
+	"github.com/cosmos/evm/client/debug"
+	evmserver "github.com/cosmos/evm/server"
+	srvflags "github.com/cosmos/evm/server/flags"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -50,9 +50,9 @@ func initRootCmd(
 		snapshot.Cmd(newApp),
 	)
 
-	evmosserver.AddCommands(
+	evmserver.AddCommands(
 		rootCmd,
-		evmosserver.NewDefaultStartOptions(newApp, app.DefaultNodeHome),
+		evmserver.NewDefaultStartOptions(newApp, app.DefaultNodeHome),
 		appExport,
 		addModuleInitFlags,
 	)
@@ -65,15 +65,22 @@ func initRootCmd(
 		genesisCommand(
 			txConfig,
 			basicManager,
-			AddGenesisSpaceCmd(app.DefaultNodeHome),
-			AddGenesisKeychainCmd(app.DefaultNodeHome),
-			AddGenesisSlinkyMarketsCmd(app.DefaultNodeHome),
 			AddGenesisAccountCmd(app.DefaultNodeHome),
+			AddGenesisKeychainCmd(app.DefaultNodeHome),
+			AddGenesisPluginCmd(app.DefaultNodeHome),
+			AddGenesisSlinkyMarketsCmd(app.DefaultNodeHome),
+			AddGenesisSpaceCmd(app.DefaultNodeHome),
 		),
 		queryCommand(),
 		txCommand(),
-		evmosclient.KeyCommands(app.DefaultNodeHome),
+		evmclient.KeyCommands(app.DefaultNodeHome, true),
 	)
+
+	// Add tx flags.
+	_, err := srvflags.AddTxFlags(rootCmd)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func AddTendermintCommandAlias(rootCmd *cobra.Command) {
@@ -86,7 +93,6 @@ func AddTendermintCommandAlias(rootCmd *cobra.Command) {
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
-	crisis.AddModuleInitFlags(startCmd)
 }
 
 // Analog of sdk's CommandsWithCustomMigrationMap without AddGenesisAccountCmd, that should be embedded separately.

@@ -8,13 +8,13 @@ sidebar_position: 5
 
 To start building your own Agent, follow [Quick start](quick-start). If you'd like to explore the capabilities of Warden Agent Kit first, check out this guide: it demonstrates how to run our **Typescript example** built with the kit. You can also try to expand or modify this example.
 
-This example implements a **CLI Agent** that is able to do the following:
+Our example implements a **CLI Agent** that is able to do the following:
 
 - Process user prompts in natural language using the [LangChain](add-agent-capabilities#incorporate-langchain-tools) extension.
 - Interact with Warden Protocol using the supported [Agent Actions](agent-actions).
 
 :::note Code
-The example code is available on GitHub: [`cli-agent`](https://github.com/warden-protocol/agent-kit/blob/main/examples/typescript/cli-agent/README.md)
+The example code is available on GitHub: [`cli-agent`](https://github.com/warden-protocol/agent-kit/blob/v0.6.3/examples/typescript/cli-agent/README.md)
 :::
 
 ## Prerequisites
@@ -76,6 +76,8 @@ Prompt:
 
 ## 4. Prompt the Agent
 
+If you're a new user, you need to get test [WARD tokens](/learn/glossary#ward-token), create a [Space](/learn/glossary#space), and request a [key](/learn/glossary#key) from a [Keychain](/learn/glossary#keychain). After doing it, you'll be able to send tokens and create [Orders](/learn/glossary#order). The following example prompts show how to take the initial steps: get WARD and create a Space.
+
 ### 4.1. Get WARD
 
 If you have a faucet token, you can prompt the Agent to fund your wallet with [WARD](/tokens/ward-token/ward). Otherwise, skip this step. You can connect your wallet to [SpaceWard](https://spaceward.chiado.wardenprotocol.org) and request tokens from our [online faucet](https://faucet.chiado.wardenprotocol.org/).
@@ -98,7 +100,7 @@ Your request for funds has been successfully completed. You have received the to
 
 ### 4.2. Create a Space
 
-To access most of the Warden features, you need to create a [Space](/learn/glossary#space) first.
+To access most of the Warden features, you need to create a [Space](/learn/glossary#space)—a hub allowing its owner to manage multiple cryptographic keys.
 
 Type your prompt in the command line:
 
@@ -120,12 +122,12 @@ A new space has been successfully created! If you need any further assistance, j
 
 After running the CLI Agent example and creating a Space, you can ask the Agent to return your Space ID, create a key, and so on.
 
-A comprehensive list of all the available tools can be found in [Agent Actions](/build-an-agent/warden-agent-kit/agent-actions). Alternatively, you can just ask the Agent about it: `what capabilities do you have?`
+A comprehensive list of all the available tools can be found in [Agent Actions](agent-actions). Alternatively, you can just ask the Agent about it: `what capabilities do you have?`
 
 To stop the Agent, just type `exit`.
 
 :::tip
-You can add more Agent capabilities and even incorporate a custom tool, as shown in [Add Agent capabilities](/build-an-agent/warden-agent-kit/add-agent-capabilities).
+You can add more Agent capabilities and even incorporate a custom tool, as shown in [Add Agent capabilities](add-agent-capabilities).
 :::
 
 ## Next steps

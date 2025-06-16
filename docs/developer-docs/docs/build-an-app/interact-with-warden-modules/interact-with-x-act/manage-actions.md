@@ -6,14 +6,15 @@ sidebar_position: 2
 
 ## Overview
 
-The [`IAct` precompile](https://github.com/warden-protocol/wardenprotocol/blob/main/precompiles/act/IAct.sol) allows calling the [`x/act` module](/learn/warden-protocol-modules/x-act) from EVM smart contracts.
+The [`IAct` precompile](https://github.com/warden-protocol/wardenprotocol/blob/v0.6.3/precompiles/act/IAct.sol) allows calling the [`x/act` module](/learn/warden-protocol-modules/x-act) from EVM smart contracts.
 
-This article explains how to use `x/act` to manage [Actions](/learn/glossary#action). You'll learn how to call the corresponding functions of the precompile and interact with them after deploying your contract.
+This article explains how to use `x/act` to manage [Actions](/learn/warden-protocol-modules/x-act#action). You'll learn how to call the corresponding functions of the precompile and interact with them after deploying your contract.
 
 To understand how to set up and deploy your project, see [Get started with precompiles](../get-started-with-precompiles).
 
 :::tip
-For an overview of `x/act` functions, refer to [Precompiles: x/act](../../precompiles/x-act#actions)
+- For an overview of `x/act` functions, refer to [Precompiles: x/act](../../precompiles/x-act#actions).
+- The precompile address is `0x0000000000000000000000000000000000000901`.
 :::
 
 ## Vote for an Action
@@ -35,13 +36,17 @@ contract WardenAction {
 }
 ```
 
-After deploying your contract, you can interact with it by calling the `voteForAction()` function:
+After deploying your contract, you can interact with it by calling the `voteForAction()` function.
+
+Vote to approve Action 1:
 
 ```bash
-# Vote to approve action #1
 cast send --private-key $PRIVATE_KEY --rpc-url $RPC_URL "voteForAction(uint64,uint8)" 1 1
+```
 
-# Vote to reject action #1
+Vote to reject Action 1:
+
+```bash
 cast send --private-key $PRIVATE_KEY --rpc-url $RPC_URL "voteForAction(uint64,uint8)" 1 2
 ```
 
@@ -83,10 +88,9 @@ contract WardenAction {
 }
 ```
 
-After deploying your contract, you can interact with it by calling the `getAllActions()` function:
+After deploying your contract, you can interact with it by calling the `getAllActions()` function. For example, you can get the first 10 Actions:
 
 ```bash
-# Get first 10 actions
 cast call $CONTRACT_ADDRESS "getAllActions((bytes,uint64,uint64,bool,bool))" \
     "(0x,0,10,true,false)" --rpc-url $RPC_URL
 ```
@@ -109,10 +113,9 @@ contract WardenAction {
 }
 ```
 
-After deploying your contract, you can interact with it by calling the `getActionsByAddress()` function:
+After deploying your contract, you can interact with it by calling the `getActionsByAddress()` function. For example, you can get the first 10 pending Actions associated with an address:
 
 ```bash
-# Get first 10 pending actions for address
 cast call $CONTRACT_ADDRESS \
     "getActionsByAddress((bytes,uint64,uint64,bool,bool),address,uint8)" \
     "(0x,0,10,true,false)" $ADDRESS 1 --rpc-url $RPC_URL

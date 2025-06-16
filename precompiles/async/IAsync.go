@@ -29,50 +29,92 @@ var (
 	_ = abi.ConvertType
 )
 
-// Future is an auto generated low-level Go binding around an user-defined struct.
-type Future struct {
-	Id      uint64
-	Creator common.Address
-	Handler string
-	Input   []byte
+// CallbackParams is an auto generated low-level Go binding around an user-defined struct.
+type CallbackParams struct {
+	AddressValue common.Address
+	GasLimit     uint64
 }
 
-// FutureByIdResponse is an auto generated low-level Go binding around an user-defined struct.
-type FutureByIdResponse struct {
-	FutureResponse FutureResponse
+// DeductedFee is an auto generated low-level Go binding around an user-defined struct.
+type DeductedFee struct {
+	PluginCreatorReward []TypesCoin
+	ExecutorReward      []TypesCoin
 }
 
-// FutureResponse is an auto generated low-level Go binding around an user-defined struct.
-type FutureResponse struct {
-	Future Future
-	Votes  []FutureVote
-	Result FutureResult
-}
-
-// FutureResult is an auto generated low-level Go binding around an user-defined struct.
-type FutureResult struct {
-	Id        uint64
-	Output    []byte
-	Submitter []byte
-}
-
-// FutureVote is an auto generated low-level Go binding around an user-defined struct.
-type FutureVote struct {
-	FutureId uint64
-	Voter    []byte
-	Vote     uint8
-}
-
-// FuturesResponse is an auto generated low-level Go binding around an user-defined struct.
-type FuturesResponse struct {
+// PendingTasksResponse is an auto generated low-level Go binding around an user-defined struct.
+type PendingTasksResponse struct {
 	Pagination TypesPageResponse
-	Futures    []FutureResponse
+	Tasks      []Task
 }
 
-// PendingFuturesResponse is an auto generated low-level Go binding around an user-defined struct.
-type PendingFuturesResponse struct {
+// Plugin is an auto generated low-level Go binding around an user-defined struct.
+type Plugin struct {
+	Id          string
+	Creator     common.Address
+	Description string
+	Fee         PluginFee
+	Timeout     int64
+}
+
+// PluginFee is an auto generated low-level Go binding around an user-defined struct.
+type PluginFee struct {
+	Fee []TypesCoin
+}
+
+// PluginsResponse is an auto generated low-level Go binding around an user-defined struct.
+type PluginsResponse struct {
 	Pagination TypesPageResponse
-	Futures    []Future
+	Plugins    []Plugin
+}
+
+// Task is an auto generated low-level Go binding around an user-defined struct.
+type Task struct {
+	Id         uint64
+	Creator    common.Address
+	Plugin     string
+	Input      []byte
+	Fee        DeductedFee
+	CallbackId uint64
+	Solver     []byte
+	CreatedAt  TypesTimestamp
+}
+
+// TaskByIdResponse is an auto generated low-level Go binding around an user-defined struct.
+type TaskByIdResponse struct {
+	TaskResponse TaskResponse
+}
+
+// TaskResponse is an auto generated low-level Go binding around an user-defined struct.
+type TaskResponse struct {
+	Task   Task
+	Votes  []TaskVote
+	Result TaskResult
+}
+
+// TaskResult is an auto generated low-level Go binding around an user-defined struct.
+type TaskResult struct {
+	Id          uint64
+	Output      []byte
+	ErrorReason string
+}
+
+// TaskVote is an auto generated low-level Go binding around an user-defined struct.
+type TaskVote struct {
+	TaskId uint64
+	Voter  []byte
+	Vote   uint8
+}
+
+// TasksResponse is an auto generated low-level Go binding around an user-defined struct.
+type TasksResponse struct {
+	Pagination TypesPageResponse
+	Tasks      []TaskResponse
+}
+
+// TypesCoin is an auto generated low-level Go binding around an user-defined struct.
+type TypesCoin struct {
+	Denom  string
+	Amount *big.Int
 }
 
 // TypesPageRequest is an auto generated low-level Go binding around an user-defined struct.
@@ -90,9 +132,15 @@ type TypesPageResponse struct {
 	Total   uint64
 }
 
+// TypesTimestamp is an auto generated low-level Go binding around an user-defined struct.
+type TypesTimestamp struct {
+	Secs  uint64
+	Nanos uint64
+}
+
 // IAsyncMetaData contains all meta data concerning the IAsync contract.
 var IAsyncMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint64\",\"name\":\"futureId\",\"type\":\"uint64\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"handler\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"callbackAddress\",\"type\":\"address\"}],\"name\":\"CreateFuture\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"handler\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"input\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"callback\",\"type\":\"address\"}],\"name\":\"addFuture\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"futureId\",\"type\":\"uint64\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"futureId\",\"type\":\"uint64\"}],\"name\":\"futureById\",\"outputs\":[{\"components\":[{\"components\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"handler\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"input\",\"type\":\"bytes\"}],\"internalType\":\"structFuture\",\"name\":\"future\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"futureId\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"Voter\",\"type\":\"bytes\"},{\"internalType\":\"enumFutureVoteType\",\"name\":\"vote\",\"type\":\"uint8\"}],\"internalType\":\"structFutureVote[]\",\"name\":\"votes\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"output\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"submitter\",\"type\":\"bytes\"}],\"internalType\":\"structFutureResult\",\"name\":\"result\",\"type\":\"tuple\"}],\"internalType\":\"structFutureResponse\",\"name\":\"futureResponse\",\"type\":\"tuple\"}],\"internalType\":\"structFutureByIdResponse\",\"name\":\"response\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structTypes.PageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"futures\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structTypes.PageResponse\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"components\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"handler\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"input\",\"type\":\"bytes\"}],\"internalType\":\"structFuture\",\"name\":\"future\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"futureId\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"Voter\",\"type\":\"bytes\"},{\"internalType\":\"enumFutureVoteType\",\"name\":\"vote\",\"type\":\"uint8\"}],\"internalType\":\"structFutureVote[]\",\"name\":\"votes\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"output\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"submitter\",\"type\":\"bytes\"}],\"internalType\":\"structFutureResult\",\"name\":\"result\",\"type\":\"tuple\"}],\"internalType\":\"structFutureResponse[]\",\"name\":\"futures\",\"type\":\"tuple[]\"}],\"internalType\":\"structFuturesResponse\",\"name\":\"response\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structTypes.PageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"pendingFutures\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structTypes.PageResponse\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"handler\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"input\",\"type\":\"bytes\"}],\"internalType\":\"structFuture[]\",\"name\":\"futures\",\"type\":\"tuple[]\"}],\"internalType\":\"structPendingFuturesResponse\",\"name\":\"response\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint64\",\"name\":\"taskId\",\"type\":\"uint64\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"plugin\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"callbackId\",\"type\":\"uint64\"}],\"name\":\"CreateTask\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"plugin\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"input\",\"type\":\"bytes\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structTypes.Coin[]\",\"name\":\"maxFee\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"addressValue\",\"type\":\"address\"},{\"internalType\":\"uint64\",\"name\":\"gasLimit\",\"type\":\"uint64\"}],\"internalType\":\"structCallbackParams\",\"name\":\"callbackParams\",\"type\":\"tuple\"}],\"name\":\"addTask\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"taskId\",\"type\":\"uint64\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structTypes.PageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"pendingTasks\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structTypes.PageResponse\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"plugin\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"input\",\"type\":\"bytes\"},{\"components\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structTypes.Coin[]\",\"name\":\"pluginCreatorReward\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structTypes.Coin[]\",\"name\":\"executorReward\",\"type\":\"tuple[]\"}],\"internalType\":\"structDeductedFee\",\"name\":\"fee\",\"type\":\"tuple\"},{\"internalType\":\"uint64\",\"name\":\"callbackId\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"solver\",\"type\":\"bytes\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"secs\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"nanos\",\"type\":\"uint64\"}],\"internalType\":\"structTypes.Timestamp\",\"name\":\"createdAt\",\"type\":\"tuple\"}],\"internalType\":\"structTask[]\",\"name\":\"tasks\",\"type\":\"tuple[]\"}],\"internalType\":\"structPendingTasksResponse\",\"name\":\"response\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structTypes.PageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"plugins\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structTypes.PageResponse\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"id\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"components\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structTypes.Coin[]\",\"name\":\"fee\",\"type\":\"tuple[]\"}],\"internalType\":\"structPluginFee\",\"name\":\"fee\",\"type\":\"tuple\"},{\"internalType\":\"int64\",\"name\":\"timeout\",\"type\":\"int64\"}],\"internalType\":\"structPlugin[]\",\"name\":\"plugins\",\"type\":\"tuple[]\"}],\"internalType\":\"structPluginsResponse\",\"name\":\"response\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"taskId\",\"type\":\"uint64\"}],\"name\":\"taskById\",\"outputs\":[{\"components\":[{\"components\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"plugin\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"input\",\"type\":\"bytes\"},{\"components\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structTypes.Coin[]\",\"name\":\"pluginCreatorReward\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structTypes.Coin[]\",\"name\":\"executorReward\",\"type\":\"tuple[]\"}],\"internalType\":\"structDeductedFee\",\"name\":\"fee\",\"type\":\"tuple\"},{\"internalType\":\"uint64\",\"name\":\"callbackId\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"solver\",\"type\":\"bytes\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"secs\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"nanos\",\"type\":\"uint64\"}],\"internalType\":\"structTypes.Timestamp\",\"name\":\"createdAt\",\"type\":\"tuple\"}],\"internalType\":\"structTask\",\"name\":\"task\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"taskId\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"Voter\",\"type\":\"bytes\"},{\"internalType\":\"enumTaskVoteType\",\"name\":\"vote\",\"type\":\"uint8\"}],\"internalType\":\"structTaskVote[]\",\"name\":\"votes\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"output\",\"type\":\"bytes\"},{\"internalType\":\"string\",\"name\":\"error_reason\",\"type\":\"string\"}],\"internalType\":\"structTaskResult\",\"name\":\"result\",\"type\":\"tuple\"}],\"internalType\":\"structTaskResponse\",\"name\":\"taskResponse\",\"type\":\"tuple\"}],\"internalType\":\"structTaskByIdResponse\",\"name\":\"response\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structTypes.PageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"tasks\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structTypes.PageResponse\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"components\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"plugin\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"input\",\"type\":\"bytes\"},{\"components\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structTypes.Coin[]\",\"name\":\"pluginCreatorReward\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structTypes.Coin[]\",\"name\":\"executorReward\",\"type\":\"tuple[]\"}],\"internalType\":\"structDeductedFee\",\"name\":\"fee\",\"type\":\"tuple\"},{\"internalType\":\"uint64\",\"name\":\"callbackId\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"solver\",\"type\":\"bytes\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"secs\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"nanos\",\"type\":\"uint64\"}],\"internalType\":\"structTypes.Timestamp\",\"name\":\"createdAt\",\"type\":\"tuple\"}],\"internalType\":\"structTask\",\"name\":\"task\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"taskId\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"Voter\",\"type\":\"bytes\"},{\"internalType\":\"enumTaskVoteType\",\"name\":\"vote\",\"type\":\"uint8\"}],\"internalType\":\"structTaskVote[]\",\"name\":\"votes\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"id\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"output\",\"type\":\"bytes\"},{\"internalType\":\"string\",\"name\":\"error_reason\",\"type\":\"string\"}],\"internalType\":\"structTaskResult\",\"name\":\"result\",\"type\":\"tuple\"}],\"internalType\":\"structTaskResponse[]\",\"name\":\"tasks\",\"type\":\"tuple[]\"}],\"internalType\":\"structTasksResponse\",\"name\":\"response\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 }
 
 // IAsyncABI is the input ABI used to generate the binding from.
@@ -241,123 +289,154 @@ func (_IAsync *IAsyncTransactorRaw) Transact(opts *bind.TransactOpts, method str
 	return _IAsync.Contract.contract.Transact(opts, method, params...)
 }
 
-// FutureById is a free data retrieval call binding the contract method 0x012d56e0.
+// PendingTasks is a free data retrieval call binding the contract method 0x589ad877.
 //
-// Solidity: function futureById(uint64 futureId) view returns((((uint64,address,string,bytes),(uint64,bytes,uint8)[],(uint64,bytes,bytes))) response)
-func (_IAsync *IAsyncCaller) FutureById(opts *bind.CallOpts, futureId uint64) (FutureByIdResponse, error) {
+// Solidity: function pendingTasks((bytes,uint64,uint64,bool,bool) pagination) view returns(((bytes,uint64),(uint64,address,string,bytes,((string,uint256)[],(string,uint256)[]),uint64,bytes,(uint64,uint64))[]) response)
+func (_IAsync *IAsyncCaller) PendingTasks(opts *bind.CallOpts, pagination TypesPageRequest) (PendingTasksResponse, error) {
 	var out []interface{}
-	err := _IAsync.contract.Call(opts, &out, "futureById", futureId)
+	err := _IAsync.contract.Call(opts, &out, "pendingTasks", pagination)
 
 	if err != nil {
-		return *new(FutureByIdResponse), err
+		return *new(PendingTasksResponse), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(FutureByIdResponse)).(*FutureByIdResponse)
+	out0 := *abi.ConvertType(out[0], new(PendingTasksResponse)).(*PendingTasksResponse)
 
 	return out0, err
 
 }
 
-// FutureById is a free data retrieval call binding the contract method 0x012d56e0.
+// PendingTasks is a free data retrieval call binding the contract method 0x589ad877.
 //
-// Solidity: function futureById(uint64 futureId) view returns((((uint64,address,string,bytes),(uint64,bytes,uint8)[],(uint64,bytes,bytes))) response)
-func (_IAsync *IAsyncSession) FutureById(futureId uint64) (FutureByIdResponse, error) {
-	return _IAsync.Contract.FutureById(&_IAsync.CallOpts, futureId)
+// Solidity: function pendingTasks((bytes,uint64,uint64,bool,bool) pagination) view returns(((bytes,uint64),(uint64,address,string,bytes,((string,uint256)[],(string,uint256)[]),uint64,bytes,(uint64,uint64))[]) response)
+func (_IAsync *IAsyncSession) PendingTasks(pagination TypesPageRequest) (PendingTasksResponse, error) {
+	return _IAsync.Contract.PendingTasks(&_IAsync.CallOpts, pagination)
 }
 
-// FutureById is a free data retrieval call binding the contract method 0x012d56e0.
+// PendingTasks is a free data retrieval call binding the contract method 0x589ad877.
 //
-// Solidity: function futureById(uint64 futureId) view returns((((uint64,address,string,bytes),(uint64,bytes,uint8)[],(uint64,bytes,bytes))) response)
-func (_IAsync *IAsyncCallerSession) FutureById(futureId uint64) (FutureByIdResponse, error) {
-	return _IAsync.Contract.FutureById(&_IAsync.CallOpts, futureId)
+// Solidity: function pendingTasks((bytes,uint64,uint64,bool,bool) pagination) view returns(((bytes,uint64),(uint64,address,string,bytes,((string,uint256)[],(string,uint256)[]),uint64,bytes,(uint64,uint64))[]) response)
+func (_IAsync *IAsyncCallerSession) PendingTasks(pagination TypesPageRequest) (PendingTasksResponse, error) {
+	return _IAsync.Contract.PendingTasks(&_IAsync.CallOpts, pagination)
 }
 
-// Futures is a free data retrieval call binding the contract method 0x83817c27.
+// Plugins is a free data retrieval call binding the contract method 0x9fada3df.
 //
-// Solidity: function futures((bytes,uint64,uint64,bool,bool) pagination, address creator) view returns(((bytes,uint64),((uint64,address,string,bytes),(uint64,bytes,uint8)[],(uint64,bytes,bytes))[]) response)
-func (_IAsync *IAsyncCaller) Futures(opts *bind.CallOpts, pagination TypesPageRequest, creator common.Address) (FuturesResponse, error) {
+// Solidity: function plugins((bytes,uint64,uint64,bool,bool) pagination) view returns(((bytes,uint64),(string,address,string,((string,uint256)[]),int64)[]) response)
+func (_IAsync *IAsyncCaller) Plugins(opts *bind.CallOpts, pagination TypesPageRequest) (PluginsResponse, error) {
 	var out []interface{}
-	err := _IAsync.contract.Call(opts, &out, "futures", pagination, creator)
+	err := _IAsync.contract.Call(opts, &out, "plugins", pagination)
 
 	if err != nil {
-		return *new(FuturesResponse), err
+		return *new(PluginsResponse), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(FuturesResponse)).(*FuturesResponse)
+	out0 := *abi.ConvertType(out[0], new(PluginsResponse)).(*PluginsResponse)
 
 	return out0, err
 
 }
 
-// Futures is a free data retrieval call binding the contract method 0x83817c27.
+// Plugins is a free data retrieval call binding the contract method 0x9fada3df.
 //
-// Solidity: function futures((bytes,uint64,uint64,bool,bool) pagination, address creator) view returns(((bytes,uint64),((uint64,address,string,bytes),(uint64,bytes,uint8)[],(uint64,bytes,bytes))[]) response)
-func (_IAsync *IAsyncSession) Futures(pagination TypesPageRequest, creator common.Address) (FuturesResponse, error) {
-	return _IAsync.Contract.Futures(&_IAsync.CallOpts, pagination, creator)
+// Solidity: function plugins((bytes,uint64,uint64,bool,bool) pagination) view returns(((bytes,uint64),(string,address,string,((string,uint256)[]),int64)[]) response)
+func (_IAsync *IAsyncSession) Plugins(pagination TypesPageRequest) (PluginsResponse, error) {
+	return _IAsync.Contract.Plugins(&_IAsync.CallOpts, pagination)
 }
 
-// Futures is a free data retrieval call binding the contract method 0x83817c27.
+// Plugins is a free data retrieval call binding the contract method 0x9fada3df.
 //
-// Solidity: function futures((bytes,uint64,uint64,bool,bool) pagination, address creator) view returns(((bytes,uint64),((uint64,address,string,bytes),(uint64,bytes,uint8)[],(uint64,bytes,bytes))[]) response)
-func (_IAsync *IAsyncCallerSession) Futures(pagination TypesPageRequest, creator common.Address) (FuturesResponse, error) {
-	return _IAsync.Contract.Futures(&_IAsync.CallOpts, pagination, creator)
+// Solidity: function plugins((bytes,uint64,uint64,bool,bool) pagination) view returns(((bytes,uint64),(string,address,string,((string,uint256)[]),int64)[]) response)
+func (_IAsync *IAsyncCallerSession) Plugins(pagination TypesPageRequest) (PluginsResponse, error) {
+	return _IAsync.Contract.Plugins(&_IAsync.CallOpts, pagination)
 }
 
-// PendingFutures is a free data retrieval call binding the contract method 0xddebca34.
+// TaskById is a free data retrieval call binding the contract method 0xc7be4a58.
 //
-// Solidity: function pendingFutures((bytes,uint64,uint64,bool,bool) pagination) view returns(((bytes,uint64),(uint64,address,string,bytes)[]) response)
-func (_IAsync *IAsyncCaller) PendingFutures(opts *bind.CallOpts, pagination TypesPageRequest) (PendingFuturesResponse, error) {
+// Solidity: function taskById(uint64 taskId) view returns((((uint64,address,string,bytes,((string,uint256)[],(string,uint256)[]),uint64,bytes,(uint64,uint64)),(uint64,bytes,uint8)[],(uint64,bytes,string))) response)
+func (_IAsync *IAsyncCaller) TaskById(opts *bind.CallOpts, taskId uint64) (TaskByIdResponse, error) {
 	var out []interface{}
-	err := _IAsync.contract.Call(opts, &out, "pendingFutures", pagination)
+	err := _IAsync.contract.Call(opts, &out, "taskById", taskId)
 
 	if err != nil {
-		return *new(PendingFuturesResponse), err
+		return *new(TaskByIdResponse), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(PendingFuturesResponse)).(*PendingFuturesResponse)
+	out0 := *abi.ConvertType(out[0], new(TaskByIdResponse)).(*TaskByIdResponse)
 
 	return out0, err
 
 }
 
-// PendingFutures is a free data retrieval call binding the contract method 0xddebca34.
+// TaskById is a free data retrieval call binding the contract method 0xc7be4a58.
 //
-// Solidity: function pendingFutures((bytes,uint64,uint64,bool,bool) pagination) view returns(((bytes,uint64),(uint64,address,string,bytes)[]) response)
-func (_IAsync *IAsyncSession) PendingFutures(pagination TypesPageRequest) (PendingFuturesResponse, error) {
-	return _IAsync.Contract.PendingFutures(&_IAsync.CallOpts, pagination)
+// Solidity: function taskById(uint64 taskId) view returns((((uint64,address,string,bytes,((string,uint256)[],(string,uint256)[]),uint64,bytes,(uint64,uint64)),(uint64,bytes,uint8)[],(uint64,bytes,string))) response)
+func (_IAsync *IAsyncSession) TaskById(taskId uint64) (TaskByIdResponse, error) {
+	return _IAsync.Contract.TaskById(&_IAsync.CallOpts, taskId)
 }
 
-// PendingFutures is a free data retrieval call binding the contract method 0xddebca34.
+// TaskById is a free data retrieval call binding the contract method 0xc7be4a58.
 //
-// Solidity: function pendingFutures((bytes,uint64,uint64,bool,bool) pagination) view returns(((bytes,uint64),(uint64,address,string,bytes)[]) response)
-func (_IAsync *IAsyncCallerSession) PendingFutures(pagination TypesPageRequest) (PendingFuturesResponse, error) {
-	return _IAsync.Contract.PendingFutures(&_IAsync.CallOpts, pagination)
+// Solidity: function taskById(uint64 taskId) view returns((((uint64,address,string,bytes,((string,uint256)[],(string,uint256)[]),uint64,bytes,(uint64,uint64)),(uint64,bytes,uint8)[],(uint64,bytes,string))) response)
+func (_IAsync *IAsyncCallerSession) TaskById(taskId uint64) (TaskByIdResponse, error) {
+	return _IAsync.Contract.TaskById(&_IAsync.CallOpts, taskId)
 }
 
-// AddFuture is a paid mutator transaction binding the contract method 0xa2835a9b.
+// Tasks is a free data retrieval call binding the contract method 0x7c55c233.
 //
-// Solidity: function addFuture(string handler, bytes input, address callback) returns(uint64 futureId)
-func (_IAsync *IAsyncTransactor) AddFuture(opts *bind.TransactOpts, handler string, input []byte, callback common.Address) (*types.Transaction, error) {
-	return _IAsync.contract.Transact(opts, "addFuture", handler, input, callback)
+// Solidity: function tasks((bytes,uint64,uint64,bool,bool) pagination, address creator) view returns(((bytes,uint64),((uint64,address,string,bytes,((string,uint256)[],(string,uint256)[]),uint64,bytes,(uint64,uint64)),(uint64,bytes,uint8)[],(uint64,bytes,string))[]) response)
+func (_IAsync *IAsyncCaller) Tasks(opts *bind.CallOpts, pagination TypesPageRequest, creator common.Address) (TasksResponse, error) {
+	var out []interface{}
+	err := _IAsync.contract.Call(opts, &out, "tasks", pagination, creator)
+
+	if err != nil {
+		return *new(TasksResponse), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(TasksResponse)).(*TasksResponse)
+
+	return out0, err
+
 }
 
-// AddFuture is a paid mutator transaction binding the contract method 0xa2835a9b.
+// Tasks is a free data retrieval call binding the contract method 0x7c55c233.
 //
-// Solidity: function addFuture(string handler, bytes input, address callback) returns(uint64 futureId)
-func (_IAsync *IAsyncSession) AddFuture(handler string, input []byte, callback common.Address) (*types.Transaction, error) {
-	return _IAsync.Contract.AddFuture(&_IAsync.TransactOpts, handler, input, callback)
+// Solidity: function tasks((bytes,uint64,uint64,bool,bool) pagination, address creator) view returns(((bytes,uint64),((uint64,address,string,bytes,((string,uint256)[],(string,uint256)[]),uint64,bytes,(uint64,uint64)),(uint64,bytes,uint8)[],(uint64,bytes,string))[]) response)
+func (_IAsync *IAsyncSession) Tasks(pagination TypesPageRequest, creator common.Address) (TasksResponse, error) {
+	return _IAsync.Contract.Tasks(&_IAsync.CallOpts, pagination, creator)
 }
 
-// AddFuture is a paid mutator transaction binding the contract method 0xa2835a9b.
+// Tasks is a free data retrieval call binding the contract method 0x7c55c233.
 //
-// Solidity: function addFuture(string handler, bytes input, address callback) returns(uint64 futureId)
-func (_IAsync *IAsyncTransactorSession) AddFuture(handler string, input []byte, callback common.Address) (*types.Transaction, error) {
-	return _IAsync.Contract.AddFuture(&_IAsync.TransactOpts, handler, input, callback)
+// Solidity: function tasks((bytes,uint64,uint64,bool,bool) pagination, address creator) view returns(((bytes,uint64),((uint64,address,string,bytes,((string,uint256)[],(string,uint256)[]),uint64,bytes,(uint64,uint64)),(uint64,bytes,uint8)[],(uint64,bytes,string))[]) response)
+func (_IAsync *IAsyncCallerSession) Tasks(pagination TypesPageRequest, creator common.Address) (TasksResponse, error) {
+	return _IAsync.Contract.Tasks(&_IAsync.CallOpts, pagination, creator)
 }
 
-// IAsyncCreateFutureIterator is returned from FilterCreateFuture and is used to iterate over the raw logs and unpacked data for CreateFuture events raised by the IAsync contract.
-type IAsyncCreateFutureIterator struct {
-	Event *IAsyncCreateFuture // Event containing the contract specifics and raw log
+// AddTask is a paid mutator transaction binding the contract method 0x71a562f4.
+//
+// Solidity: function addTask(string plugin, bytes input, (string,uint256)[] maxFee, (address,uint64) callbackParams) returns(uint64 taskId)
+func (_IAsync *IAsyncTransactor) AddTask(opts *bind.TransactOpts, plugin string, input []byte, maxFee []TypesCoin, callbackParams CallbackParams) (*types.Transaction, error) {
+	return _IAsync.contract.Transact(opts, "addTask", plugin, input, maxFee, callbackParams)
+}
+
+// AddTask is a paid mutator transaction binding the contract method 0x71a562f4.
+//
+// Solidity: function addTask(string plugin, bytes input, (string,uint256)[] maxFee, (address,uint64) callbackParams) returns(uint64 taskId)
+func (_IAsync *IAsyncSession) AddTask(plugin string, input []byte, maxFee []TypesCoin, callbackParams CallbackParams) (*types.Transaction, error) {
+	return _IAsync.Contract.AddTask(&_IAsync.TransactOpts, plugin, input, maxFee, callbackParams)
+}
+
+// AddTask is a paid mutator transaction binding the contract method 0x71a562f4.
+//
+// Solidity: function addTask(string plugin, bytes input, (string,uint256)[] maxFee, (address,uint64) callbackParams) returns(uint64 taskId)
+func (_IAsync *IAsyncTransactorSession) AddTask(plugin string, input []byte, maxFee []TypesCoin, callbackParams CallbackParams) (*types.Transaction, error) {
+	return _IAsync.Contract.AddTask(&_IAsync.TransactOpts, plugin, input, maxFee, callbackParams)
+}
+
+// IAsyncCreateTaskIterator is returned from FilterCreateTask and is used to iterate over the raw logs and unpacked data for CreateTask events raised by the IAsync contract.
+type IAsyncCreateTaskIterator struct {
+	Event *IAsyncCreateTask // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -371,7 +450,7 @@ type IAsyncCreateFutureIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *IAsyncCreateFutureIterator) Next() bool {
+func (it *IAsyncCreateTaskIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -380,7 +459,7 @@ func (it *IAsyncCreateFutureIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(IAsyncCreateFuture)
+			it.Event = new(IAsyncCreateTask)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -395,7 +474,7 @@ func (it *IAsyncCreateFutureIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(IAsyncCreateFuture)
+		it.Event = new(IAsyncCreateTask)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -411,62 +490,62 @@ func (it *IAsyncCreateFutureIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *IAsyncCreateFutureIterator) Error() error {
+func (it *IAsyncCreateTaskIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *IAsyncCreateFutureIterator) Close() error {
+func (it *IAsyncCreateTaskIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// IAsyncCreateFuture represents a CreateFuture event raised by the IAsync contract.
-type IAsyncCreateFuture struct {
-	FutureId        uint64
-	Creator         common.Address
-	Handler         string
-	CallbackAddress common.Address
-	Raw             types.Log // Blockchain specific contextual infos
+// IAsyncCreateTask represents a CreateTask event raised by the IAsync contract.
+type IAsyncCreateTask struct {
+	TaskId     uint64
+	Creator    common.Address
+	Plugin     string
+	CallbackId uint64
+	Raw        types.Log // Blockchain specific contextual infos
 }
 
-// FilterCreateFuture is a free log retrieval operation binding the contract event 0x3fb77420900d4e68b2356c7b140d3d8fefa4aadbce83de2a52a2c3654f18732d.
+// FilterCreateTask is a free log retrieval operation binding the contract event 0x44ece3c06003e6bf16f04e4c130ac1d044c320bd0bdfccf2d1cec873ba002a2d.
 //
-// Solidity: event CreateFuture(uint64 indexed futureId, address indexed creator, string handler, address callbackAddress)
-func (_IAsync *IAsyncFilterer) FilterCreateFuture(opts *bind.FilterOpts, futureId []uint64, creator []common.Address) (*IAsyncCreateFutureIterator, error) {
+// Solidity: event CreateTask(uint64 indexed taskId, address indexed creator, string plugin, uint64 callbackId)
+func (_IAsync *IAsyncFilterer) FilterCreateTask(opts *bind.FilterOpts, taskId []uint64, creator []common.Address) (*IAsyncCreateTaskIterator, error) {
 
-	var futureIdRule []interface{}
-	for _, futureIdItem := range futureId {
-		futureIdRule = append(futureIdRule, futureIdItem)
+	var taskIdRule []interface{}
+	for _, taskIdItem := range taskId {
+		taskIdRule = append(taskIdRule, taskIdItem)
 	}
 	var creatorRule []interface{}
 	for _, creatorItem := range creator {
 		creatorRule = append(creatorRule, creatorItem)
 	}
 
-	logs, sub, err := _IAsync.contract.FilterLogs(opts, "CreateFuture", futureIdRule, creatorRule)
+	logs, sub, err := _IAsync.contract.FilterLogs(opts, "CreateTask", taskIdRule, creatorRule)
 	if err != nil {
 		return nil, err
 	}
-	return &IAsyncCreateFutureIterator{contract: _IAsync.contract, event: "CreateFuture", logs: logs, sub: sub}, nil
+	return &IAsyncCreateTaskIterator{contract: _IAsync.contract, event: "CreateTask", logs: logs, sub: sub}, nil
 }
 
-// WatchCreateFuture is a free log subscription operation binding the contract event 0x3fb77420900d4e68b2356c7b140d3d8fefa4aadbce83de2a52a2c3654f18732d.
+// WatchCreateTask is a free log subscription operation binding the contract event 0x44ece3c06003e6bf16f04e4c130ac1d044c320bd0bdfccf2d1cec873ba002a2d.
 //
-// Solidity: event CreateFuture(uint64 indexed futureId, address indexed creator, string handler, address callbackAddress)
-func (_IAsync *IAsyncFilterer) WatchCreateFuture(opts *bind.WatchOpts, sink chan<- *IAsyncCreateFuture, futureId []uint64, creator []common.Address) (event.Subscription, error) {
+// Solidity: event CreateTask(uint64 indexed taskId, address indexed creator, string plugin, uint64 callbackId)
+func (_IAsync *IAsyncFilterer) WatchCreateTask(opts *bind.WatchOpts, sink chan<- *IAsyncCreateTask, taskId []uint64, creator []common.Address) (event.Subscription, error) {
 
-	var futureIdRule []interface{}
-	for _, futureIdItem := range futureId {
-		futureIdRule = append(futureIdRule, futureIdItem)
+	var taskIdRule []interface{}
+	for _, taskIdItem := range taskId {
+		taskIdRule = append(taskIdRule, taskIdItem)
 	}
 	var creatorRule []interface{}
 	for _, creatorItem := range creator {
 		creatorRule = append(creatorRule, creatorItem)
 	}
 
-	logs, sub, err := _IAsync.contract.WatchLogs(opts, "CreateFuture", futureIdRule, creatorRule)
+	logs, sub, err := _IAsync.contract.WatchLogs(opts, "CreateTask", taskIdRule, creatorRule)
 	if err != nil {
 		return nil, err
 	}
@@ -476,8 +555,8 @@ func (_IAsync *IAsyncFilterer) WatchCreateFuture(opts *bind.WatchOpts, sink chan
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(IAsyncCreateFuture)
-				if err := _IAsync.contract.UnpackLog(event, "CreateFuture", log); err != nil {
+				event := new(IAsyncCreateTask)
+				if err := _IAsync.contract.UnpackLog(event, "CreateTask", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -498,12 +577,12 @@ func (_IAsync *IAsyncFilterer) WatchCreateFuture(opts *bind.WatchOpts, sink chan
 	}), nil
 }
 
-// ParseCreateFuture is a log parse operation binding the contract event 0x3fb77420900d4e68b2356c7b140d3d8fefa4aadbce83de2a52a2c3654f18732d.
+// ParseCreateTask is a log parse operation binding the contract event 0x44ece3c06003e6bf16f04e4c130ac1d044c320bd0bdfccf2d1cec873ba002a2d.
 //
-// Solidity: event CreateFuture(uint64 indexed futureId, address indexed creator, string handler, address callbackAddress)
-func (_IAsync *IAsyncFilterer) ParseCreateFuture(log types.Log) (*IAsyncCreateFuture, error) {
-	event := new(IAsyncCreateFuture)
-	if err := _IAsync.contract.UnpackLog(event, "CreateFuture", log); err != nil {
+// Solidity: event CreateTask(uint64 indexed taskId, address indexed creator, string plugin, uint64 callbackId)
+func (_IAsync *IAsyncFilterer) ParseCreateTask(log types.Log) (*IAsyncCreateTask, error) {
+	event := new(IAsyncCreateTask)
+	if err := _IAsync.contract.UnpackLog(event, "CreateTask", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

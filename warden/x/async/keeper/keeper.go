@@ -1,27 +1,30 @@
+// Copyright (c) 2025 Warden Labs. All Rights Reserved.
+//
+// ** RESTRICTED LICENSE **
+//
+// This file is part of the 'async' module. It is NOT licensed
+// under the Apache 2.0 license governing the rest of the project.
+// Refer to the LICENSE file in this module's directory for full terms.
+// Use, modification, and distribution are strictly limited.
+// Do NOT use this file unless you agree to the terms stated in that license.
+//
+// SPDX-FileCopyrightText: 2025 Warden Labs
+// SPDX-License-Identifier: LicenseRef-Proprietary-RestrictedModule
+
 package keeper
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
 	"fmt"
-	"math/big"
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/store"
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	evmosconf "github.com/evmos/evmos/v20/server/config"
-	evmkeeper "github.com/evmos/evmos/v20/x/evm/keeper"
-	evmostypes "github.com/evmos/evmos/v20/x/evm/types"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
-	"github.com/warden-protocol/wardenprotocol/precompiles/callbacks"
-	precommon "github.com/warden-protocol/wardenprotocol/precompiles/common"
 	"github.com/warden-protocol/wardenprotocol/prophet"
 	types "github.com/warden-protocol/wardenprotocol/warden/x/async/types/v1beta1"
 )
@@ -35,26 +38,38 @@ type (
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
 		authority          string
-		asyncModuleAddress sdk.Address
+		asyncModuleAddress sdk.AccAddress
 
-		futures             *FutureKeeper
-		handlersByValidator collections.KeySet[collections.Pair[sdk.ConsAddress, string]]
-		getEvmKeeper        func(_placeHolder int16) *evmkeeper.Keeper
-		accountKeeper       types.AccountKeeper
-		votes               collections.Map[collections.Pair[uint64, []byte], int32]
+		accountKeeper types.AccountKeeper
+		bankKeeper    types.BankKeeper
+		stakingKeeper *stakingkeeper.Keeper
+
+		plugins            collections.Map[string, types.Plugin]
+		pluginsByValidator collections.KeySet[collections.Pair[sdk.ConsAddress, string]]
+		queuePriorities    QueuePriorityCollection
+		queueTotalWeights  QueueTotalWeightCollection
+		queueWeights       QueueWeightCollection
+		tasks              *TaskKeeper
+		votes              collections.Map[collections.Pair[uint64, sdk.ConsAddress], int32]
 
 		p *prophet.P
+
+		schedKeeper types.SchedKeeper
 	}
 )
 
 var (
-	FutureSeqPrefix       = collections.NewPrefix(0)
-	FuturesPrefix         = collections.NewPrefix(1)
-	FutureByAddressPrefix = collections.NewPrefix(2)
-	ResultsPrefix         = collections.NewPrefix(3)
-	VotesPrefix           = collections.NewPrefix(4)
-	PendingFuturesPrefix  = collections.NewPrefix(5)
-	HandlersByValidator   = collections.NewPrefix(6)
+	TaskSeqPrefix          = collections.NewPrefix(0)
+	TasksPrefix            = collections.NewPrefix(1)
+	TaskByAddressPrefix    = collections.NewPrefix(2)
+	ResultsPrefix          = collections.NewPrefix(3)
+	VotesPrefix            = collections.NewPrefix(4)
+	PendingTasksPrefix     = collections.NewPrefix(5)
+	PluginsByValidator     = collections.NewPrefix(6)
+	PluginsPrefix          = collections.NewPrefix(7)
+	QueueWeightPrefix      = collections.NewPrefix(8)
+	QueueTotalWeightPrefix = collections.NewPrefix(9)
+	QueuePriorityPrefix    = collections.NewPrefix(10)
 )
 
 func NewKeeper(
@@ -63,9 +78,11 @@ func NewKeeper(
 	logger log.Logger,
 	authority string,
 	p *prophet.P,
-	getEvmKeeper func(_placeHolder int16) *evmkeeper.Keeper,
-	asyncModuleAddress sdk.Address,
 	accountKeeper types.AccountKeeper,
+	asyncModuleAddress sdk.AccAddress,
+	bankKeeper types.BankKeeper,
+	stakingKeeper *stakingkeeper.Keeper,
+	schedKeeper types.SchedKeeper,
 	// selfValAddr sdk.ConsAddress,
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -74,16 +91,20 @@ func NewKeeper(
 
 	sb := collections.NewSchemaBuilder(storeService)
 
-	futures := NewFutureKeeper(sb, cdc)
+	tasks := NewTaskKeeper(sb, cdc)
 	votes := collections.NewMap(
 		sb,
 		VotesPrefix,
 		"votes",
-		collections.PairKeyCodec(collections.Uint64Key, collections.BytesKey),
+		collections.PairKeyCodec(collections.Uint64Key, sdk.ConsAddressKey),
 		collections.Int32Value,
 	)
 
-	handlersByValidator := collections.NewKeySet(sb, HandlersByValidator, "handlers_by_validator", collections.PairKeyCodec(sdk.ConsAddressKey, collections.StringKey))
+	plugins := collections.NewMap(sb, PluginsPrefix, "plugins", collections.StringKey, codec.CollValue[types.Plugin](cdc))
+	pluginsByValidator := collections.NewKeySet(sb, PluginsByValidator, "handlers_by_validator", collections.PairKeyCodec(sdk.ConsAddressKey, collections.StringKey))
+	queueWeights := collections.NewMap(sb, QueueWeightPrefix, "queue_weights", collections.PairKeyCodec(QueueIDKey, sdk.ConsAddressKey), WeightValue)
+	queueTotalWeights := collections.NewMap(sb, QueueTotalWeightPrefix, "queue_total_weight", QueueIDKey, WeightValue)
+	queuePriorities := collections.NewMap(sb, QueuePriorityPrefix, "queue_priorities", collections.PairKeyCodec(QueueIDKey, sdk.ConsAddressKey), PriorityValue)
 
 	_, err := sb.Build()
 	if err != nil {
@@ -91,19 +112,28 @@ func NewKeeper(
 	}
 
 	return Keeper{
-		cdc:                cdc,
-		storeService:       storeService,
+		cdc:          cdc,
+		storeService: storeService,
+		logger:       logger,
+
 		authority:          authority,
 		asyncModuleAddress: asyncModuleAddress,
-		logger:             logger,
 
-		futures:             futures,
-		handlersByValidator: handlersByValidator,
-		getEvmKeeper:        getEvmKeeper,
-		accountKeeper:       accountKeeper,
-		votes:               votes,
+		accountKeeper: accountKeeper,
+		bankKeeper:    bankKeeper,
+		stakingKeeper: stakingKeeper,
+
+		plugins:            plugins,
+		pluginsByValidator: pluginsByValidator,
+		queuePriorities:    queuePriorities,
+		queueTotalWeights:  queueTotalWeights,
+		queueWeights:       queueWeights,
+		tasks:              tasks,
+		votes:              votes,
 
 		p: p,
+
+		schedKeeper: schedKeeper,
 	}
 }
 
@@ -117,27 +147,48 @@ func (k Keeper) Logger() log.Logger {
 	return k.logger.With("module", "x/"+types.ModuleName)
 }
 
-func (k Keeper) AddFutureResult(ctx context.Context, id uint64, submitter, output []byte) error {
-	if err := k.futures.SetResult(ctx, types.FutureResult{
+func (k Keeper) AddTaskResult(ctx context.Context, id uint64, submitter sdk.ConsAddress, output []byte, errorReason string) error {
+	task, err := k.tasks.Get(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	if !task.Solver.Equals(submitter) {
+		return fmt.Errorf("task %d expected result from %s, got one from %s", id, task.Solver, submitter)
+	}
+
+	now := sdk.UnwrapSDKContext(ctx).BlockTime()
+	if err := k.tasks.SetResult(ctx, task, types.TaskResult{
 		Id:        id,
 		Output:    output,
-		Submitter: submitter,
+		Error:     errorReason,
+		CreatedAt: now,
 	}); err != nil {
 		return err
 	}
 
-	if err := k.SetFutureVote(ctx, id, submitter, types.FutureVoteType_VOTE_TYPE_VERIFIED); err != nil {
+	if err := k.SetTaskVote(ctx, id, submitter, types.TaskVoteType_VOTE_TYPE_VERIFIED); err != nil {
 		return err
 	}
 
-	if err := k.futureReadyCallback(ctx, id, output); err != nil {
+	if err := k.taskReadyCallback(ctx, task, output); err != nil {
 		return err
+	}
+
+	if errorReason == "" {
+		if err := k.releaseFee(ctx, task, submitter); err != nil {
+			return err
+		}
+	} else {
+		if err := k.refundPluginFees(ctx, sdk.MustAccAddressFromBech32(task.Creator), task.Fee); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (k Keeper) SetFutureVote(ctx context.Context, id uint64, voter []byte, vote types.FutureVoteType) error {
+func (k Keeper) SetTaskVote(ctx context.Context, id uint64, voter sdk.ConsAddress, vote types.TaskVoteType) error {
 	if !vote.IsValid() {
 		return fmt.Errorf("invalid vote type: %v", vote)
 	}
@@ -145,14 +196,14 @@ func (k Keeper) SetFutureVote(ctx context.Context, id uint64, voter []byte, vote
 	return k.votes.Set(ctx, collections.Join(id, voter), int32(vote))
 }
 
-func (k Keeper) GetFutureVotes(ctx context.Context, futureId uint64) ([]types.FutureVote, error) {
-	it, err := k.votes.Iterate(ctx, collections.NewPrefixedPairRange[uint64, []byte](futureId))
+func (k Keeper) GetTaskVotes(ctx context.Context, taskId uint64) ([]types.TaskVote, error) {
+	it, err := k.votes.Iterate(ctx, collections.NewPrefixedPairRange[uint64, sdk.ConsAddress](taskId))
 	if err != nil {
 		return nil, err
 	}
 	defer it.Close()
 
-	var votes []types.FutureVote
+	var votes []types.TaskVote
 
 	for ; it.Valid(); it.Next() {
 		key, err := it.Key()
@@ -165,141 +216,68 @@ func (k Keeper) GetFutureVotes(ctx context.Context, futureId uint64) ([]types.Fu
 			return nil, err
 		}
 
-		votes = append(votes, types.FutureVote{
-			FutureId: futureId,
-			Voter:    key.K2(),
-			Vote:     types.FutureVoteType(vote),
+		votes = append(votes, types.TaskVote{
+			TaskId: taskId,
+			Voter:  key.K2(),
+			Vote:   types.TaskVoteType(vote),
 		})
 	}
 
 	return votes, nil
 }
 
-func (k Keeper) futureReadyCallback(
+func (k *Keeper) AddPlugin(ctx context.Context, p types.Plugin) error {
+	id := p.GetId()
+
+	if id == "" {
+		return errors.New("plugin ID cannot be empty")
+	}
+
+	found, err := k.plugins.Has(ctx, id)
+	if err != nil {
+		return err
+	}
+	if found {
+		return fmt.Errorf("duplicate plugin: %s", p.GetId())
+	}
+
+	if !p.Fee.IsValid() {
+		return fmt.Errorf("invalid plugin fees: %s", p.Fee)
+	}
+
+	return k.plugins.Set(ctx, id, p)
+}
+
+func (k *Keeper) GetPlugin(ctx context.Context, id string) (types.Plugin, error) {
+	return k.plugins.Get(ctx, id)
+}
+
+// HasPluginValidators returns whether there are some validators registered to the request plugin.
+func (k *Keeper) HasPluginValidators(ctx context.Context, id string) bool {
+	v, _ := k.queueTotalWeights.Get(ctx, QueueID(id))
+	return v > 0
+}
+
+func (k Keeper) taskReadyCallback(
 	ctx context.Context,
-	id uint64,
+	task types.Task,
 	output []byte,
 ) error {
-	future, err := k.futures.Get(ctx, id)
-	if err != nil {
-		return err
-	}
-
-	if future.Callback == "" {
+	if task.CallbackId == 0 {
 		return nil
 	}
 
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-
-	abi, err := callbacks.IAsyncCallbackMetaData.GetAbi()
-	if err != nil {
-		return err
-	}
-
-	method := "cb"
-	if _, ok := abi.Methods[method]; !ok {
-		return fmt.Errorf("invalid callback method: %v", method)
-	}
-
-	cbAddress, err := precommon.AddressFromBech32Str(future.Callback)
-	if err != nil {
-		return err
-	}
-
-	data, err := abi.Pack(method, id, output)
-	if err != nil {
-		return err
-	}
-
-	res, err := k.callEVMWithData( //nolint:contextcheck
-		sdkCtx,
-		common.BytesToAddress(k.asyncModuleAddress.Bytes()),
-		&cbAddress,
-		data,
-	)
-
-	if res.Failed() {
-		// Do not throw error if contract fails
-		return nil
-	}
-
-	return err
+	return k.schedKeeper.ExecuteCallback(ctx, task.CallbackId, output)
 }
 
-func (k Keeper) callEVMWithData(
-	ctx sdk.Context,
-	from common.Address,
-	contract *common.Address,
-	data []byte,
-) (*evmostypes.MsgEthereumTxResponse, error) {
-	fromAcc := k.accountKeeper.GetAccount(ctx, from.Bytes())
-	if fromAcc == nil {
-		fromAcc = k.accountKeeper.NewAccountWithAddress(ctx, from.Bytes())
-		k.accountKeeper.SetAccount(ctx, fromAcc)
-	}
-
-	nonce := fromAcc.GetSequence()
-
-	evmKeeper := k.getEvmKeeper(0)
-
-	args, err := json.Marshal(evmostypes.TransactionArgs{
-		From: &from,
-		To:   contract,
-		Data: (*hexutil.Bytes)(&data),
-	})
-	if err != nil {
-		return nil, errorsmod.Wrapf(errortypes.ErrJSONMarshal, "failed to marshal tx args: %s", err.Error())
-	}
-
-	gasRes, err := evmKeeper.EstimateGasInternal(ctx, &evmostypes.EthCallRequest{
-		Args:   args,
-		GasCap: evmosconf.DefaultGasCap,
-	}, evmostypes.Internal)
-	if err != nil {
-		return nil, err
-	}
-
-	// 1. Gas estimation also consumes gas.
-	// 2. Precompile creates new gas meter limited to contract gas cap. This new gas meter should consume gas from prev gas meter.
-	// 3. TODO: configurable gas limit on module level.
-	gasCap := gasRes.Gas + ctx.GasMeter().GasConsumed()
-
-	msg := ethtypes.NewMessage(
-		from,
-		contract,
-		nonce,
-		big.NewInt(0), // amount
-		gasCap,        // gasLimit
-		big.NewInt(0), // gasFeeCap
-		big.NewInt(0), // gasTipCap
-		big.NewInt(0), // gasPrice
-		data,
-		ethtypes.AccessList{}, // AccessList
-		false,                 // isFake
-	)
-
-	res, err := evmKeeper.ApplyMessage(ctx, msg, evmostypes.NewNoOpTracer(), true)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := fromAcc.SetSequence(fromAcc.GetSequence() + 1); err != nil {
-		return nil, err
-	}
-
-	k.accountKeeper.SetAccount(ctx, fromAcc)
-
-	return res, nil
-}
-
-func (k Keeper) getCompletedFuturesWithoutValidatorVote(ctx context.Context, valAddress []byte, limit int) ([]prophet.FutureResult, error) {
-	it, err := k.futures.results.IterateRaw(ctx, nil, nil, collections.OrderDescending)
+func (k Keeper) getCompletedTasksWithoutValidatorVote(ctx context.Context, valAddress sdk.ConsAddress, limit int) ([]prophet.TaskResult, error) {
+	it, err := k.tasks.results.IterateRaw(ctx, nil, nil, collections.OrderDescending)
 	if err != nil {
 		return nil, err
 	}
 	defer it.Close()
 
-	futures := make([]prophet.FutureResult, 0, limit)
+	tasks := make([]prophet.TaskResult, 0, limit)
 
 	for ; it.Valid(); it.Next() {
 		id, err := it.Key()
@@ -312,6 +290,11 @@ func (k Keeper) getCompletedFuturesWithoutValidatorVote(ctx context.Context, val
 			return nil, err
 		}
 
+		if result.Error != "" {
+			// skip failed Task, won't verify
+			continue
+		}
+
 		found, err := k.votes.Has(ctx, collections.Join(id, valAddress))
 		if found {
 			continue
@@ -321,34 +304,64 @@ func (k Keeper) getCompletedFuturesWithoutValidatorVote(ctx context.Context, val
 			return nil, err
 		}
 
-		fut, err := k.futures.Get(ctx, id)
+		fut, err := k.tasks.Get(ctx, id)
 		if err != nil {
 			return nil, err
 		}
 
-		futures = append(futures, prophet.FutureResult{
-			Future: prophet.Future{
-				ID:      fut.Id,
-				Handler: fut.Handler,
-				Input:   fut.Input,
+		tasks = append(tasks, prophet.TaskResult{
+			Task: prophet.Task{
+				ID:     fut.Id,
+				Plugin: fut.Plugin,
+				Input:  fut.Input,
 			},
 			Output: result.Output,
 		})
-		if len(futures) == limit {
+		if len(tasks) == limit {
 			break
 		}
 	}
 
-	return futures, nil
+	return tasks, nil
 }
 
-// RegisterHandler register validator as a handler provider.
-func (k *Keeper) RegisterHandler(ctx context.Context, validator sdk.ConsAddress, handlerName string) error {
-	return k.handlersByValidator.Set(ctx, collections.Join(validator, handlerName))
+func (k Keeper) releaseFee(ctx context.Context, task types.Task, submitter sdk.ConsAddress) error {
+	plugin, err := k.plugins.Get(ctx, task.Plugin)
+	if err != nil {
+		return err
+	}
+
+	pluginCreator, err := plugin.CreatorAccAddress()
+	if err != nil {
+		return err
+	}
+
+	taskExecutor, err := k.getValidatorAddress(ctx, submitter)
+	if err != nil {
+		return err
+	}
+
+	if err := k.releasePluginFees(ctx, pluginCreator, taskExecutor, task.Fee); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-// ClearHandlers removes all handlers registered for a validator.
-func (k *Keeper) ClearHandlers(ctx context.Context, validator sdk.ConsAddress) error {
-	r := collections.Range[collections.Pair[sdk.ConsAddress, string]]{}
-	return k.handlersByValidator.Clear(ctx, r.Prefix(collections.PairPrefix[sdk.ConsAddress, string](sdk.ConsAddress(validator))))
+func (k Keeper) getValidatorAddress(
+	ctx context.Context,
+	submitter sdk.ConsAddress,
+) (sdk.AccAddress, error) {
+	val, err := k.stakingKeeper.ValidatorByConsAddr(ctx, submitter)
+	if err != nil {
+		return nil, err
+	}
+
+	valAddr := val.GetOperator()
+	addr, err := sdk.ValAddressFromBech32(valAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	return sdk.AccAddress(addr), nil
 }

@@ -5,11 +5,14 @@ import (
 
 	cmtcfg "github.com/cometbft/cometbft/config"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
-	evmservercfg "github.com/evmos/evmos/v20/server/config"
+	evmservercfg "github.com/cosmos/evm/server/config"
 	oracleconfig "github.com/skip-mev/slinky/oracle/config"
 
-	httpconfig "github.com/warden-protocol/wardenprotocol/prophet/handlers/http/config"
-	pricepredconfig "github.com/warden-protocol/wardenprotocol/prophet/handlers/pricepred/config"
+	httpconfig "github.com/warden-protocol/wardenprotocol/prophet/plugins/http/config"
+	pricepredconfig "github.com/warden-protocol/wardenprotocol/prophet/plugins/pricepred/config"
+	quantkitconfig "github.com/warden-protocol/wardenprotocol/prophet/plugins/quantkit/config"
+	veniceconfig "github.com/warden-protocol/wardenprotocol/prophet/plugins/venice/config"
+	veniceimgconfig "github.com/warden-protocol/wardenprotocol/prophet/plugins/veniceimg/config"
 )
 
 // initCometBFTConfig helps to override default CometBFT Config values.
@@ -35,11 +38,14 @@ func initAppConfig() (string, interface{}) {
 		EVM     evmservercfg.EVMConfig     `mapstructure:"evm"`
 		JSONRPC evmservercfg.JSONRPCConfig `mapstructure:"json-rpc"`
 		TLS     evmservercfg.TLSConfig     `mapstructure:"tls"`
-		Rosetta evmservercfg.RosettaConfig `mapstructure:"rosetta"`
+		// Rosetta evmservercfg.RosettaConfig `mapstructure:"rosetta"` TODO AT: Check how to use rosetta
 
-		// Prophet handlers
+		// Prophet plugins
 		PricePred pricepredconfig.Config `mapstructure:"pricepred"`
 		Http      httpconfig.Config      `mapstructure:"http"`
+		Quantkit  quantkitconfig.Config  `mapstructure:"quantkit"`
+		Venice    veniceconfig.Config    `mapstructure:"venice"`
+		Veniceimg veniceimgconfig.Config `mapstructure:"veniceimg"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
@@ -68,49 +74,40 @@ func initAppConfig() (string, interface{}) {
 	}
 
 	evmConfig := evmservercfg.DefaultEVMConfig()
-	jsonRpcConfig := evmservercfg.JSONRPCConfig{
-		Enable:                   true,
-		API:                      evmservercfg.GetDefaultAPINamespaces(),
-		Address:                  evmservercfg.DefaultJSONRPCAddress,
-		WsAddress:                evmservercfg.DefaultJSONRPCWsAddress,
-		GasCap:                   evmservercfg.DefaultGasCap,
-		AllowInsecureUnlock:      evmservercfg.DefaultJSONRPCAllowInsecureUnlock,
-		EVMTimeout:               evmservercfg.DefaultEVMTimeout,
-		TxFeeCap:                 evmservercfg.DefaultTxFeeCap,
-		FilterCap:                evmservercfg.DefaultFilterCap,
-		FeeHistoryCap:            evmservercfg.DefaultFeeHistoryCap,
-		BlockRangeCap:            evmservercfg.DefaultBlockRangeCap,
-		LogsCap:                  evmservercfg.DefaultLogsCap,
-		HTTPTimeout:              evmservercfg.DefaultHTTPTimeout,
-		HTTPIdleTimeout:          evmservercfg.DefaultHTTPIdleTimeout,
-		AllowUnprotectedTxs:      evmservercfg.DefaultAllowUnprotectedTxs,
-		MaxOpenConnections:       evmservercfg.DefaultMaxOpenConnections,
-		EnableIndexer:            false,
-		MetricsAddress:           evmservercfg.DefaultJSONRPCMetricsAddress,
-		FixRevertGasRefundHeight: evmservercfg.DefaultFixRevertGasRefundHeight,
-	}
+	jsonRpcConfig := evmservercfg.DefaultJSONRPCConfig()
+	jsonRpcConfig.Enable = true
 	tlsConfig := evmservercfg.DefaultTLSConfig()
 
 	pricePredictionConfig := pricepredconfig.DefaultConfig()
 	httpConfig := httpconfig.DefaultConfig()
+	veniceConfig := veniceconfig.DefaultConfig()
+	veniceimgConfig := veniceimgconfig.DefaultConfig()
+
+	quantkitConfig := quantkitconfig.DefaultConfig()
 
 	customAppConfig := CustomAppConfig{
-		Config:    *srvCfg,
-		Oracle:    oracleConfig,
-		EVM:       *evmConfig,
-		JSONRPC:   jsonRpcConfig,
-		TLS:       *tlsConfig,
-		Rosetta:   *evmservercfg.DefaultRosettaConfig(),
+		Config:  *srvCfg,
+		Oracle:  oracleConfig,
+		EVM:     *evmConfig,
+		JSONRPC: *jsonRpcConfig,
+		TLS:     *tlsConfig,
+		// Rosetta:   *evmservercfg.DefaultRosettaConfig(),
 		PricePred: *pricePredictionConfig,
 		Http:      *httpConfig,
+		Quantkit:  *quantkitConfig,
+		Venice:    *veniceConfig,
+		Veniceimg: *veniceimgConfig,
 	}
 
 	customAppTemplate := serverconfig.DefaultConfigTemplate +
 		oracleconfig.DefaultConfigTemplate +
 		evmservercfg.DefaultEVMConfigTemplate +
-		evmservercfg.DefaultRosettaConfigTemplate +
+		// evmservercfg.DefaultRosettaConfigTemplate +
 		pricepredconfig.DefaultConfigTemplate +
-		httpconfig.DefaultConfigTemplate
+		httpconfig.DefaultConfigTemplate +
+		quantkitconfig.DefaultConfigTemplate +
+		veniceconfig.DefaultConfigTemplate +
+		veniceimgconfig.DefaultConfigTemplate
 
 	// Edit the default template file
 	//

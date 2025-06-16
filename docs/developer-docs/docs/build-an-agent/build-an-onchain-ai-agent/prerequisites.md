@@ -56,16 +56,18 @@ orders/
 ├── mocks/            # Mock services
 ├── script/           # Deployment scripts
 ├── src/              # Core contracts
-└── test/             # Test files
+│   └── factories/    # Factories
+│   └── lib/          # Libraries
+│   └── orders/       # Orders
+│   └── types/        # Types
+└── test/             # Tests
 ```
 
 :::note Full code
-You can find the full code of the example on GitHub: [`orders`](https://github.com/warden-protocol/wardenprotocol/tree/main/solidity/orders)
+You can find the full code of the example on GitHub: [`orders`](https://github.com/warden-protocol/wardenprotocol/tree/v0.6.3/solidity/orders)
 :::
 
 ## Required knowledge
-
-### Warden features
 
 You should learn about the following Warden features:
 
@@ -74,11 +76,9 @@ You should learn about the following Warden features:
    - `x/warden`: Managing keys and handling signature requests  
      Functions: [keyById()](/build-an-app/interact-with-warden-modules/interact-with-x-warden/manage-keys#query-a-key-by-id), [newSignRequest()](/build-an-app/interact-with-warden-modules/interact-with-x-warden/manage-signature-requests#create-a-new-signature-request)  
    - `x/oracle`: The price feed system and data retrieval methods  
-     Functions: [getPrice()](https://github.com/warden-protocol/wardenprotocol/blob/main/precompiles/slinky/ISlinky.sol)
-   - `x/async`: Future-based operations and the price prediction system   
-     Functions: [addFuture](/build-an-app/interact-with-warden-modules/interact-with-x-async#create-a-new-future), [futureById()](/build-an-app/interact-with-warden-modules/interact-with-x-async#query-a-future-by-id)  
-
-### Solidity
+     Functions: [getPrice()](https://github.com/warden-protocol/wardenprotocol/blob/v0.6.3/precompiles/slinky/ISlinky.sol)
+   - `x/async`: Task-based operations and the price prediction system   
+     Functions: [addTask()](/build-an-app/interact-with-warden-modules/interact-with-x-async#create-a-new-task), [taskById()](/build-an-app/interact-with-warden-modules/interact-with-x-async#query-a-task-by-id)  
 
 Guides in this section require the knowledge of the following Solidity concepts:
 
@@ -105,4 +105,4 @@ contract Implementation is Base, IExecution {
 
 ## Next steps
 
-After meeting these prerequisites, you can start [creating helpers and utils](build-the-infrastructure-for-orders/create-helpers-and-utils).
+After meeting these prerequisites, you can start [building the infrastructure for Orders](build-the-infrastructure).

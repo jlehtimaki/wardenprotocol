@@ -42,25 +42,25 @@ GMP allows smart contracts on one chain to send messages and data to smart contr
 
 To start using `x/gmp`, follow this guide:
 
-- [Deploy a cross-chain app](/build-an-app/deploy-smart-contracts-on-warden/deploy-a-cross-chain-app)
+- [Deploy a crosschain app](/build-an-app/deploy-smart-contracts-on-warden/deploy-a-cross-chain-app)
 
 Learn more:
 
 - [Cosmos GMP documentation](https://docs.axelar.dev/dev/cosmos-gmp)
 - [Axelar GMP SDK on GitHub](https://github.com/axelarnetwork/axelar-gmp-sdk-solidity)
-- [Warden docs: Bridging](/learn/bridging)
+- [Warden docs: Bridging](../bridging)
 
 ## x/oracle
 
 The `x/oracle` module is a Cosmos SDK module by **Skip Protocol** that enables storing prices onchain in **Skip:Connect** (an oracle service).
 
-To use `x/oracle`, call the [`x/oracle` precompile](https://github.com/warden-protocol/wardenprotocol/blob/main/precompiles/slinky/ISlinky.sol) in your contract. To get started and find a usage example, see these guides:
+To use `x/oracle`, call the [`x/oracle` precompile](https://github.com/warden-protocol/wardenprotocol/blob/v0.6.3/precompiles/slinky/ISlinky.sol) in your contract. To get started and find usage examples, see these guides:
 
 - [Get started with precompiles](/build-an-app/interact-with-warden-modules/get-started-with-precompiles)
-- [Implement automated Orders](/build-an-agent/build-an-onchain-ai-agent/implement-automated-orders/introduction)
+- [Build an onchain AI Agent](/build-an-agent/build-an-onchain-ai-agent/introduction)
 
 Learn more:
 
 - [Connect documentation](https://docs.skip.build/connect/introduction)
 - [`x/oracle` on GitHub](https://github.com/skip-mev/slinky/tree/main/x/oracle)
-- [Warden docs: Oracle services](/learn/oracle-services)
+- [Warden docs: Oracle services](../oracle-services)

@@ -34,6 +34,7 @@ type Config struct {
 	GasLimit      uint64        `env:"GAS_LIMIT, default=400000"`
 	TxTimeout     time.Duration `env:"TX_TIMEOUT, default=120s"`
 	TxFee         int64         `env:"TX_FEE, default=400000"`
+	Denom         string        `env:"DENOM, default=award"`
 
 	HttpAddr string `env:"HTTP_ADDR, default=:8080"`
 
@@ -67,51 +68,51 @@ func main() {
 		BatchInterval: cfg.BatchInterval,
 		BatchSize:     cfg.BatchSize,
 		TxTimeout:     cfg.TxTimeout,
-		TxFees:        sdk.NewCoins(sdk.NewCoin("award", math.NewInt(cfg.TxFee))),
+		TxFees:        sdk.NewCoins(sdk.NewCoin(cfg.Denom, math.NewInt(cfg.TxFee))),
 	})
 
-	app.SetKeyRequestHandler(func(w keychain.KeyResponseWriter, req *keychain.KeyRequest) {
+	app.SetKeyRequestHandler(func(ctx context.Context, w keychain.Writer, req *keychain.KeyRequest) {
 		if req.KeyType != types.KeyType_KEY_TYPE_ECDSA_SECP256K1 {
-			_ = w.Reject("unsupported key type")
+			_ = w.Reject(ctx, "unsupported key type")
 			return
 		}
 
 		id, err := bigEndianBytesFromUint32(req.Id)
 		if err != nil {
 			logger.Error("failed to convert key id to big endian bytes", "error", err)
-			_ = w.Reject("request ID is too large")
+			_ = w.Reject(ctx, "request ID is too large")
 			return
 		}
 
 		pubKey, err := bip44.PublicKey(id)
 		if err != nil {
 			logger.Error("failed to get public key", "error", err)
-			_ = w.Reject("failed to get public key")
+			_ = w.Reject(ctx, "failed to get public key")
 			return
 		}
 
-		err = w.Fulfil(pubKey)
+		err = w.Fulfil(ctx, pubKey)
 		if err != nil {
 			logger.Error("failed to fulfil key request", "error", err)
 		}
 	})
 
-	app.SetSignRequestHandler(func(w keychain.SignResponseWriter, req *keychain.SignRequest) {
+	app.SetSignRequestHandler(func(ctx context.Context, w keychain.Writer, req *keychain.SignRequest) {
 		keyID, err := bigEndianBytesFromUint32(req.KeyId)
 		if err != nil {
 			logger.Error("failed to convert Key ID to big endian bytes", "error", err)
-			_ = w.Reject("Key ID is too large")
+			_ = w.Reject(ctx, "Key ID is too large")
 			return
 		}
 
 		signature, err := bip44.Sign(keyID, req.DataForSigning)
 		if err != nil {
 			logger.Error("failed to sign message", "error", err)
-			_ = w.Reject("failed to sign message")
+			_ = w.Reject(ctx, "failed to sign message")
 			return
 		}
 
-		err = w.Fulfil(signature)
+		err = w.Fulfil(ctx, signature)
 		if err != nil {
 			logger.Error("failed to fulfil sign request", "error", err)
 		}

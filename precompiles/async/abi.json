@@ -6,7 +6,7 @@
         {
           "indexed": true,
           "internalType": "uint64",
-          "name": "futureId",
+          "name": "taskId",
           "type": "uint64"
         },
         {
@@ -18,24 +18,24 @@
         {
           "indexed": false,
           "internalType": "string",
-          "name": "handler",
+          "name": "plugin",
           "type": "string"
         },
         {
           "indexed": false,
-          "internalType": "address",
-          "name": "callbackAddress",
-          "type": "address"
+          "internalType": "uint64",
+          "name": "callbackId",
+          "type": "uint64"
         }
       ],
-      "name": "CreateFuture",
+      "name": "CreateTask",
       "type": "event"
     },
     {
       "inputs": [
         {
           "internalType": "string",
-          "name": "handler",
+          "name": "plugin",
           "type": "string"
         },
         {
@@ -44,16 +44,45 @@
           "type": "bytes"
         },
         {
-          "internalType": "address",
-          "name": "callback",
-          "type": "address"
+          "components": [
+            {
+              "internalType": "string",
+              "name": "denom",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct Types.Coin[]",
+          "name": "maxFee",
+          "type": "tuple[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "addressValue",
+              "type": "address"
+            },
+            {
+              "internalType": "uint64",
+              "name": "gasLimit",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct CallbackParams",
+          "name": "callbackParams",
+          "type": "tuple"
         }
       ],
-      "name": "addFuture",
+      "name": "addTask",
       "outputs": [
         {
           "internalType": "uint64",
-          "name": "futureId",
+          "name": "taskId",
           "type": "uint64"
         }
       ],
@@ -63,253 +92,6 @@
     {
       "inputs": [
         {
-          "internalType": "uint64",
-          "name": "futureId",
-          "type": "uint64"
-        }
-      ],
-      "name": "futureById",
-      "outputs": [
-        {
-          "components": [
-            {
-              "components": [
-                {
-                  "components": [
-                    {
-                      "internalType": "uint64",
-                      "name": "id",
-                      "type": "uint64"
-                    },
-                    {
-                      "internalType": "address",
-                      "name": "creator",
-                      "type": "address"
-                    },
-                    {
-                      "internalType": "string",
-                      "name": "handler",
-                      "type": "string"
-                    },
-                    {
-                      "internalType": "bytes",
-                      "name": "input",
-                      "type": "bytes"
-                    }
-                  ],
-                  "internalType": "struct Future",
-                  "name": "future",
-                  "type": "tuple"
-                },
-                {
-                  "components": [
-                    {
-                      "internalType": "uint64",
-                      "name": "futureId",
-                      "type": "uint64"
-                    },
-                    {
-                      "internalType": "bytes",
-                      "name": "Voter",
-                      "type": "bytes"
-                    },
-                    {
-                      "internalType": "enum FutureVoteType",
-                      "name": "vote",
-                      "type": "uint8"
-                    }
-                  ],
-                  "internalType": "struct FutureVote[]",
-                  "name": "votes",
-                  "type": "tuple[]"
-                },
-                {
-                  "components": [
-                    {
-                      "internalType": "uint64",
-                      "name": "id",
-                      "type": "uint64"
-                    },
-                    {
-                      "internalType": "bytes",
-                      "name": "output",
-                      "type": "bytes"
-                    },
-                    {
-                      "internalType": "bytes",
-                      "name": "submitter",
-                      "type": "bytes"
-                    }
-                  ],
-                  "internalType": "struct FutureResult",
-                  "name": "result",
-                  "type": "tuple"
-                }
-              ],
-              "internalType": "struct FutureResponse",
-              "name": "futureResponse",
-              "type": "tuple"
-            }
-          ],
-          "internalType": "struct FutureByIdResponse",
-          "name": "response",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "bytes",
-              "name": "key",
-              "type": "bytes"
-            },
-            {
-              "internalType": "uint64",
-              "name": "offset",
-              "type": "uint64"
-            },
-            {
-              "internalType": "uint64",
-              "name": "limit",
-              "type": "uint64"
-            },
-            {
-              "internalType": "bool",
-              "name": "countTotal",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "reverse",
-              "type": "bool"
-            }
-          ],
-          "internalType": "struct Types.PageRequest",
-          "name": "pagination",
-          "type": "tuple"
-        },
-        {
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        }
-      ],
-      "name": "futures",
-      "outputs": [
-        {
-          "components": [
-            {
-              "components": [
-                {
-                  "internalType": "bytes",
-                  "name": "nextKey",
-                  "type": "bytes"
-                },
-                {
-                  "internalType": "uint64",
-                  "name": "total",
-                  "type": "uint64"
-                }
-              ],
-              "internalType": "struct Types.PageResponse",
-              "name": "pagination",
-              "type": "tuple"
-            },
-            {
-              "components": [
-                {
-                  "components": [
-                    {
-                      "internalType": "uint64",
-                      "name": "id",
-                      "type": "uint64"
-                    },
-                    {
-                      "internalType": "address",
-                      "name": "creator",
-                      "type": "address"
-                    },
-                    {
-                      "internalType": "string",
-                      "name": "handler",
-                      "type": "string"
-                    },
-                    {
-                      "internalType": "bytes",
-                      "name": "input",
-                      "type": "bytes"
-                    }
-                  ],
-                  "internalType": "struct Future",
-                  "name": "future",
-                  "type": "tuple"
-                },
-                {
-                  "components": [
-                    {
-                      "internalType": "uint64",
-                      "name": "futureId",
-                      "type": "uint64"
-                    },
-                    {
-                      "internalType": "bytes",
-                      "name": "Voter",
-                      "type": "bytes"
-                    },
-                    {
-                      "internalType": "enum FutureVoteType",
-                      "name": "vote",
-                      "type": "uint8"
-                    }
-                  ],
-                  "internalType": "struct FutureVote[]",
-                  "name": "votes",
-                  "type": "tuple[]"
-                },
-                {
-                  "components": [
-                    {
-                      "internalType": "uint64",
-                      "name": "id",
-                      "type": "uint64"
-                    },
-                    {
-                      "internalType": "bytes",
-                      "name": "output",
-                      "type": "bytes"
-                    },
-                    {
-                      "internalType": "bytes",
-                      "name": "submitter",
-                      "type": "bytes"
-                    }
-                  ],
-                  "internalType": "struct FutureResult",
-                  "name": "result",
-                  "type": "tuple"
-                }
-              ],
-              "internalType": "struct FutureResponse[]",
-              "name": "futures",
-              "type": "tuple[]"
-            }
-          ],
-          "internalType": "struct FuturesResponse",
-          "name": "response",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "components": [
             {
               "internalType": "bytes",
@@ -342,7 +124,7 @@
           "type": "tuple"
         }
       ],
-      "name": "pendingFutures",
+      "name": "pendingTasks",
       "outputs": [
         {
           "components": [
@@ -377,21 +159,588 @@
                 },
                 {
                   "internalType": "string",
-                  "name": "handler",
+                  "name": "plugin",
                   "type": "string"
                 },
                 {
                   "internalType": "bytes",
                   "name": "input",
                   "type": "bytes"
+                },
+                {
+                  "components": [
+                    {
+                      "components": [
+                        {
+                          "internalType": "string",
+                          "name": "denom",
+                          "type": "string"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "amount",
+                          "type": "uint256"
+                        }
+                      ],
+                      "internalType": "struct Types.Coin[]",
+                      "name": "pluginCreatorReward",
+                      "type": "tuple[]"
+                    },
+                    {
+                      "components": [
+                        {
+                          "internalType": "string",
+                          "name": "denom",
+                          "type": "string"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "amount",
+                          "type": "uint256"
+                        }
+                      ],
+                      "internalType": "struct Types.Coin[]",
+                      "name": "executorReward",
+                      "type": "tuple[]"
+                    }
+                  ],
+                  "internalType": "struct DeductedFee",
+                  "name": "fee",
+                  "type": "tuple"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "callbackId",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "solver",
+                  "type": "bytes"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "secs",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "nanos",
+                      "type": "uint64"
+                    }
+                  ],
+                  "internalType": "struct Types.Timestamp",
+                  "name": "createdAt",
+                  "type": "tuple"
                 }
               ],
-              "internalType": "struct Future[]",
-              "name": "futures",
+              "internalType": "struct Task[]",
+              "name": "tasks",
               "type": "tuple[]"
             }
           ],
-          "internalType": "struct PendingFuturesResponse",
+          "internalType": "struct PendingTasksResponse",
+          "name": "response",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes",
+              "name": "key",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint64",
+              "name": "offset",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "limit",
+              "type": "uint64"
+            },
+            {
+              "internalType": "bool",
+              "name": "countTotal",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "reverse",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct Types.PageRequest",
+          "name": "pagination",
+          "type": "tuple"
+        }
+      ],
+      "name": "plugins",
+      "outputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes",
+                  "name": "nextKey",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "total",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct Types.PageResponse",
+              "name": "pagination",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "id",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "creator",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "description",
+                  "type": "string"
+                },
+                {
+                  "components": [
+                    {
+                      "components": [
+                        {
+                          "internalType": "string",
+                          "name": "denom",
+                          "type": "string"
+                        },
+                        {
+                          "internalType": "uint256",
+                          "name": "amount",
+                          "type": "uint256"
+                        }
+                      ],
+                      "internalType": "struct Types.Coin[]",
+                      "name": "fee",
+                      "type": "tuple[]"
+                    }
+                  ],
+                  "internalType": "struct PluginFee",
+                  "name": "fee",
+                  "type": "tuple"
+                },
+                {
+                  "internalType": "int64",
+                  "name": "timeout",
+                  "type": "int64"
+                }
+              ],
+              "internalType": "struct Plugin[]",
+              "name": "plugins",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct PluginsResponse",
+          "name": "response",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "taskId",
+          "type": "uint64"
+        }
+      ],
+      "name": "taskById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "id",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "creator",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "plugin",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "input",
+                      "type": "bytes"
+                    },
+                    {
+                      "components": [
+                        {
+                          "components": [
+                            {
+                              "internalType": "string",
+                              "name": "denom",
+                              "type": "string"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "amount",
+                              "type": "uint256"
+                            }
+                          ],
+                          "internalType": "struct Types.Coin[]",
+                          "name": "pluginCreatorReward",
+                          "type": "tuple[]"
+                        },
+                        {
+                          "components": [
+                            {
+                              "internalType": "string",
+                              "name": "denom",
+                              "type": "string"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "amount",
+                              "type": "uint256"
+                            }
+                          ],
+                          "internalType": "struct Types.Coin[]",
+                          "name": "executorReward",
+                          "type": "tuple[]"
+                        }
+                      ],
+                      "internalType": "struct DeductedFee",
+                      "name": "fee",
+                      "type": "tuple"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "callbackId",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "solver",
+                      "type": "bytes"
+                    },
+                    {
+                      "components": [
+                        {
+                          "internalType": "uint64",
+                          "name": "secs",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "nanos",
+                          "type": "uint64"
+                        }
+                      ],
+                      "internalType": "struct Types.Timestamp",
+                      "name": "createdAt",
+                      "type": "tuple"
+                    }
+                  ],
+                  "internalType": "struct Task",
+                  "name": "task",
+                  "type": "tuple"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "taskId",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "Voter",
+                      "type": "bytes"
+                    },
+                    {
+                      "internalType": "enum TaskVoteType",
+                      "name": "vote",
+                      "type": "uint8"
+                    }
+                  ],
+                  "internalType": "struct TaskVote[]",
+                  "name": "votes",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "id",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "output",
+                      "type": "bytes"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "error_reason",
+                      "type": "string"
+                    }
+                  ],
+                  "internalType": "struct TaskResult",
+                  "name": "result",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct TaskResponse",
+              "name": "taskResponse",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct TaskByIdResponse",
+          "name": "response",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes",
+              "name": "key",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint64",
+              "name": "offset",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "limit",
+              "type": "uint64"
+            },
+            {
+              "internalType": "bool",
+              "name": "countTotal",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "reverse",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct Types.PageRequest",
+          "name": "pagination",
+          "type": "tuple"
+        },
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        }
+      ],
+      "name": "tasks",
+      "outputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "bytes",
+                  "name": "nextKey",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "total",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct Types.PageResponse",
+              "name": "pagination",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "id",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "creator",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "plugin",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "input",
+                      "type": "bytes"
+                    },
+                    {
+                      "components": [
+                        {
+                          "components": [
+                            {
+                              "internalType": "string",
+                              "name": "denom",
+                              "type": "string"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "amount",
+                              "type": "uint256"
+                            }
+                          ],
+                          "internalType": "struct Types.Coin[]",
+                          "name": "pluginCreatorReward",
+                          "type": "tuple[]"
+                        },
+                        {
+                          "components": [
+                            {
+                              "internalType": "string",
+                              "name": "denom",
+                              "type": "string"
+                            },
+                            {
+                              "internalType": "uint256",
+                              "name": "amount",
+                              "type": "uint256"
+                            }
+                          ],
+                          "internalType": "struct Types.Coin[]",
+                          "name": "executorReward",
+                          "type": "tuple[]"
+                        }
+                      ],
+                      "internalType": "struct DeductedFee",
+                      "name": "fee",
+                      "type": "tuple"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "callbackId",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "solver",
+                      "type": "bytes"
+                    },
+                    {
+                      "components": [
+                        {
+                          "internalType": "uint64",
+                          "name": "secs",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "nanos",
+                          "type": "uint64"
+                        }
+                      ],
+                      "internalType": "struct Types.Timestamp",
+                      "name": "createdAt",
+                      "type": "tuple"
+                    }
+                  ],
+                  "internalType": "struct Task",
+                  "name": "task",
+                  "type": "tuple"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "taskId",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "Voter",
+                      "type": "bytes"
+                    },
+                    {
+                      "internalType": "enum TaskVoteType",
+                      "name": "vote",
+                      "type": "uint8"
+                    }
+                  ],
+                  "internalType": "struct TaskVote[]",
+                  "name": "votes",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "id",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "output",
+                      "type": "bytes"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "error_reason",
+                      "type": "string"
+                    }
+                  ],
+                  "internalType": "struct TaskResult",
+                  "name": "result",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct TaskResponse[]",
+              "name": "tasks",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct TasksResponse",
           "name": "response",
           "type": "tuple"
         }

@@ -22,30 +22,31 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// EventCreateFuture is emitted when a new Future is created.
-type EventCreateFuture struct {
-	// ID of the new Future.
+// EventCreateTask is emitted when a new Task is created.
+type EventCreateTask struct {
+	// ID of the new Task.
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	// Creator is the address that created the Future.
+	// Creator is the address that created the Task.
 	Creator string `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
-	// Handler is the name of the handler that will be executed.
-	Handler string `protobuf:"bytes,3,opt,name=handler,proto3" json:"handler,omitempty"`
-	// Address of callback that will be triggered after execution.
-	CallbackAddress string `protobuf:"bytes,4,opt,name=callback_address,json=callbackAddress,proto3" json:"callback_address,omitempty"`
+	// Plugin is the name of the plugin that will be executed.
+	Plugin          string `protobuf:"bytes,3,opt,name=plugin,proto3" json:"plugin,omitempty"`
+	CallbackAddress string `protobuf:"bytes,4,opt,name=callback_address,json=callbackAddress,proto3" json:"callback_address,omitempty"` // Deprecated: Do not use.
+	// Id of callback that will be triggered after execution.
+	CallbackId uint64 `protobuf:"varint,5,opt,name=callback_id,json=callbackId,proto3" json:"callback_id,omitempty"`
 }
 
-func (m *EventCreateFuture) Reset()         { *m = EventCreateFuture{} }
-func (m *EventCreateFuture) String() string { return proto.CompactTextString(m) }
-func (*EventCreateFuture) ProtoMessage()    {}
-func (*EventCreateFuture) Descriptor() ([]byte, []int) {
+func (m *EventCreateTask) Reset()         { *m = EventCreateTask{} }
+func (m *EventCreateTask) String() string { return proto.CompactTextString(m) }
+func (*EventCreateTask) ProtoMessage()    {}
+func (*EventCreateTask) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16617085f6fb670a, []int{0}
 }
-func (m *EventCreateFuture) XXX_Unmarshal(b []byte) error {
+func (m *EventCreateTask) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventCreateFuture) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventCreateTask) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventCreateFuture.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventCreateTask.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -55,72 +56,82 @@ func (m *EventCreateFuture) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *EventCreateFuture) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventCreateFuture.Merge(m, src)
+func (m *EventCreateTask) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventCreateTask.Merge(m, src)
 }
-func (m *EventCreateFuture) XXX_Size() int {
+func (m *EventCreateTask) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventCreateFuture) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventCreateFuture.DiscardUnknown(m)
+func (m *EventCreateTask) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventCreateTask.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventCreateFuture proto.InternalMessageInfo
+var xxx_messageInfo_EventCreateTask proto.InternalMessageInfo
 
-func (m *EventCreateFuture) GetId() uint64 {
+func (m *EventCreateTask) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-func (m *EventCreateFuture) GetCreator() string {
+func (m *EventCreateTask) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *EventCreateFuture) GetHandler() string {
+func (m *EventCreateTask) GetPlugin() string {
 	if m != nil {
-		return m.Handler
+		return m.Plugin
 	}
 	return ""
 }
 
-func (m *EventCreateFuture) GetCallbackAddress() string {
+// Deprecated: Do not use.
+func (m *EventCreateTask) GetCallbackAddress() string {
 	if m != nil {
 		return m.CallbackAddress
 	}
 	return ""
 }
 
+func (m *EventCreateTask) GetCallbackId() uint64 {
+	if m != nil {
+		return m.CallbackId
+	}
+	return 0
+}
+
 func init() {
-	proto.RegisterType((*EventCreateFuture)(nil), "warden.async.v1beta1.EventCreateFuture")
+	proto.RegisterType((*EventCreateTask)(nil), "warden.async.v1beta1.EventCreateTask")
 }
 
 func init() { proto.RegisterFile("warden/async/v1beta1/events.proto", fileDescriptor_16617085f6fb670a) }
 
 var fileDescriptor_16617085f6fb670a = []byte{
-	// 236 bytes of a gzipped FileDescriptorProto
+	// 258 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x2c, 0x4f, 0x2c, 0x4a,
 	0x49, 0xcd, 0xd3, 0x4f, 0x2c, 0xae, 0xcc, 0x4b, 0xd6, 0x2f, 0x33, 0x4c, 0x4a, 0x2d, 0x49, 0x34,
 	0xd4, 0x4f, 0x2d, 0x4b, 0xcd, 0x2b, 0x29, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x81,
-	0x28, 0xd1, 0x03, 0x2b, 0xd1, 0x83, 0x2a, 0x51, 0x6a, 0x62, 0xe4, 0x12, 0x74, 0x05, 0x29, 0x73,
-	0x2e, 0x4a, 0x4d, 0x2c, 0x49, 0x75, 0x2b, 0x2d, 0x29, 0x2d, 0x4a, 0x15, 0xe2, 0xe3, 0x62, 0xca,
-	0x4c, 0x91, 0x60, 0x54, 0x60, 0xd4, 0x60, 0x09, 0x62, 0xca, 0x4c, 0x11, 0x92, 0xe0, 0x62, 0x4f,
-	0x06, 0xc9, 0xe7, 0x17, 0x49, 0x30, 0x29, 0x30, 0x6a, 0x70, 0x06, 0xc1, 0xb8, 0x20, 0x99, 0x8c,
-	0xc4, 0xbc, 0x94, 0x9c, 0xd4, 0x22, 0x09, 0x66, 0x88, 0x0c, 0x94, 0x2b, 0xa4, 0xc9, 0x25, 0x90,
-	0x9c, 0x98, 0x93, 0x93, 0x94, 0x98, 0x9c, 0x1d, 0x9f, 0x98, 0x92, 0x52, 0x94, 0x5a, 0x5c, 0x2c,
-	0xc1, 0x02, 0x56, 0xc2, 0x0f, 0x13, 0x77, 0x84, 0x08, 0x3b, 0x25, 0x9c, 0x78, 0x24, 0xc7, 0x78,
-	0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c, 0xc7,
-	0x70, 0xe3, 0xb1, 0x1c, 0x43, 0x94, 0x5b, 0x7a, 0x66, 0x49, 0x46, 0x69, 0x92, 0x5e, 0x72, 0x7e,
-	0xae, 0x3e, 0xc4, 0xfd, 0xba, 0x60, 0xdf, 0x24, 0xe7, 0xe7, 0x40, 0xf9, 0x68, 0x5c, 0xfd, 0x0a,
-	0x68, 0x18, 0x94, 0x54, 0x16, 0xa4, 0x16, 0xc3, 0x42, 0x22, 0x89, 0x0d, 0xac, 0xcc, 0x18, 0x10,
-	0x00, 0x00, 0xff, 0xff, 0x9e, 0x2d, 0x7d, 0x09, 0x28, 0x01, 0x00, 0x00,
+	0x28, 0xd1, 0x03, 0x2b, 0xd1, 0x83, 0x2a, 0x51, 0x5a, 0xcc, 0xc8, 0xc5, 0xef, 0x0a, 0x52, 0xe6,
+	0x5c, 0x94, 0x9a, 0x58, 0x92, 0x1a, 0x92, 0x58, 0x9c, 0x2d, 0xc4, 0xc7, 0xc5, 0x94, 0x99, 0x22,
+	0xc1, 0xa8, 0xc0, 0xa8, 0xc1, 0x12, 0xc4, 0x94, 0x99, 0x22, 0x24, 0xc1, 0xc5, 0x9e, 0x0c, 0x92,
+	0xcd, 0x2f, 0x92, 0x60, 0x52, 0x60, 0xd4, 0xe0, 0x0c, 0x82, 0x71, 0x85, 0xc4, 0xb8, 0xd8, 0x0a,
+	0x72, 0x4a, 0xd3, 0x33, 0xf3, 0x24, 0x98, 0xc1, 0x12, 0x50, 0x9e, 0x90, 0x2e, 0x97, 0x40, 0x72,
+	0x62, 0x4e, 0x4e, 0x52, 0x62, 0x72, 0x76, 0x7c, 0x62, 0x4a, 0x4a, 0x51, 0x6a, 0x71, 0xb1, 0x04,
+	0x0b, 0x48, 0x85, 0x13, 0x93, 0x04, 0x63, 0x10, 0x3f, 0x4c, 0xce, 0x11, 0x22, 0x25, 0x24, 0xcf,
+	0xc5, 0x0d, 0x57, 0x9e, 0x99, 0x22, 0xc1, 0x0a, 0xb6, 0x99, 0x0b, 0x26, 0xe4, 0x99, 0xe2, 0x94,
+	0x70, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c,
+	0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0x6e, 0xe9, 0x99, 0x25, 0x19,
+	0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x10, 0x0f, 0xea, 0x82, 0xbd, 0x9b, 0x9c, 0x9f, 0x03,
+	0xe5, 0xa3, 0x71, 0xf5, 0x2b, 0xa0, 0x81, 0x54, 0x52, 0x59, 0x90, 0x5a, 0x0c, 0x0b, 0xaa, 0x24,
+	0x36, 0xb0, 0x32, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x49, 0x53, 0x82, 0x76, 0x49, 0x01,
+	0x00, 0x00,
 }
 
-func (m *EventCreateFuture) Marshal() (dAtA []byte, err error) {
+func (m *EventCreateTask) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -130,16 +141,21 @@ func (m *EventCreateFuture) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventCreateFuture) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventCreateTask) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventCreateFuture) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventCreateTask) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.CallbackId != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.CallbackId))
+		i--
+		dAtA[i] = 0x28
+	}
 	if len(m.CallbackAddress) > 0 {
 		i -= len(m.CallbackAddress)
 		copy(dAtA[i:], m.CallbackAddress)
@@ -147,10 +163,10 @@ func (m *EventCreateFuture) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.Handler) > 0 {
-		i -= len(m.Handler)
-		copy(dAtA[i:], m.Handler)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.Handler)))
+	if len(m.Plugin) > 0 {
+		i -= len(m.Plugin)
+		copy(dAtA[i:], m.Plugin)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Plugin)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -180,7 +196,7 @@ func encodeVarintEvents(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *EventCreateFuture) Size() (n int) {
+func (m *EventCreateTask) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -193,13 +209,16 @@ func (m *EventCreateFuture) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
-	l = len(m.Handler)
+	l = len(m.Plugin)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
 	l = len(m.CallbackAddress)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.CallbackId != 0 {
+		n += 1 + sovEvents(uint64(m.CallbackId))
 	}
 	return n
 }
@@ -210,7 +229,7 @@ func sovEvents(x uint64) (n int) {
 func sozEvents(x uint64) (n int) {
 	return sovEvents(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *EventCreateFuture) Unmarshal(dAtA []byte) error {
+func (m *EventCreateTask) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -233,10 +252,10 @@ func (m *EventCreateFuture) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventCreateFuture: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventCreateTask: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventCreateFuture: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventCreateTask: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -292,7 +311,7 @@ func (m *EventCreateFuture) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Handler", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Plugin", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -320,7 +339,7 @@ func (m *EventCreateFuture) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Handler = string(dAtA[iNdEx:postIndex])
+			m.Plugin = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
@@ -354,6 +373,25 @@ func (m *EventCreateFuture) Unmarshal(dAtA []byte) error {
 			}
 			m.CallbackAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CallbackId", wireType)
+			}
+			m.CallbackId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CallbackId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipEvents(dAtA[iNdEx:])

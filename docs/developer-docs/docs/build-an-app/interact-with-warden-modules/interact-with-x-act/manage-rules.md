@@ -6,14 +6,15 @@ sidebar_position: 1
 
 ## Overview
 
-The [`IAct` precompile](https://github.com/warden-protocol/wardenprotocol/blob/main/precompiles/act/IAct.sol) allows calling the [`x/act` module](/learn/warden-protocol-modules/x-act) from EVM smart contracts.
+The [`IAct` precompile](https://github.com/warden-protocol/wardenprotocol/blob/v0.6.3/precompiles/act/IAct.sol) allows calling the [`x/act` module](/learn/warden-protocol-modules/x-act) from EVM smart contracts.
 
-This article explains how to use `x/act` to manage [Rules](/learn/glossary#approval-rule). You'll learn how to call the corresponding functions of the precompile and interact with them after deploying your contract.
+This article explains how to use `x/act` to manage [Rules](/learn/warden-protocol-modules/x-act#rule). You'll learn how to call the corresponding functions of the precompile and interact with them after deploying your contract.
 
 To understand how to set up and deploy your project, see [Get started with precompiles](../get-started-with-precompiles).
 
 :::tip
-For an overview of `x/act` functions, refer to [Precompiles: x/warden](../../precompiles/x-act#rules)
+- For an overview of `x/act` functions, refer to [Precompiles: x/act](../../precompiles/x-act#rules).
+- The precompile address is `0x0000000000000000000000000000000000000901`.
 :::
 
 ## Create a new Rule
@@ -37,7 +38,7 @@ After deploying your contract, you can interact with it by calling the `createRu
 
 ```bash
 cast send $CONTRACT_ADDRESS "createRule(string,string)" \
-    "MyRule" "quorum(2, [\"0x123...\", \"0x456...\"])" \
+    "My Rule" "quorum(2, [\"0x123...\", \"0x456...\"])" \
     --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 ```
 
@@ -84,10 +85,9 @@ contract WardenRule {
 }
 ```
 
-After deploying your contract, you can interact with it by calling the `getAllRules()` function:
+After deploying your contract, you can interact with it by calling the `getAllRules()` function. For example, you can get the first 10 Rules associated with a creator:
 
 ```bash
-# Get first 10 rules for a creator
 cast call $CONTRACT_ADDRESS "getAllRules((bytes,uint64,uint64,bool,bool),address)" \
     "(0x,0,10,true,false)" $CREATOR_ADDRESS --rpc-url $RPC_URL
 ```

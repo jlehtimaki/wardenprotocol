@@ -11,7 +11,7 @@ import TabItem from '@theme/TabItem';
 
 You can interact with [Warden Protocol modules](/learn/warden-protocol-modules/introduction) in your EVM smart contract by calling [Warden precompiles](../precompiles/introduction).
 
-This guide shows how to deploy a simple EVM contract calling the [`spaceById()` function](../precompiles/x-warden#query-a-space-by-id) of the [`x/warden` precompile](../precompiles/x-warden). After that, you'll be able to expand your contract code with other functions, which are documented in the subsections below.
+This guide shows how to deploy a simple EVM contract calling the [`x/warden` precompile](../precompiles/x-warden). You'll use the [`spaceById()` function](../precompiles/x-warden#query-a-space-by-id), which returns a [Space](/learn/glossary#space) by ID. After that, you'll be able to expand your contract code with other functions, documented in the subsections below.
 
 To learn the basics of deploying contracts on Warden, refer to [Deploy an EVM contract](../deploy-smart-contracts-on-warden/deploy-an-evm-contract).
 
@@ -25,8 +25,9 @@ Before you start, complete the following prerequisites:
    curl -L https://foundry.paradigm.xyz | bash \ 
    foundryup
    ```
+- [Set up a Warden account](../set-up-a-warden-account) on a local chain or a testnet. Note down your **private key**.
 
-- Prepare the chain, setting up your private key. You can either run a local chain or join the Chiado testnet, as shown in [Deploy an EVM smart contract](../deploy-smart-contracts-on-warden/deploy-an-evm-contract#1-prepare-the-chain).
+- If you're using a local chain, make sure it's running. You can start your chain by running `wardend start` in a separate terminal window.
 
 ## 1. Create your project and contract
 
@@ -41,7 +42,7 @@ Before you start, complete the following prerequisites:
 
 2. In the `src` directory, create a new contract named `Warden.sol`.
 
-   To call a precompile in your contract, do this::
+   To call a precompile in your contract, do this:
 
    - Define an `interface` for interacting with a [Warden precompile](/category/precompiles).
    - Add a `contract` with functions calling the precompile.
@@ -97,7 +98,7 @@ Before you start, complete the following prerequisites:
 
 ## 2. Compile and deploy the contract
 
-1. Set your private key and the RPC URL as environmental variables:
+1. Set your [private key](../set-up-a-warden-account#get-the-private-key) and the RPC URL as environmental variables:
 
    <Tabs>
    <TabItem value="local" label="Local node">
@@ -146,13 +147,13 @@ Before you start, complete the following prerequisites:
 
 Now you can interact with the contract.
 
-1. If you're using a local chain, make sure it's running and there is at least one Space:
-   
+1. If you're using a local chain, make sure there is at least one Space:
+
    ```
    wardend query warden spaces
    ```
 
-   If nothing is returned, [create a Space](/operate-a-node/run-a-local-chain#create-a-space). 
+   If nothing is returned, [create a Space](../set-up-a-warden-account#create-a-space). 
 
 2. Get a Space by its ID—for example, `1`:
    
@@ -182,13 +183,9 @@ Now you can interact with the contract.
 
 Now you can dive deeper and expand your contract with other functions from Warden precompiles:
 
-- To find code samples for each function, see the following guides:
-
   - [Interact with `x/warden`](/category/interact-with-xwarden)
-  - Interact with `x/oracle`: *Coming soon*—see the [`x/oracle` precompile](https://github.com/warden-protocol/wardenprotocol/blob/main/precompiles/slinky/ISlinky.sol)
   - [Interact with `x/act`](/category/interact-with-xact)
   - [Interact with `x/async`](interact-with-x-async)
+  - [Use the `JSON` precompile](/category/use-the-json-precompile)
 
-- For an overview of the available functions, refer to the [Precompiles](/category/precompiles) section.
-
-- Learn how to build an Agent using `x/warden`, `x/oracle`, and `x/async`: [Build an onchain AI Agent](/build-an-agent/build-an-onchain-ai-agent/introduction).
+For an overview of the available functions, refer to the [Precompiles](/category/precompiles) section.

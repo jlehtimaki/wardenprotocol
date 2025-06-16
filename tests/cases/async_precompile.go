@@ -1,7 +1,7 @@
 package cases
 
 import (
-	"context"
+	"math/big"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -22,61 +22,69 @@ type Test_AsyncPrecompile struct {
 	w *exec.WardenNode
 }
 
-func (c *Test_AsyncPrecompile) Setup(t *testing.T, ctx context.Context, build framework.BuildResult) {
+func (c *Test_AsyncPrecompile) Setup(t *testing.T, build framework.BuildResult) {
 	c.w = exec.NewWardenNode(t, build.Wardend)
 
-	go c.w.Start(t, ctx, "./testdata/snapshot-many-users")
+	go c.w.Start(t, "./testdata/snapshot-many-users")
 	c.w.WaitRunning(t)
 }
 
-// TODO(backsapc): Implement positive test cases with async sidecar integration
-func (c *Test_AsyncPrecompile) Run(t *testing.T, ctx context.Context, _ framework.BuildResult) {
+// TODO(backsapc): Implement positive test cases with async sidecar integration.
+func (c *Test_AsyncPrecompile) Run(t *testing.T, _ framework.BuildResult) {
 	alice := exec.NewWardend(c.w, "alice")
 
 	evmClient := c.w.EthClient(t)
 	iAsyncClient, err := async.NewIAsync(common.HexToAddress(async.PrecompileAddress), evmClient)
 	require.NoError(t, err)
 
-	futuresQuery, err := iAsyncClient.Futures(alice.CallOps(t), async.TypesPageRequest{}, common.Address{})
+	tasksQuery, err := iAsyncClient.Tasks(alice.CallOps(t), async.TypesPageRequest{}, common.Address{})
 	require.NoError(t, err)
-	require.Len(t, futuresQuery.Futures, 0)
+	require.Len(t, tasksQuery.Tasks, 0)
 
-	addFutureTx, err := iAsyncClient.AddFuture(alice.TransactOps(t, ctx, evmClient), "echo", []byte("USDT"), common.HexToAddress("0x0000000000000000000000000000000000000000"))
+	maxFee := []async.TypesCoin{{
+		Denom:  "award",
+		Amount: new(big.Int).SetInt64(1),
+	}}
+	addTaskTx, err := iAsyncClient.AddTask(
+		alice.TransactOps(t, evmClient),
+		"echo",
+		[]byte("USDT"),
+		maxFee,
+		async.CallbackParams{})
 	require.NoError(t, err)
 
-	addFutureReceipt, err := bind.WaitMined(ctx, evmClient, addFutureTx)
+	addTaskReceipt, err := bind.WaitMined(t.Context(), evmClient, addTaskTx)
 	require.NoError(t, err)
 
-	createFutureEvents, err := checks.GetParsedEventsOnly(addFutureReceipt, iAsyncClient.ParseCreateFuture)
+	createTaskEvents, err := checks.GetParsedEventsOnly(addTaskReceipt, iAsyncClient.ParseCreateTask)
 	require.NoError(t, err)
-	require.Len(t, createFutureEvents, 1)
+	require.Len(t, createTaskEvents, 1)
 
-	createFutureEvent := createFutureEvents[0]
-	require.Equal(t, "echo", createFutureEvent.Handler)
-	require.Equal(t, uint64(1), createFutureEvent.FutureId)
-	require.Equal(t, alice.EthAddress(t), createFutureEvent.Creator)
+	createTaskEvent := createTaskEvents[0]
+	require.Equal(t, "echo", createTaskEvent.Plugin)
+	require.Equal(t, uint64(1), createTaskEvent.TaskId)
+	require.Equal(t, alice.EthAddress(t), createTaskEvent.Creator)
 
-	oneFuturesQuery, err := iAsyncClient.Futures(alice.CallOps(t), async.TypesPageRequest{}, common.Address{})
+	oneTasksQuery, err := iAsyncClient.Tasks(alice.CallOps(t), async.TypesPageRequest{}, common.Address{})
 	require.NoError(t, err)
-	require.Len(t, oneFuturesQuery.Futures, 1)
+	require.Len(t, oneTasksQuery.Tasks, 1)
 
-	oneFuture := oneFuturesQuery.Futures[0]
-	require.Equal(t, uint64(1), oneFuture.Future.Id)
-	require.Equal(t, alice.EthAddress(t), oneFuture.Future.Creator)
-	require.Equal(t, "echo", oneFuture.Future.Handler)
-	require.Equal(t, []byte("USDT"), oneFuture.Future.Input)
-	require.Equal(t, async.FutureResult{
-		Output:    []byte{},
-		Submitter: []byte{},
-	}, oneFuture.Result)
+	oneTask := oneTasksQuery.Tasks[0]
+	require.Equal(t, uint64(1), oneTask.Task.Id)
+	require.Equal(t, alice.EthAddress(t), oneTask.Task.Creator)
+	require.Equal(t, "echo", oneTask.Task.Plugin)
+	require.Equal(t, []byte("USDT"), oneTask.Task.Input)
+	require.Equal(t, async.TaskResult{
+		Output: []byte{},
+	}, oneTask.Result)
 
-	onePendingFuturesQuery, err := iAsyncClient.PendingFutures(alice.CallOps(t), async.TypesPageRequest{})
+	onePendingTasksQuery, err := iAsyncClient.PendingTasks(alice.CallOps(t), async.TypesPageRequest{})
 	require.NoError(t, err)
-	require.Len(t, oneFuturesQuery.Futures, 1)
+	require.Len(t, onePendingTasksQuery.Tasks, 1)
 
-	onePendingFuture := onePendingFuturesQuery.Futures[0]
-	require.Equal(t, uint64(1), onePendingFuture.Id)
-	require.Equal(t, alice.EthAddress(t), onePendingFuture.Creator)
-	require.Equal(t, "echo", onePendingFuture.Handler)
-	require.Equal(t, []byte("USDT"), onePendingFuture.Input)
+	onePendingTask := onePendingTasksQuery.Tasks[0]
+	require.Equal(t, uint64(1), onePendingTask.Id)
+	require.Equal(t, alice.EthAddress(t), onePendingTask.Creator)
+	require.Equal(t, "echo", onePendingTask.Plugin)
+	require.Equal(t, []byte("USDT"), onePendingTask.Input)
 }

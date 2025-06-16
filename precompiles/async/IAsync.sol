@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-only
-pragma solidity >=0.8.18;
+pragma solidity >=0.8.25;
 
 import "../common/Types.sol";
+import "../sched/ISched.sol";
 
 /// @dev The IAsync contract's address.
 address constant IASYNC_PRECOMPILE_ADDRESS = 0x0000000000000000000000000000000000000903;
@@ -9,49 +10,75 @@ address constant IASYNC_PRECOMPILE_ADDRESS = 0x000000000000000000000000000000000
 /// @dev The IAsync contract's instance.
 IAsync constant IASYNC_CONTRACT = IAsync(IASYNC_PRECOMPILE_ADDRESS);
 
-struct Future {
-    uint64 id;
-    address creator;
-    string handler;
-    bytes input;
+struct PluginFee {
+    Types.Coin[] fee;
 }
 
-enum FutureVoteType {
+struct DeductedFee {
+    Types.Coin[] pluginCreatorReward;
+    Types.Coin[] executorReward;
+}
+
+struct Plugin {
+    string id;
+    address creator;
+    string description;
+    PluginFee fee;
+    int64 timeout;
+}
+
+struct PluginsResponse {
+    Types.PageResponse pagination;
+    Plugin[] plugins;
+}
+
+struct Task {
+    uint64 id;
+    address creator;
+    string plugin;
+    bytes input;
+    DeductedFee fee;
+    uint64 callbackId;
+    bytes solver;
+    Types.Timestamp createdAt;
+}
+
+enum TaskVoteType {
     Unspecified,
     Verified,
     Rejected
 }
 
-struct FutureVote {
-    uint64 futureId;
+struct TaskVote {
+    uint64 taskId;
     bytes Voter;
-    FutureVoteType vote;
+    TaskVoteType vote;
 }
 
-struct FutureResult { 
+struct TaskResult { 
     uint64 id;
     bytes output;
-    bytes submitter;
+    string error_reason;
 }
 
-struct FutureResponse {
-    Future future;
-    FutureVote[] votes;
-    FutureResult result;
+struct TaskResponse {
+    Task task;
+    TaskVote[] votes;
+    TaskResult result;
 }
 
-struct PendingFuturesResponse {
+struct PendingTasksResponse {
     Types.PageResponse pagination;
-    Future[] futures;
+    Task[] tasks;
 }
 
-struct FuturesResponse {
+struct TasksResponse {
     Types.PageResponse pagination;
-    FutureResponse[] futures;
+    TaskResponse[] tasks;
 }
 
-struct FutureByIdResponse {
-    FutureResponse futureResponse;
+struct TaskByIdResponse {
+    TaskResponse taskResponse;
 }
 
 /**
@@ -61,49 +88,57 @@ struct FutureByIdResponse {
  * @custom:address 0x0000000000000000000000000000000000000903
  */
 interface IAsync {
-    /// @dev Defines a method to add a future.
-    /// @param handler The unique name of the handler
-    /// @param input The handler's input
-    /// @param callback The address of callback contract
-    /// @return futureId The id of the future
-    function addFuture(
-        string calldata handler,
+    /// @dev Defines a method to add a task.
+    /// @param plugin The unique name of the plugin
+    /// @param input The plugin's input
+    /// @param callbackParams The params for callback. Zero address interpretes as no-callback
+    /// @return taskId The id of the task
+    function addTask(
+        string calldata plugin,
         bytes calldata input,
-        address callback
-    ) external returns (uint64 futureId);
+        Types.Coin[] calldata maxFee,
+        CallbackParams calldata callbackParams
+    ) external returns (uint64 taskId);
 
-    /// @dev Defines a method to query future by id.
-    /// @param futureId The future id
-    /// @return response The future reponse
-    function futureById(
-        uint64 futureId
-    ) external view returns (FutureByIdResponse memory response);
+    /// @dev Defines a method to query task by id.
+    /// @param taskId The task id
+    /// @return response The task reponse
+    function taskById(
+        uint64 taskId
+    ) external view returns (TaskByIdResponse memory response);
 
-    /// @dev Defines a method to query futures.
+    /// @dev Defines a method to query tasks.
     /// @param pagination The pagination details
     /// @param creator Optional creator address filter
-    /// @return response The paged futures
-    function futures(
+    /// @return response The paged tasks
+    function tasks(
         Types.PageRequest calldata pagination,
         address creator
-    ) external view returns (FuturesResponse memory response);
+    ) external view returns (TasksResponse memory response);
 
-    /// @dev Defines a method to query pending futures.
+    /// @dev Defines a method to query pending tasks.
     /// @param pagination The pagination details
-    /// @return response The paged futures
-    function pendingFutures(
+    /// @return response The paged tasks
+    function pendingTasks(
         Types.PageRequest calldata pagination
-    ) external view returns (PendingFuturesResponse memory response);
+    ) external view returns (PendingTasksResponse memory response);
 
-    /// @dev CreateFuture defines an Event emitted when a future is created.
+    /// @dev Defines a method to query available plugins.
+    /// @param pagination The pagination details
+    /// @return response The paged plugins
+    function plugins(
+        Types.PageRequest calldata pagination
+    ) external view returns (PluginsResponse memory response);
+
+    /// @dev CreateTask defines an Event emitted when a task is created.
     /// @param creator The address of the creator
-    /// @param futureId The future Id
-    /// @param handler The name of the handler
-    /// @param callbackAddress The address of callback contract
-    event CreateFuture(
-        uint64 indexed futureId,
+    /// @param taskId The task Id
+    /// @param plugin The name of the plugin
+    /// @param callbackId The id of callback
+    event CreateTask(
+        uint64 indexed taskId,
         address indexed creator,
-        string handler,
-        address callbackAddress
+        string plugin,
+        uint64 callbackId
     );
 }

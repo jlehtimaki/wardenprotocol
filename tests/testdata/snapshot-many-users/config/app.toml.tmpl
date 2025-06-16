@@ -363,46 +363,51 @@ certificate-path = ""
 key-path = ""
 
 ###############################################################################
-###                           Rosetta Configuration                         ###
+###                      Price prediction configuration                     ###
 ###############################################################################
+[pricepred]
 
-[rosetta]
+# Is price prediction enabled
+enabled = "true"
 
-# Enable defines if the Rosetta API server should be enabled.
-enable = false
+# URL used for price prediction plugin
+url = "https://tpc.devnet.wardenprotocol.org"
 
-# Address defines the Rosetta API server to listen on.
-address = ":8080"
+###############################################################################
+###                      HTTP configuration                                 ###
+###############################################################################
+[http]
 
-# Network defines the name of the blockchain that will be returned by Rosetta.
-blockchain = "evmos"
+# Is HTTP plugin enabled
+enabled = "true"
 
-# Network defines the name of the network that will be returned by Rosetta.
-network = "evmos"
+# URLs used for HTTP plugin
+urls = ["https://api.coingecko.com"]
 
-# TendermintRPC defines the endpoint to connect to CometBFT RPC,
-# specifying 'tcp://' before is not required, usually it's at port 26657
-tendermint-rpc = "localhost:26657"
+# Timeout in seconds for the HTTP client
+timeout_sec = 5
 
-# GRPCEndpoint defines the cosmos application gRPC endpoint
-# usually it is located at 9090 port
-grpc-endpoint = "localhost:{{ .GRPCPort }}"
+###############################################################################
+###                      Quantkit configuration                               ###
+###############################################################################
+[quantkit]
 
-# Retries defines the number of retries when connecting to the node before failing.
-retries = 5
+# Is QuantKit plugin enabled
+enabled = false
 
-# Offline defines if Rosetta server should run in offline mode.
-offline = false
+# API Key used when making Quantkit API requests
+api-key = ""
 
-# EnableFeeSuggestion indicates to use fee suggestion when 'construction/metadata' is called without gas limit and price.
-enable-fee-suggestion = false
+# API URL used when making Quantkit API requests
+api-url = ""
 
-# GasToSuggest defines gas limit when calculating the fee
-gas-to-suggest = 300000
+###############################################################################
+###                      Venice configuration                               ###
+###############################################################################
+[venice]
 
-# DenomToSuggest defines the defult denom for fee suggestion.
-# Price must be in minimum-gas-prices.
-denom-to-suggest = "award"
+# Is Venice plugin enabled
+enabled = "false"
 
-# GasPrices defines the gas prices for fee suggestion
-gas-prices = "4000000.000000000000000000award"
+# API Key used when making Venice API requests
+api-key = ""

@@ -50,8 +50,6 @@ NewKeyRequest
 NewKeychain
 NewSignTransactionRequest
 NewSignRequest
-OApp
-OApps
 OpenAPI
 Polkadot
 QPIPs
@@ -252,3 +250,4 @@ backend
 frontend
 Evmos
 Chiado
+Plugin

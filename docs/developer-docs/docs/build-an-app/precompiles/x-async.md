@@ -6,17 +6,19 @@ sidebar_position: 3
 
 ## Overview
 
-
 The `IAsync.sol` precompile enables EVM smart contracts to interact with the [`x/async` module](/learn/warden-protocol-modules/x-async).
 
 In this article, you'll find a full list of available methods, allowing you to query and manage the following components:
 
-- [Futures](/learn/glossary#future)
+- [Tasks](/learn/warden-protocol-modules/x-async#task)
 
-To learn how to use this precompile, refer to [Interact with `x/async`](../interact-with-warden-modules/interact-with-x-async).
+To learn how to use this precompile, refer to the following guides:
+
+- [Interact with `x/async`](../interact-with-warden-modules/interact-with-x-async)
+- [Run offchain computations with x/async AVR Plugins](../run-offchain-computations/introduction)
 
 :::note Code
-You can find the `x/async` precomile code on GitHub: [`IAsync.sol`](https://github.com/warden-protocol/wardenprotocol/blob/main/precompiles/async/IAsync.sol)
+You can find the `x/async` precompile code on GitHub: [`IAsync.sol`](https://github.com/warden-protocol/wardenprotocol/blob/v0.6.3/precompiles/async/IAsync.sol)
 :::
 
 ## Precompile address
@@ -27,161 +29,258 @@ To reference the `IAsync` precompile in your code, use the following precompile 
 0x0000000000000000000000000000000000000903
 ```
 
-## Futures
+## Tasks
 
-### Create a new Future
+### Create a new Task
 
-- **Method**: `addFuture()`
-- **Description**: Creates a Future. Emits the [`CreateFuture` event](#createfuture).
-- **Parameters** :
+- **Method**: `addTask()`
+- **Description**: Creates a Task. Emits the [`CreateTask` event](#createtask).
+- **Code**:
+  ```
+  function addTask(
+      string calldata plugin,
+      bytes calldata input,
+      address callback
+  ) external returns (uint64 taskId);
+  ```
+- **Parameters**:
   ```sol
-  @param handler The unique name of the handler
-  @param input The handler's input
+  @param plugin The unique name of the plugin
+  @param input The plugin's input
   @param callback The address of callback contract
   ```
-  **Notes**:
-  - The following handlers are currently available: `pricepred`, `http`. To learn more, see [`x/async`: Handlers](/learn/warden-protocol-modules/x-async#handlers). 
-  - The `callback` parameter is optional. The callback contract must have a `cb()` function, allowing it to be invoked once the Future is ready.
+  :::note Notes
+  - The following Plugin types are currently available: `pricepred`, `http`. To learn more, see [`x/async`: AVR Plugins](/learn/warden-protocol-modules/x-async#avr-plugins). 
+  - The `callback` parameter is optional. The callback contract must have a `cb()` function, allowing it to be invoked once the Task is ready.
+  :::
 - **Output**:  
   ```sol
-  @return futureId The id of the future
+  @return taskId The id of the task
   ```
-- **Usage example**: [Create a new Future](../interact-with-warden-modules/interact-with-x-async#create-a-new-future)
+- **Usage example**: [Create a new Task](../interact-with-warden-modules/interact-with-x-async#create-a-new-task)
 
-### Query Futures
+### Query Tasks
 
-- **Method**: `futures()`
-- **Description**: Returns a list of all Futures in all states (including pending ones). See the [`FuturesResponse` struct](#futureresponse).
-- **Parameters** :
+- **Method**: `tasks()`
+- **Description**: Returns a list of all Tasks in all states (including pending ones). See the [`TasksResponse` struct](#taskresponse).
+- **Code**:
+  ```
+  function tasks(
+      Types.PageRequest calldata pagination,
+      address creator
+  ) external view returns (TasksResponse memory response);
+  ```
+- **Parameters**:
   ```sol
   @param pagination The pagination details
   @param creator Optional creator address filter
-  @return response The paged futures
   ```
 - **Output**:  
   ```sol
-  @return response The paged futures
+  @return response The paged tasks
   ```
-- **Usage example**: [Query Futures](../interact-with-warden-modules/interact-with-x-async#query-futures)
+- **Usage example**: [Query Tasks](../interact-with-warden-modules/interact-with-x-async#query-tasks)
 
-### Query pending Futures
+### Query pending Tasks
 
-- **Method**: `pendingFutures()`
-- **Description**: Returns a list of all pending Futures. See the [`PendingFuturesResponse` struct](#pendingfuturesresponse).
-- **Parameters** :
+- **Method**: `pendingTasks()`
+- **Description**: Returns a list of all pending Tasks. See the [`PendingTasksResponse` struct](#pendingtasksresponse).
+- **Code**:
+  ```
+  function pendingTasks(
+      Types.PageRequest calldata pagination
+  ) external view returns (PendingTasksResponse memory response);
+  ```
+- **Parameters**:
   ```sol
   @param pagination The pagination details  
   ```
 - **Output**:  
   ```sol
-  @return response The paged futures
+  @return response The paged tasks
   ```
-- **Usage example**: [Query pending Futures](../interact-with-warden-modules/interact-with-x-async#query-pending-futures)
+- **Usage example**: [Query pending Tasks](../interact-with-warden-modules/interact-with-x-async#query-pending-tasks)
 
-### Query a Future by ID
+### Query a Task by ID
 
-- **Method**: `futureById()`
-- **Description**: Returns a Future by ID (pending Futures included). See the [`FutureByIdResponse` struct](#futurebyidresponse).
-- **Parameters** :
+- **Method**: `taskById()`
+- **Description**: Returns a Task by ID (pending Tasks included). See the [`TaskByIdResponse` struct](#taskbyidresponse).
+- **Code**:
+  ```
+  function taskById(
+      uint64 taskId
+  ) external view returns (TaskByIdResponse memory response);
+  ```
+- **Parameters**:
   ```sol
-  @param futureId The future id   
+  @param taskId The task id   
   ```
 - **Output**:  
   ```sol
-  @return response The future response
+  @return response The task response
   ```
-- **Usage example**: [Query a Future by ID](../interact-with-warden-modules/interact-with-x-async#query-a-future-by-id)
+- **Usage example**: [Query a Task by ID](../interact-with-warden-modules/interact-with-x-async#query-a-task-by-id)
+
+## Plugins
+
+### Query Plugins
+
+- **Method**: `plugins()`
+- **Description**: Returns a list of all available Plugins. See the [`PluginsResponse` struct](#pluginsresponse).
+- **Code**:
+  ```
+  function plugins(
+      Types.PageRequest calldata pagination
+  ) external view returns (PluginsResponse memory response);
+  ```
+- **Parameters**:
+  ```sol
+  @dev Defines a method to query available plugins.
+  @param pagination The pagination details
+  ```
+- **Output**:  
+  ```sol
+  @return response The paged plugins
+  ```
+- **Usage example**: [Query Plugins](../interact-with-warden-modules/interact-with-x-async#query-plugins)
 
 ## Structs
 
-### `Future`
+### `Task`
 
-- **Description**: A struct representing a Future.
+- **Description**: A struct representing a Task.
+- **Code**:
+  ```
+  struct Task {
+      uint64 id;
+      address creator;
+      string plugin;
+      bytes input;
+  }
+  ```
 
-```
-uint64 id;
-address creator;
-string handler;
-bytes input;
-```
+### `TaskVote`
 
-### `FutureVote`
+- **Description**: A struct representing a vote on the results of a Task. Includes the [`TaskVoteType` enum](#taskvotetype).
+- **Code**:
+  ```
+  struct TaskVote {
+      uint64 taskId;
+      bytes Voter;
+      TaskVoteType vote;
+  }
+  ```
 
-- **Description**: A struct representing a vote on the results of a Future. Includes the [`FutureVoteType` enum](#futurevotetype).
+### `TaskResult`
 
-```
-uint64 futureId;
-bytes Voter;
-FutureVoteType vote;
-```
+- **Description**: A struct representing the result of a Task.
+- **Code**:
+  ```
+  struct TaskResult {
+      uint64 id;
+      bytes output;
+      bytes submitter;
+  }
+  ```
 
-### `FutureResult`
+### `TaskResponse`
 
-- **Description**: A struct representing the result of a Future.
+- **Description**: A struct representing a Task and its data. Includes the [`Task`](#task), [`TaskVote`](#taskvote), and [`TaskResult`](#taskresult) structs.
+- **Code**:
+  ```
+  struct TaskResponse {
+      Task task;
+      TaskVote[] votes;
+      TaskResult result;
+  }
+  ```
 
-```
-uint64 id;
-bytes output;
-bytes submitter;
-```
+### `TasksResponse`
 
-### `FutureResponse`
+- **Description**: A response returned when you [query Tasks](#query-tasks). Includes the [`TaskResponse` struct](#taskresponse).
+- **Code**:
+  ```
+  struct TasksResponse {
+      Types.PageResponse pagination;
+      TaskResponse[] tasks;
+  }
+  ```
 
-- **Description**: A struct representing a Future and its data. Includes the [`Future`](#future), [`FutureVote`](#futurevote), and [`FutureResult`](#futureresult) structs.
+### `PendingTasksResponse`
 
-```
-Future future;
-FutureVote[] votes;
-FutureResult result;
-```
+- **Description**: A response returned when you [query pending Task](#query-pending-tasks). Includes the [`Task` struct](#task).
+- **Code**:
+  ```
+  struct PendingTasksResponse {
+      Types.PageResponse pagination;
+      Task[] tasks;
+  }
+  ```
 
-### `FuturesResponse`
+### `TaskByIdResponse`
 
-- **Description**: A response returned when you [query Futures](#query-futures). Includes the [`FutureResponse` struct](#futureresponse).
+- **Description**: A response returned when you [query a Task by ID](#query-a-task-by-id). Includes the [`TaskResponse` struct](#taskresponse).
+- **Code**:
+  ```
+  struct TaskByIdResponse {
+      TaskResponse taskResponse;
+  }
+  ```
+### `Plugin`
 
-```
-Types.PageResponse pagination;
-FutureResponse[] futures;
-```
+- **Description**: A struct representing a Plugin.
+- **Code**:
+  ```
+  struct Plugin {
+    string id;
+    address creator;
+    string description;
+  }
+  ```
 
-### `PendingFuturesResponse`
+### `PluginsResponse`
 
-- **Description**: A response returned when you [query pending Futures](#query-pending-futures). Includes the [`Future` struct](#future).
-
-```
-Types.PageResponse pagination;
-Future[] futures;
-```
-
-### `FutureByIdResponse`
-
-- **Description**: A response returned when you [query a Future by ID](#query-a-future-by-id). Includes the [`FutureResponse` struct](#futureresponse).
-
-```
-FutureResponse futureResponse;
-```
+- **Description**: A response returned when you [query Plugins](#query-plugins). Includes the [`Plugin` struct](#plugin).
+- **Code**:
+  ```
+  struct PluginsResponse {
+    Types.PageResponse pagination;
+    Plugin[] plugins;
+  }
+  ```
 
 ## Enums
 
-### `FutureVoteType`
+### `TaskVoteType`
 
-- **Description**: The Future vote type.
-
-```
-Unspecified,
-Verified,
-Rejected
-```
+- **Description**: The Task vote type.
+- **Code**:
+  ```
+  enum TaskVoteType {
+     Unspecified,
+     Verified,
+     Rejected
+  }
+  ```
 
 ## Events
 
-### `CreateFuture`
+### `CreateTask`
 
-- **Description**: An event emitted when [a Future is created](#create-a-new-future).
-- **Parameters**:  
+- **Description**: An event emitted when [a Task is created](#create-a-new-task).
+- **Code**:  
   ```sol
-  uint64 indexed futureId,
-  address indexed creator,
-  string handler,
-  address callbackAddress
+  event CreateTask(
+      uint64 indexed taskId,
+      address indexed creator,
+      string plugin,
+      address callbackAddress
+  );
+  ```
+- **Parameters**:
+  ```
+  @param creator The address of the creator
+  @param taskId The task Id
+  @param plugin The name of the plugin
+  @param callbackAddress The address of callback contract
   ```

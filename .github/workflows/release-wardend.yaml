@@ -12,6 +12,9 @@ jobs:
     strategy:
       matrix:
         release: ["release"]
+    permissions:
+      contents: write
+      packages: write
 
     steps:
       - name: Checkout

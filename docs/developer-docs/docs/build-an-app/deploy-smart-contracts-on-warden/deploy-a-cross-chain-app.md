@@ -2,22 +2,22 @@
 sidebar_position: 3
 ---
 
-# Deploy a cross-chain application using GMP
+# Deploy a crosschain application using GMP
 
 ## Overview
 
-This guide explains how to build the logic for a **cross-chain app** using **Axelar GMP** (General Message Passing).
+This guide explains how to build the logic for a **crosschain app** using **Axelar GMP** (General Message Passing).
 
 You'll deploy two contracts:
 
 - An EVM contract on **Ethereum Sepolia**
 - A WASM contract on **Warden** (**Buenavista testnet**)
 
-After you execute the WASM contract on Warden, it'll be able to burn tokens from the EVM contract on Sepolia. For cross-chain interaction, the contracts will use the [x/gmp module](/learn/warden-protocol-modules/external-modules#xgmp), which enables Axelar GMP.
+After you execute the WASM contract on Warden, it'll be able to burn tokens from the EVM contract on Sepolia. For crosschain interaction, the contracts will use the [x/gmp module](/learn/warden-protocol-modules/external-modules#xgmp), which enables Axelar GMP.
 
 Note that this guide assumes you have a basic familiarity with Solidity and Rust and smart contract deployment.
 
-:::tip
+:::important
 Axelar GMP will be soon available on our new testnet—[Chiado](/operate-a-node/chiado-testnet/chiado-overview). Stay tuned in for updates!
 :::
 
@@ -29,7 +29,7 @@ In this section, you'll deploy an EVM contract on Ethereum Sepolia.
 
 Here are the key features of this contract:
 
-- It'll function both as an ERC20 token and a cross-chain executable contract.
+- It'll function both as an ERC20 token and a crosschain executable contract.
 - It'll be able to receive burn instructions from other chains through the Axelar network.
 - The initial token supply will be minted to the contract itself, not to any external address.
 - Burning can only be done from the balance of the contract, not from user balances.
@@ -72,7 +72,7 @@ Before you start, complete the following prerequisites:
 
 ### 1.2. Add the contract
 
-1. In the `contracts` directory, create a new file `BurnableToken.sol` with the following contents:
+1. In the `contracts` directory, create a `BurnableToken.sol` file with the following contents:
 
 ```solidity title="burnable-token/contracts/BurnableToken.sol"
 
@@ -87,7 +87,7 @@ Before you start, complete the following prerequisites:
 
     /**
     * @title BurnableToken
-    * @dev An ERC20 token that can be burned through cross-chain messages using Axelar
+    * @dev An ERC20 token that can be burned through crosschain messages using Axelar
     */
 
     contract BurnableToken is AxelarExecutable, ERC20Burnable {
@@ -109,7 +109,7 @@ Before you start, complete the following prerequisites:
         }
 
         /**
-        * @dev Handles cross-chain messages received through Axelar
+        * @dev Handles crosschain messages received through Axelar
         * @param sourceChain The name of the source chain
         * @param sourceAddress The address of the source contract on the source chain
         * @param payload The payload sent from the source chain (the amount to burn)
@@ -175,7 +175,7 @@ module.exports = {
 
 Now you need to add a migration script that will deploy the contract and mint the initial supply to the contract address.
 
-In `migrations`, create a new file `migrations/2_deploy_contracts.js` with the following contents:
+In `migrations`, create a `migrations/2_deploy_contracts.js` file with the following contents:
 
 ```javascript title="burnable-token/migrations/2_deploy_contracts.js"
 const BurnableToken = artifacts.require("BurnableToken");
@@ -275,9 +275,9 @@ In the following steps, you'll deploy a WASM contract on a Warden testnet, Buena
 Here are the key points of this contract:
 
 - It'll function as a bridge between a contract deployed on Warden and a contract deployed on an EVM chain (Sepolia in this case).
-- It'll use Axelar's infrastructure for cross-chain communication.
+- It'll use Axelar's infrastructure for crosschain communication.
 - The burning amount will be passed from the WASM contract to the EVM contract.
-- Gas fees for cross-chain execution will be included in the transaction.
+- Gas fees for crosschain execution will be included in the transaction.
 
 ### Prerequisites
 
@@ -285,14 +285,14 @@ Before you start, do the following:
 
 - If you wish to learn the basics, follow this guide: [Deploy a WASM contract](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract).
 - Install Rust and set up the CosmWasm environment, as shown in [the guide](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract#prerequisites).
-- For interacting with the node, [install Go](https://go.dev/doc/install) 1.22.3 or later and [just](https://github.com/casey/just) 1.34.0 or later.
+- For interacting with the node, [install Go](https://go.dev/doc/install) 1.24 or later and [just](https://github.com/casey/just) 1.34.0 or later.
 - Obtain some AXL tokens in the Axelar network.
 
 ### 2.1. Create a WASM contract
 
 Start by creating a WASM contract that will burn tokens on the EVM contract:
 
-1. Create a CosmWasm project. You can [use a template](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract#2-create-a-cosmwasm-project).
+1. Create a CosmWasm project. You can [use a template](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract#1-create-a-cosmwasm-project).
 
 2. In the `src` directory of your project, create a `contract.rs` file with the code below. If you've used a template, update the existing file.
 
@@ -405,7 +405,7 @@ Start by creating a WASM contract that will burn tokens on the EVM contract:
 
 ### 2.2. Add supporting code
 
-In the following steps, you'll create files in the `src` directory to add supporting code for your contract. If you're using a [CosmWasm project template](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract#2-create-a-cosmwasm-project), just update the existing files.
+In the following steps, you'll create files in the `src` directory to add supporting code for your contract. If you're using a [CosmWasm project template](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract#1-create-a-cosmwasm-project), just update the existing files.
 
 1. Create a file named `msg.rs` with the following code:
    
@@ -619,7 +619,7 @@ In the following steps, you'll create files in the `src` directory to add suppor
 
 ### 2.3. Compile & optimize
 
-Now you can [compile](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract#4-compile-the-contract) and [optimize](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract#5-optimize-the-code) your contract.
+Now you can [compile](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract#3-compile-the-contract) and [optimize](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract#4-optimize-the-code) your contract.
 
 ### 2.4. Create a Warden account
 
@@ -660,7 +660,7 @@ Now you can [compile](../deploy-smart-contracts-on-warden/deploy-a-wasm-contract
    After you enter the passphrase, the node will return the account address and a mnemonic phrase. Note them down: you'll need this data for recovering your account if necessary.
    :::
 
-5. Get some [WARD](/tokens/ward-token/ward) in [Buenavista faucet](https://faucet.buenavista.wardenprotocol.org): paste the address returned in the previous step.
+5. Get some [WARD](/tokens/ward-token/ward) in the Buenavista faucet: paste the address returned in the previous step.
 
    You can verify that your account is funded by running the command below. Specify the custom key name you chose before.
 

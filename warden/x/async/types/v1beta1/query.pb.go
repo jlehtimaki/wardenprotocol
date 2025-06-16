@@ -8,6 +8,7 @@ import (
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/codec/types"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -116,24 +117,24 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
-type QueryFuturesRequest struct {
+type QueryTasksRequest struct {
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	// optional filter to query futures by creator
+	// optional filter to query tasks by creator
 	Creator string `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
 }
 
-func (m *QueryFuturesRequest) Reset()         { *m = QueryFuturesRequest{} }
-func (m *QueryFuturesRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryFuturesRequest) ProtoMessage()    {}
-func (*QueryFuturesRequest) Descriptor() ([]byte, []int) {
+func (m *QueryTasksRequest) Reset()         { *m = QueryTasksRequest{} }
+func (m *QueryTasksRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryTasksRequest) ProtoMessage()    {}
+func (*QueryTasksRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a59d2da4eae5c65d, []int{2}
 }
-func (m *QueryFuturesRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryTasksRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryFuturesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryTasksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryFuturesRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryTasksRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -143,50 +144,50 @@ func (m *QueryFuturesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *QueryFuturesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryFuturesRequest.Merge(m, src)
+func (m *QueryTasksRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTasksRequest.Merge(m, src)
 }
-func (m *QueryFuturesRequest) XXX_Size() int {
+func (m *QueryTasksRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryFuturesRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryFuturesRequest.DiscardUnknown(m)
+func (m *QueryTasksRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTasksRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryFuturesRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryTasksRequest proto.InternalMessageInfo
 
-func (m *QueryFuturesRequest) GetPagination() *query.PageRequest {
+func (m *QueryTasksRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-func (m *QueryFuturesRequest) GetCreator() string {
+func (m *QueryTasksRequest) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-type FutureResponse struct {
-	Future Future        `protobuf:"bytes,1,opt,name=future,proto3" json:"future"`
-	Votes  []FutureVote  `protobuf:"bytes,2,rep,name=votes,proto3" json:"votes"`
-	Result *FutureResult `protobuf:"bytes,3,opt,name=result,proto3" json:"result,omitempty"`
+type TaskResponse struct {
+	Task   Task        `protobuf:"bytes,1,opt,name=task,proto3" json:"task"`
+	Votes  []TaskVote  `protobuf:"bytes,2,rep,name=votes,proto3" json:"votes"`
+	Result *TaskResult `protobuf:"bytes,3,opt,name=result,proto3" json:"result,omitempty"`
 }
 
-func (m *FutureResponse) Reset()         { *m = FutureResponse{} }
-func (m *FutureResponse) String() string { return proto.CompactTextString(m) }
-func (*FutureResponse) ProtoMessage()    {}
-func (*FutureResponse) Descriptor() ([]byte, []int) {
+func (m *TaskResponse) Reset()         { *m = TaskResponse{} }
+func (m *TaskResponse) String() string { return proto.CompactTextString(m) }
+func (*TaskResponse) ProtoMessage()    {}
+func (*TaskResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a59d2da4eae5c65d, []int{3}
 }
-func (m *FutureResponse) XXX_Unmarshal(b []byte) error {
+func (m *TaskResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *FutureResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *TaskResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_FutureResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_TaskResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -196,56 +197,56 @@ func (m *FutureResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-func (m *FutureResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FutureResponse.Merge(m, src)
+func (m *TaskResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TaskResponse.Merge(m, src)
 }
-func (m *FutureResponse) XXX_Size() int {
+func (m *TaskResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *FutureResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_FutureResponse.DiscardUnknown(m)
+func (m *TaskResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_TaskResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_FutureResponse proto.InternalMessageInfo
+var xxx_messageInfo_TaskResponse proto.InternalMessageInfo
 
-func (m *FutureResponse) GetFuture() Future {
+func (m *TaskResponse) GetTask() Task {
 	if m != nil {
-		return m.Future
+		return m.Task
 	}
-	return Future{}
+	return Task{}
 }
 
-func (m *FutureResponse) GetVotes() []FutureVote {
+func (m *TaskResponse) GetVotes() []TaskVote {
 	if m != nil {
 		return m.Votes
 	}
 	return nil
 }
 
-func (m *FutureResponse) GetResult() *FutureResult {
+func (m *TaskResponse) GetResult() *TaskResult {
 	if m != nil {
 		return m.Result
 	}
 	return nil
 }
 
-type QueryFuturesResponse struct {
+type QueryTasksResponse struct {
 	Pagination *query.PageResponse `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	Futures    []FutureResponse    `protobuf:"bytes,2,rep,name=futures,proto3" json:"futures"`
+	Tasks      []TaskResponse      `protobuf:"bytes,2,rep,name=tasks,proto3" json:"tasks"`
 }
 
-func (m *QueryFuturesResponse) Reset()         { *m = QueryFuturesResponse{} }
-func (m *QueryFuturesResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryFuturesResponse) ProtoMessage()    {}
-func (*QueryFuturesResponse) Descriptor() ([]byte, []int) {
+func (m *QueryTasksResponse) Reset()         { *m = QueryTasksResponse{} }
+func (m *QueryTasksResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryTasksResponse) ProtoMessage()    {}
+func (*QueryTasksResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a59d2da4eae5c65d, []int{4}
 }
-func (m *QueryFuturesResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryTasksResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryFuturesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryTasksResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryFuturesResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryTasksResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -255,48 +256,48 @@ func (m *QueryFuturesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *QueryFuturesResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryFuturesResponse.Merge(m, src)
+func (m *QueryTasksResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTasksResponse.Merge(m, src)
 }
-func (m *QueryFuturesResponse) XXX_Size() int {
+func (m *QueryTasksResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryFuturesResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryFuturesResponse.DiscardUnknown(m)
+func (m *QueryTasksResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTasksResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryFuturesResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryTasksResponse proto.InternalMessageInfo
 
-func (m *QueryFuturesResponse) GetPagination() *query.PageResponse {
+func (m *QueryTasksResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-func (m *QueryFuturesResponse) GetFutures() []FutureResponse {
+func (m *QueryTasksResponse) GetTasks() []TaskResponse {
 	if m != nil {
-		return m.Futures
+		return m.Tasks
 	}
 	return nil
 }
 
-type QueryFutureByIdRequest struct {
+type QueryTaskByIdRequest struct {
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *QueryFutureByIdRequest) Reset()         { *m = QueryFutureByIdRequest{} }
-func (m *QueryFutureByIdRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryFutureByIdRequest) ProtoMessage()    {}
-func (*QueryFutureByIdRequest) Descriptor() ([]byte, []int) {
+func (m *QueryTaskByIdRequest) Reset()         { *m = QueryTaskByIdRequest{} }
+func (m *QueryTaskByIdRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryTaskByIdRequest) ProtoMessage()    {}
+func (*QueryTaskByIdRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a59d2da4eae5c65d, []int{5}
 }
-func (m *QueryFutureByIdRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryTaskByIdRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryFutureByIdRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryTaskByIdRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryFutureByIdRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryTaskByIdRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -306,41 +307,41 @@ func (m *QueryFutureByIdRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *QueryFutureByIdRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryFutureByIdRequest.Merge(m, src)
+func (m *QueryTaskByIdRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTaskByIdRequest.Merge(m, src)
 }
-func (m *QueryFutureByIdRequest) XXX_Size() int {
+func (m *QueryTaskByIdRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryFutureByIdRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryFutureByIdRequest.DiscardUnknown(m)
+func (m *QueryTaskByIdRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTaskByIdRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryFutureByIdRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryTaskByIdRequest proto.InternalMessageInfo
 
-func (m *QueryFutureByIdRequest) GetId() uint64 {
+func (m *QueryTaskByIdRequest) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-type QueryFutureByIdResponse struct {
-	FutureResponse FutureResponse `protobuf:"bytes,1,opt,name=futureResponse,proto3" json:"futureResponse"`
+type QueryTaskByIdResponse struct {
+	TaskResponse TaskResponse `protobuf:"bytes,1,opt,name=taskResponse,proto3" json:"taskResponse"`
 }
 
-func (m *QueryFutureByIdResponse) Reset()         { *m = QueryFutureByIdResponse{} }
-func (m *QueryFutureByIdResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryFutureByIdResponse) ProtoMessage()    {}
-func (*QueryFutureByIdResponse) Descriptor() ([]byte, []int) {
+func (m *QueryTaskByIdResponse) Reset()         { *m = QueryTaskByIdResponse{} }
+func (m *QueryTaskByIdResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryTaskByIdResponse) ProtoMessage()    {}
+func (*QueryTaskByIdResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a59d2da4eae5c65d, []int{6}
 }
-func (m *QueryFutureByIdResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryTaskByIdResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryFutureByIdResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryTaskByIdResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryFutureByIdResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryTaskByIdResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -350,41 +351,41 @@ func (m *QueryFutureByIdResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *QueryFutureByIdResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryFutureByIdResponse.Merge(m, src)
+func (m *QueryTaskByIdResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTaskByIdResponse.Merge(m, src)
 }
-func (m *QueryFutureByIdResponse) XXX_Size() int {
+func (m *QueryTaskByIdResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryFutureByIdResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryFutureByIdResponse.DiscardUnknown(m)
+func (m *QueryTaskByIdResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTaskByIdResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryFutureByIdResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryTaskByIdResponse proto.InternalMessageInfo
 
-func (m *QueryFutureByIdResponse) GetFutureResponse() FutureResponse {
+func (m *QueryTaskByIdResponse) GetTaskResponse() TaskResponse {
 	if m != nil {
-		return m.FutureResponse
+		return m.TaskResponse
 	}
-	return FutureResponse{}
+	return TaskResponse{}
 }
 
-type QueryPendingFuturesRequest struct {
+type QueryPendingTasksRequest struct {
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryPendingFuturesRequest) Reset()         { *m = QueryPendingFuturesRequest{} }
-func (m *QueryPendingFuturesRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryPendingFuturesRequest) ProtoMessage()    {}
-func (*QueryPendingFuturesRequest) Descriptor() ([]byte, []int) {
+func (m *QueryPendingTasksRequest) Reset()         { *m = QueryPendingTasksRequest{} }
+func (m *QueryPendingTasksRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryPendingTasksRequest) ProtoMessage()    {}
+func (*QueryPendingTasksRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a59d2da4eae5c65d, []int{7}
 }
-func (m *QueryPendingFuturesRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryPendingTasksRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryPendingFuturesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryPendingTasksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryPendingFuturesRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryPendingTasksRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -394,42 +395,42 @@ func (m *QueryPendingFuturesRequest) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *QueryPendingFuturesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryPendingFuturesRequest.Merge(m, src)
+func (m *QueryPendingTasksRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPendingTasksRequest.Merge(m, src)
 }
-func (m *QueryPendingFuturesRequest) XXX_Size() int {
+func (m *QueryPendingTasksRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryPendingFuturesRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryPendingFuturesRequest.DiscardUnknown(m)
+func (m *QueryPendingTasksRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPendingTasksRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryPendingFuturesRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryPendingTasksRequest proto.InternalMessageInfo
 
-func (m *QueryPendingFuturesRequest) GetPagination() *query.PageRequest {
+func (m *QueryPendingTasksRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-type QueryPendingFuturesResponse struct {
+type QueryPendingTasksResponse struct {
 	Pagination *query.PageResponse `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	Futures    []Future            `protobuf:"bytes,2,rep,name=futures,proto3" json:"futures"`
+	Tasks      []Task              `protobuf:"bytes,2,rep,name=tasks,proto3" json:"tasks"`
 }
 
-func (m *QueryPendingFuturesResponse) Reset()         { *m = QueryPendingFuturesResponse{} }
-func (m *QueryPendingFuturesResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryPendingFuturesResponse) ProtoMessage()    {}
-func (*QueryPendingFuturesResponse) Descriptor() ([]byte, []int) {
+func (m *QueryPendingTasksResponse) Reset()         { *m = QueryPendingTasksResponse{} }
+func (m *QueryPendingTasksResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryPendingTasksResponse) ProtoMessage()    {}
+func (*QueryPendingTasksResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a59d2da4eae5c65d, []int{8}
 }
-func (m *QueryPendingFuturesResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryPendingTasksResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryPendingFuturesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryPendingTasksResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryPendingFuturesResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryPendingTasksResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -439,49 +440,145 @@ func (m *QueryPendingFuturesResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-func (m *QueryPendingFuturesResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryPendingFuturesResponse.Merge(m, src)
+func (m *QueryPendingTasksResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPendingTasksResponse.Merge(m, src)
 }
-func (m *QueryPendingFuturesResponse) XXX_Size() int {
+func (m *QueryPendingTasksResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryPendingFuturesResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryPendingFuturesResponse.DiscardUnknown(m)
+func (m *QueryPendingTasksResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPendingTasksResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryPendingFuturesResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryPendingTasksResponse proto.InternalMessageInfo
 
-func (m *QueryPendingFuturesResponse) GetPagination() *query.PageResponse {
+func (m *QueryPendingTasksResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-func (m *QueryPendingFuturesResponse) GetFutures() []Future {
+func (m *QueryPendingTasksResponse) GetTasks() []Task {
 	if m != nil {
-		return m.Futures
+		return m.Tasks
 	}
 	return nil
 }
 
-type QueryHandlersByValidatorRequest struct {
+type QueryPluginsRequest struct {
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryPluginsRequest) Reset()         { *m = QueryPluginsRequest{} }
+func (m *QueryPluginsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryPluginsRequest) ProtoMessage()    {}
+func (*QueryPluginsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a59d2da4eae5c65d, []int{9}
+}
+func (m *QueryPluginsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryPluginsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryPluginsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryPluginsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPluginsRequest.Merge(m, src)
+}
+func (m *QueryPluginsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryPluginsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPluginsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryPluginsRequest proto.InternalMessageInfo
+
+func (m *QueryPluginsRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryPluginsResponse struct {
+	Pagination *query.PageResponse `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Plugins    []Plugin            `protobuf:"bytes,2,rep,name=plugins,proto3" json:"plugins"`
+}
+
+func (m *QueryPluginsResponse) Reset()         { *m = QueryPluginsResponse{} }
+func (m *QueryPluginsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryPluginsResponse) ProtoMessage()    {}
+func (*QueryPluginsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a59d2da4eae5c65d, []int{10}
+}
+func (m *QueryPluginsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryPluginsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryPluginsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryPluginsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPluginsResponse.Merge(m, src)
+}
+func (m *QueryPluginsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryPluginsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPluginsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryPluginsResponse proto.InternalMessageInfo
+
+func (m *QueryPluginsResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+func (m *QueryPluginsResponse) GetPlugins() []Plugin {
+	if m != nil {
+		return m.Plugins
+	}
+	return nil
+}
+
+type QueryPluginsByValidatorRequest struct {
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 	Validator  string             `protobuf:"bytes,2,opt,name=validator,proto3" json:"validator,omitempty"`
 }
 
-func (m *QueryHandlersByValidatorRequest) Reset()         { *m = QueryHandlersByValidatorRequest{} }
-func (m *QueryHandlersByValidatorRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryHandlersByValidatorRequest) ProtoMessage()    {}
-func (*QueryHandlersByValidatorRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a59d2da4eae5c65d, []int{9}
+func (m *QueryPluginsByValidatorRequest) Reset()         { *m = QueryPluginsByValidatorRequest{} }
+func (m *QueryPluginsByValidatorRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryPluginsByValidatorRequest) ProtoMessage()    {}
+func (*QueryPluginsByValidatorRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a59d2da4eae5c65d, []int{11}
 }
-func (m *QueryHandlersByValidatorRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryPluginsByValidatorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryHandlersByValidatorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryPluginsByValidatorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryHandlersByValidatorRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryPluginsByValidatorRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -491,49 +588,49 @@ func (m *QueryHandlersByValidatorRequest) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *QueryHandlersByValidatorRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryHandlersByValidatorRequest.Merge(m, src)
+func (m *QueryPluginsByValidatorRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPluginsByValidatorRequest.Merge(m, src)
 }
-func (m *QueryHandlersByValidatorRequest) XXX_Size() int {
+func (m *QueryPluginsByValidatorRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryHandlersByValidatorRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryHandlersByValidatorRequest.DiscardUnknown(m)
+func (m *QueryPluginsByValidatorRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPluginsByValidatorRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryHandlersByValidatorRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryPluginsByValidatorRequest proto.InternalMessageInfo
 
-func (m *QueryHandlersByValidatorRequest) GetPagination() *query.PageRequest {
+func (m *QueryPluginsByValidatorRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-func (m *QueryHandlersByValidatorRequest) GetValidator() string {
+func (m *QueryPluginsByValidatorRequest) GetValidator() string {
 	if m != nil {
 		return m.Validator
 	}
 	return ""
 }
 
-type QueryHandlersByValidatorResponse struct {
+type QueryPluginsByValidatorResponse struct {
 	Pagination *query.PageResponse `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	Handlers   []string            `protobuf:"bytes,2,rep,name=handlers,proto3" json:"handlers,omitempty"`
+	Plugins    []string            `protobuf:"bytes,2,rep,name=plugins,proto3" json:"plugins,omitempty"`
 }
 
-func (m *QueryHandlersByValidatorResponse) Reset()         { *m = QueryHandlersByValidatorResponse{} }
-func (m *QueryHandlersByValidatorResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryHandlersByValidatorResponse) ProtoMessage()    {}
-func (*QueryHandlersByValidatorResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a59d2da4eae5c65d, []int{10}
+func (m *QueryPluginsByValidatorResponse) Reset()         { *m = QueryPluginsByValidatorResponse{} }
+func (m *QueryPluginsByValidatorResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryPluginsByValidatorResponse) ProtoMessage()    {}
+func (*QueryPluginsByValidatorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a59d2da4eae5c65d, []int{12}
 }
-func (m *QueryHandlersByValidatorResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryPluginsByValidatorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryHandlersByValidatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryPluginsByValidatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryHandlersByValidatorResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryPluginsByValidatorResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -543,28 +640,236 @@ func (m *QueryHandlersByValidatorResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-func (m *QueryHandlersByValidatorResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryHandlersByValidatorResponse.Merge(m, src)
+func (m *QueryPluginsByValidatorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPluginsByValidatorResponse.Merge(m, src)
 }
-func (m *QueryHandlersByValidatorResponse) XXX_Size() int {
+func (m *QueryPluginsByValidatorResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryHandlersByValidatorResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryHandlersByValidatorResponse.DiscardUnknown(m)
+func (m *QueryPluginsByValidatorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPluginsByValidatorResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryHandlersByValidatorResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryPluginsByValidatorResponse proto.InternalMessageInfo
 
-func (m *QueryHandlersByValidatorResponse) GetPagination() *query.PageResponse {
+func (m *QueryPluginsByValidatorResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-func (m *QueryHandlersByValidatorResponse) GetHandlers() []string {
+func (m *QueryPluginsByValidatorResponse) GetPlugins() []string {
 	if m != nil {
-		return m.Handlers
+		return m.Plugins
+	}
+	return nil
+}
+
+type QueryPluginValidatorsRequest struct {
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (m *QueryPluginValidatorsRequest) Reset()         { *m = QueryPluginValidatorsRequest{} }
+func (m *QueryPluginValidatorsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryPluginValidatorsRequest) ProtoMessage()    {}
+func (*QueryPluginValidatorsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a59d2da4eae5c65d, []int{13}
+}
+func (m *QueryPluginValidatorsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryPluginValidatorsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryPluginValidatorsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryPluginValidatorsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPluginValidatorsRequest.Merge(m, src)
+}
+func (m *QueryPluginValidatorsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryPluginValidatorsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPluginValidatorsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryPluginValidatorsRequest proto.InternalMessageInfo
+
+func (m *QueryPluginValidatorsRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type QueuePriority struct {
+	Validator github_com_cosmos_cosmos_sdk_types.ConsAddress `protobuf:"bytes,1,opt,name=validator,proto3,casttype=github.com/cosmos/cosmos-sdk/types.ConsAddress" json:"validator,omitempty"`
+	Priority  int64                                          `protobuf:"varint,2,opt,name=priority,proto3" json:"priority,omitempty"`
+}
+
+func (m *QueuePriority) Reset()         { *m = QueuePriority{} }
+func (m *QueuePriority) String() string { return proto.CompactTextString(m) }
+func (*QueuePriority) ProtoMessage()    {}
+func (*QueuePriority) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a59d2da4eae5c65d, []int{14}
+}
+func (m *QueuePriority) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueuePriority) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueuePriority.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueuePriority) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueuePriority.Merge(m, src)
+}
+func (m *QueuePriority) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueuePriority) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueuePriority.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueuePriority proto.InternalMessageInfo
+
+func (m *QueuePriority) GetValidator() github_com_cosmos_cosmos_sdk_types.ConsAddress {
+	if m != nil {
+		return m.Validator
+	}
+	return nil
+}
+
+func (m *QueuePriority) GetPriority() int64 {
+	if m != nil {
+		return m.Priority
+	}
+	return 0
+}
+
+type QueueWeight struct {
+	Validator github_com_cosmos_cosmos_sdk_types.ConsAddress `protobuf:"bytes,1,opt,name=validator,proto3,casttype=github.com/cosmos/cosmos-sdk/types.ConsAddress" json:"validator,omitempty"`
+	Weight    int64                                          `protobuf:"varint,2,opt,name=weight,proto3" json:"weight,omitempty"`
+}
+
+func (m *QueueWeight) Reset()         { *m = QueueWeight{} }
+func (m *QueueWeight) String() string { return proto.CompactTextString(m) }
+func (*QueueWeight) ProtoMessage()    {}
+func (*QueueWeight) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a59d2da4eae5c65d, []int{15}
+}
+func (m *QueueWeight) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueueWeight) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueueWeight.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueueWeight) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueueWeight.Merge(m, src)
+}
+func (m *QueueWeight) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueueWeight) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueueWeight.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueueWeight proto.InternalMessageInfo
+
+func (m *QueueWeight) GetValidator() github_com_cosmos_cosmos_sdk_types.ConsAddress {
+	if m != nil {
+		return m.Validator
+	}
+	return nil
+}
+
+func (m *QueueWeight) GetWeight() int64 {
+	if m != nil {
+		return m.Weight
+	}
+	return 0
+}
+
+type QueryPluginValidatorsResponse struct {
+	QueueTotalWeight int64           `protobuf:"varint,1,opt,name=queue_total_weight,json=queueTotalWeight,proto3" json:"queue_total_weight,omitempty"`
+	QueuePriorities  []QueuePriority `protobuf:"bytes,2,rep,name=queue_priorities,json=queuePriorities,proto3" json:"queue_priorities"`
+	QueueWeights     []QueueWeight   `protobuf:"bytes,3,rep,name=queue_weights,json=queueWeights,proto3" json:"queue_weights"`
+}
+
+func (m *QueryPluginValidatorsResponse) Reset()         { *m = QueryPluginValidatorsResponse{} }
+func (m *QueryPluginValidatorsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryPluginValidatorsResponse) ProtoMessage()    {}
+func (*QueryPluginValidatorsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a59d2da4eae5c65d, []int{16}
+}
+func (m *QueryPluginValidatorsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryPluginValidatorsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryPluginValidatorsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryPluginValidatorsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPluginValidatorsResponse.Merge(m, src)
+}
+func (m *QueryPluginValidatorsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryPluginValidatorsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPluginValidatorsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryPluginValidatorsResponse proto.InternalMessageInfo
+
+func (m *QueryPluginValidatorsResponse) GetQueueTotalWeight() int64 {
+	if m != nil {
+		return m.QueueTotalWeight
+	}
+	return 0
+}
+
+func (m *QueryPluginValidatorsResponse) GetQueuePriorities() []QueuePriority {
+	if m != nil {
+		return m.QueuePriorities
+	}
+	return nil
+}
+
+func (m *QueryPluginValidatorsResponse) GetQueueWeights() []QueueWeight {
+	if m != nil {
+		return m.QueueWeights
 	}
 	return nil
 }
@@ -572,73 +877,96 @@ func (m *QueryHandlersByValidatorResponse) GetHandlers() []string {
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "warden.async.v1beta1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "warden.async.v1beta1.QueryParamsResponse")
-	proto.RegisterType((*QueryFuturesRequest)(nil), "warden.async.v1beta1.QueryFuturesRequest")
-	proto.RegisterType((*FutureResponse)(nil), "warden.async.v1beta1.FutureResponse")
-	proto.RegisterType((*QueryFuturesResponse)(nil), "warden.async.v1beta1.QueryFuturesResponse")
-	proto.RegisterType((*QueryFutureByIdRequest)(nil), "warden.async.v1beta1.QueryFutureByIdRequest")
-	proto.RegisterType((*QueryFutureByIdResponse)(nil), "warden.async.v1beta1.QueryFutureByIdResponse")
-	proto.RegisterType((*QueryPendingFuturesRequest)(nil), "warden.async.v1beta1.QueryPendingFuturesRequest")
-	proto.RegisterType((*QueryPendingFuturesResponse)(nil), "warden.async.v1beta1.QueryPendingFuturesResponse")
-	proto.RegisterType((*QueryHandlersByValidatorRequest)(nil), "warden.async.v1beta1.QueryHandlersByValidatorRequest")
-	proto.RegisterType((*QueryHandlersByValidatorResponse)(nil), "warden.async.v1beta1.QueryHandlersByValidatorResponse")
+	proto.RegisterType((*QueryTasksRequest)(nil), "warden.async.v1beta1.QueryTasksRequest")
+	proto.RegisterType((*TaskResponse)(nil), "warden.async.v1beta1.TaskResponse")
+	proto.RegisterType((*QueryTasksResponse)(nil), "warden.async.v1beta1.QueryTasksResponse")
+	proto.RegisterType((*QueryTaskByIdRequest)(nil), "warden.async.v1beta1.QueryTaskByIdRequest")
+	proto.RegisterType((*QueryTaskByIdResponse)(nil), "warden.async.v1beta1.QueryTaskByIdResponse")
+	proto.RegisterType((*QueryPendingTasksRequest)(nil), "warden.async.v1beta1.QueryPendingTasksRequest")
+	proto.RegisterType((*QueryPendingTasksResponse)(nil), "warden.async.v1beta1.QueryPendingTasksResponse")
+	proto.RegisterType((*QueryPluginsRequest)(nil), "warden.async.v1beta1.QueryPluginsRequest")
+	proto.RegisterType((*QueryPluginsResponse)(nil), "warden.async.v1beta1.QueryPluginsResponse")
+	proto.RegisterType((*QueryPluginsByValidatorRequest)(nil), "warden.async.v1beta1.QueryPluginsByValidatorRequest")
+	proto.RegisterType((*QueryPluginsByValidatorResponse)(nil), "warden.async.v1beta1.QueryPluginsByValidatorResponse")
+	proto.RegisterType((*QueryPluginValidatorsRequest)(nil), "warden.async.v1beta1.QueryPluginValidatorsRequest")
+	proto.RegisterType((*QueuePriority)(nil), "warden.async.v1beta1.QueuePriority")
+	proto.RegisterType((*QueueWeight)(nil), "warden.async.v1beta1.QueueWeight")
+	proto.RegisterType((*QueryPluginValidatorsResponse)(nil), "warden.async.v1beta1.QueryPluginValidatorsResponse")
 }
 
 func init() { proto.RegisterFile("warden/async/v1beta1/query.proto", fileDescriptor_a59d2da4eae5c65d) }
 
 var fileDescriptor_a59d2da4eae5c65d = []byte{
-	// 817 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0xcf, 0x4f, 0x13, 0x4d,
-	0x18, 0xee, 0x14, 0x28, 0x1f, 0x43, 0xd2, 0xe4, 0x1b, 0xfa, 0x41, 0x59, 0x4a, 0x5b, 0x36, 0xdf,
-	0x8f, 0x7e, 0xc4, 0xee, 0x5a, 0x8c, 0x98, 0x18, 0x12, 0xb5, 0x1a, 0xd4, 0x9b, 0xac, 0x09, 0x07,
-	0x2f, 0x75, 0xdb, 0x1d, 0x96, 0x4d, 0xda, 0x9d, 0xb2, 0x3f, 0xd0, 0x86, 0x10, 0x13, 0xcf, 0x9a,
-	0x98, 0x18, 0x6f, 0x1e, 0xf5, 0xe2, 0x99, 0xab, 0x77, 0x0e, 0x1e, 0x08, 0x5e, 0x3c, 0x11, 0x03,
-	0xfe, 0x07, 0xfe, 0x03, 0xa6, 0x33, 0xef, 0xb6, 0xdd, 0xb2, 0x94, 0x92, 0xe0, 0xa5, 0xe9, 0x4c,
-	0x9f, 0xe7, 0x79, 0x9f, 0xf7, 0x99, 0x77, 0x26, 0xc5, 0xf9, 0x67, 0xba, 0x63, 0x50, 0x5b, 0xd5,
-	0xdd, 0x96, 0x5d, 0x53, 0xb7, 0x4b, 0x55, 0xea, 0xe9, 0x25, 0x75, 0xcb, 0xa7, 0x4e, 0x4b, 0x69,
-	0x3a, 0xcc, 0x63, 0x24, 0x25, 0x10, 0x0a, 0x47, 0x28, 0x80, 0x90, 0xfe, 0xd4, 0x1b, 0x96, 0xcd,
-	0x54, 0xfe, 0x29, 0x80, 0xd2, 0x62, 0x8d, 0xb9, 0x0d, 0xe6, 0xaa, 0x55, 0xdd, 0xa5, 0x42, 0xa1,
-	0xa3, 0xd7, 0xd4, 0x4d, 0xcb, 0xd6, 0x3d, 0x8b, 0xd9, 0x80, 0x9d, 0x15, 0xd8, 0x0a, 0x5f, 0xa9,
-	0x62, 0x01, 0x3f, 0xa5, 0x4c, 0x66, 0x32, 0xb1, 0xdf, 0xfe, 0x06, 0xbb, 0x19, 0x93, 0x31, 0xb3,
-	0x4e, 0x55, 0xbd, 0x69, 0xa9, 0xba, 0x6d, 0x33, 0x8f, 0xab, 0x05, 0x9c, 0x59, 0xf8, 0x95, 0xaf,
-	0xaa, 0xfe, 0x86, 0xaa, 0xdb, 0x60, 0x5f, 0x5a, 0x88, 0x6c, 0x70, 0xc3, 0xf7, 0x7c, 0x87, 0x0e,
-	0x84, 0x34, 0x75, 0x47, 0x6f, 0x40, 0x01, 0x39, 0x85, 0xc9, 0x5a, 0xbb, 0xa3, 0x47, 0x7c, 0x53,
-	0xa3, 0x5b, 0x3e, 0x75, 0x3d, 0x79, 0x0d, 0x4f, 0x85, 0x76, 0xdd, 0x26, 0xb3, 0x5d, 0x4a, 0x6e,
-	0xe2, 0x84, 0x20, 0xa7, 0x51, 0x1e, 0x15, 0x26, 0x97, 0x32, 0x4a, 0x54, 0x84, 0x8a, 0x60, 0x95,
-	0x47, 0xf7, 0x8f, 0x72, 0x31, 0x0d, 0x18, 0xf2, 0x3b, 0x04, 0x9a, 0xab, 0xdc, 0x61, 0x50, 0x8a,
-	0xac, 0x62, 0xdc, 0x0d, 0x11, 0x74, 0xff, 0x55, 0x20, 0xb8, 0x76, 0xe2, 0x8a, 0x38, 0xb3, 0xae,
-	0xb8, 0x49, 0x81, 0xab, 0xf5, 0x30, 0xc9, 0x32, 0x1e, 0xaf, 0x39, 0x54, 0xf7, 0x98, 0x93, 0x8e,
-	0xe7, 0x51, 0x61, 0xa2, 0x9c, 0xd9, 0x3f, 0xca, 0xa1, 0xc3, 0xbd, 0x62, 0x0a, 0xb4, 0xee, 0x18,
-	0x86, 0x43, 0x5d, 0xf7, 0xb1, 0xe7, 0x58, 0xb6, 0xa9, 0x05, 0x60, 0xf9, 0x0b, 0xc2, 0x49, 0x61,
-	0xa9, 0xb7, 0x4d, 0x11, 0xe3, 0xe0, 0x36, 0x05, 0x2b, 0x68, 0x53, 0x30, 0xc8, 0x0a, 0x1e, 0xdb,
-	0x66, 0x1e, 0x75, 0xd3, 0xf1, 0xfc, 0x48, 0x61, 0x72, 0x29, 0x3f, 0x88, 0xba, 0xce, 0xbc, 0x80,
-	0x2e, 0x48, 0xe4, 0x36, 0x4e, 0x38, 0xd4, 0xf5, 0xeb, 0x5e, 0x7a, 0x84, 0x57, 0x96, 0x07, 0xd1,
-	0x35, 0x8e, 0xe4, 0x02, 0x48, 0x03, 0x9e, 0xfc, 0x11, 0xe1, 0x54, 0x38, 0x66, 0x68, 0xea, 0x7e,
-	0x44, 0xce, 0xff, 0x9d, 0x9b, 0xb3, 0x20, 0x87, 0x82, 0xbe, 0x87, 0xc7, 0x45, 0xaf, 0x41, 0x8f,
-	0x7f, 0x9f, 0x63, 0x92, 0x4b, 0x40, 0x9f, 0x01, 0x55, 0x2e, 0xe0, 0xe9, 0x1e, 0x9b, 0xe5, 0xd6,
-	0x43, 0x23, 0x18, 0x88, 0x24, 0x8e, 0x5b, 0x06, 0x37, 0x38, 0xaa, 0xc5, 0x2d, 0x43, 0x6e, 0xe0,
-	0x99, 0x53, 0x48, 0xe8, 0x49, 0xc3, 0xc9, 0x8d, 0x50, 0x15, 0xe8, 0xeb, 0x22, 0x8e, 0xfa, 0x14,
-	0x64, 0x03, 0x4b, 0x62, 0xf4, 0xa9, 0x6d, 0x58, 0xb6, 0xf9, 0x7b, 0xa6, 0x55, 0xfe, 0x80, 0xf0,
-	0x5c, 0x64, 0x99, 0xcb, 0x3e, 0xad, 0x95, 0xfe, 0xd3, 0x1a, 0x66, 0x98, 0x3b, 0xa7, 0xf4, 0x09,
-	0xe1, 0x1c, 0xb7, 0xf9, 0x40, 0xb7, 0x8d, 0x3a, 0x75, 0xdc, 0x72, 0x6b, 0x5d, 0xaf, 0x5b, 0x46,
-	0xfb, 0xe6, 0x5c, 0xf6, 0x05, 0xbe, 0x85, 0x27, 0xb6, 0x03, 0x6d, 0xb8, 0xc2, 0x0b, 0x87, 0x7b,
-	0xc5, 0x79, 0x50, 0xba, 0xdb, 0x6e, 0xcd, 0x76, 0x7d, 0x37, 0x7c, 0x8f, 0xbb, 0x1c, 0xf9, 0x35,
-	0xc2, 0xf9, 0xb3, 0xcd, 0x5e, 0x76, 0xb0, 0x79, 0xfc, 0xc7, 0x26, 0xd4, 0xe1, 0xc9, 0x4e, 0x40,
-	0x76, 0x9d, 0xdd, 0xa5, 0x9f, 0x63, 0x78, 0x8c, 0xfb, 0x21, 0x3b, 0x38, 0x21, 0xde, 0x44, 0x52,
-	0x88, 0x4e, 0xff, 0xf4, 0x13, 0x2c, 0xfd, 0x3f, 0x04, 0x12, 0x46, 0x36, 0xf3, 0xf2, 0xeb, 0x8f,
-	0xb7, 0xf1, 0x69, 0x92, 0x52, 0x43, 0xef, 0xbd, 0x78, 0x78, 0xc9, 0x0b, 0x3c, 0x0e, 0xd3, 0x45,
-	0x06, 0x69, 0x86, 0x07, 0x5d, 0x5a, 0x1c, 0x06, 0x0a, 0xf5, 0xe7, 0x79, 0xfd, 0x19, 0xf2, 0x57,
-	0xb8, 0x3e, 0x0c, 0x11, 0x79, 0x85, 0x30, 0xee, 0x5e, 0x5e, 0x72, 0xe5, 0x5c, 0xe5, 0x9e, 0xd7,
-	0x40, 0x2a, 0x0e, 0x89, 0x06, 0x2b, 0x0b, 0xdc, 0xca, 0x1c, 0x99, 0x8d, 0xb2, 0xa2, 0xee, 0x58,
-	0xc6, 0x2e, 0x79, 0x8f, 0x70, 0x32, 0x7c, 0xeb, 0xc8, 0xd5, 0x41, 0x59, 0x47, 0xbd, 0x03, 0x52,
-	0xe9, 0x02, 0x0c, 0xb0, 0xf6, 0x0f, 0xb7, 0x96, 0x23, 0xf3, 0x7d, 0xa7, 0x24, 0xd0, 0x95, 0x20,
-	0xad, 0xcf, 0x08, 0x4f, 0x45, 0x0c, 0x30, 0xb9, 0x3e, 0xa0, 0xe2, 0xd9, 0xb7, 0x53, 0x5a, 0xbe,
-	0x28, 0x0d, 0xdc, 0xde, 0xe0, 0x6e, 0x4b, 0x44, 0x0d, 0xbb, 0x0d, 0x86, 0xbb, 0x52, 0x6d, 0x55,
-	0x3a, 0x37, 0x4f, 0xdd, 0xe9, 0x7c, 0xdd, 0x2d, 0x3f, 0xdd, 0x3f, 0xce, 0xa2, 0x83, 0xe3, 0x2c,
-	0xfa, 0x7e, 0x9c, 0x45, 0x6f, 0x4e, 0xb2, 0xb1, 0x83, 0x93, 0x6c, 0xec, 0xdb, 0x49, 0x36, 0xf6,
-	0x64, 0xd5, 0xb4, 0xbc, 0x4d, 0xbf, 0xaa, 0xd4, 0x58, 0x03, 0x44, 0x8b, 0xfc, 0x3f, 0x48, 0x8d,
-	0xd5, 0x61, 0xdd, 0xb7, 0x54, 0x9f, 0x43, 0x55, 0xaf, 0xd5, 0xa4, 0x6e, 0xf0, 0xff, 0xa5, 0x9a,
-	0xe0, 0xb0, 0x6b, 0xbf, 0x02, 0x00, 0x00, 0xff, 0xff, 0x35, 0xe4, 0xb9, 0x4c, 0xe2, 0x09, 0x00,
-	0x00,
+	// 1095 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0xcf, 0x6f, 0x1b, 0xc5,
+	0x17, 0xcf, 0xe4, 0x77, 0x5e, 0xd2, 0xef, 0xb7, 0x9d, 0x3a, 0xad, 0xb3, 0x4d, 0x6c, 0x67, 0x2b,
+	0xa5, 0x26, 0x90, 0x5d, 0xea, 0x96, 0x1c, 0x2a, 0x54, 0x84, 0x91, 0x8a, 0x90, 0x7a, 0x48, 0x4c,
+	0x54, 0x24, 0x24, 0x64, 0xd6, 0xde, 0x61, 0xbb, 0x8a, 0xbd, 0x6b, 0xef, 0xac, 0x13, 0xac, 0x28,
+	0x42, 0x42, 0x88, 0x03, 0x27, 0xa4, 0x72, 0xa4, 0x7f, 0x00, 0xe2, 0xda, 0x0b, 0x37, 0x8e, 0x39,
+	0x56, 0xe5, 0xc2, 0x29, 0x42, 0x09, 0xff, 0x00, 0x57, 0x4e, 0x68, 0x67, 0xde, 0xae, 0x77, 0xfd,
+	0xbb, 0x92, 0x7b, 0x49, 0x3c, 0xb3, 0x9f, 0xf7, 0x79, 0x9f, 0xf7, 0x79, 0xe3, 0x37, 0x6b, 0xc8,
+	0x1d, 0x1b, 0x9e, 0xc9, 0x1c, 0xdd, 0xe0, 0x6d, 0xa7, 0xaa, 0x1f, 0xdd, 0xad, 0x30, 0xdf, 0xb8,
+	0xab, 0x37, 0x5b, 0xcc, 0x6b, 0x6b, 0x0d, 0xcf, 0xf5, 0x5d, 0x9a, 0x92, 0x08, 0x4d, 0x20, 0x34,
+	0x44, 0x28, 0xd7, 0x8c, 0xba, 0xed, 0xb8, 0xba, 0xf8, 0x2b, 0x81, 0xca, 0x76, 0xd5, 0xe5, 0x75,
+	0x97, 0xeb, 0x15, 0x83, 0x33, 0xc9, 0x10, 0xf1, 0x35, 0x0c, 0xcb, 0x76, 0x0c, 0xdf, 0x76, 0x1d,
+	0xc4, 0xae, 0x49, 0x6c, 0x59, 0xac, 0x74, 0xb9, 0xc0, 0x47, 0x29, 0xcb, 0xb5, 0x5c, 0xb9, 0x1f,
+	0x7c, 0xc2, 0xdd, 0x75, 0xcb, 0x75, 0xad, 0x1a, 0xd3, 0x8d, 0x86, 0xad, 0x1b, 0x8e, 0xe3, 0xfa,
+	0x82, 0x2d, 0x8c, 0x59, 0xc3, 0xa7, 0x62, 0x55, 0x69, 0x7d, 0xa5, 0x1b, 0x0e, 0xca, 0x57, 0x36,
+	0xfb, 0x16, 0xd8, 0x30, 0x3c, 0xa3, 0xce, 0x87, 0x43, 0x6a, 0x2d, 0xcb, 0x0e, 0xf5, 0x66, 0xfb,
+	0x42, 0x7c, 0x83, 0x1f, 0x4a, 0x80, 0x9a, 0x02, 0xba, 0x1f, 0x94, 0xbc, 0x27, 0x88, 0x4b, 0xac,
+	0xd9, 0x62, 0xdc, 0x57, 0xf7, 0xe1, 0x7a, 0x62, 0x97, 0x37, 0x5c, 0x87, 0x33, 0xfa, 0x00, 0xe6,
+	0xa5, 0x80, 0x34, 0xc9, 0x91, 0xfc, 0x72, 0x61, 0x5d, 0xeb, 0xe7, 0xb1, 0x26, 0xa3, 0x8a, 0xb3,
+	0x67, 0xe7, 0xd9, 0xa9, 0x12, 0x46, 0xa8, 0xcf, 0x08, 0x5c, 0x13, 0x9c, 0x07, 0x06, 0x3f, 0x0c,
+	0x13, 0xd1, 0x47, 0x00, 0x1d, 0x8f, 0x91, 0x75, 0x4b, 0x43, 0x5f, 0x83, 0x86, 0x68, 0xb2, 0xa5,
+	0x1d, 0x6a, 0x8b, 0x61, 0x6c, 0x29, 0x16, 0x49, 0x77, 0x61, 0xa1, 0xea, 0x31, 0xc3, 0x77, 0xbd,
+	0xf4, 0x74, 0x8e, 0xe4, 0x97, 0x8a, 0xeb, 0x67, 0xe7, 0x59, 0xf2, 0xea, 0xc5, 0x4e, 0x0a, 0xb9,
+	0x3e, 0x34, 0x4d, 0x8f, 0x71, 0xfe, 0xa9, 0xef, 0xd9, 0x8e, 0x55, 0x0a, 0xc1, 0xea, 0xef, 0x04,
+	0x56, 0x02, 0x41, 0x51, 0x89, 0xf7, 0x61, 0x36, 0x70, 0x07, 0xa5, 0x28, 0xfd, 0x0b, 0x0c, 0x22,
+	0xb0, 0x3c, 0x81, 0xa6, 0x0f, 0x60, 0xee, 0xc8, 0xf5, 0x19, 0x4f, 0x4f, 0xe7, 0x66, 0xf2, 0xcb,
+	0x85, 0xcc, 0xe0, 0xb0, 0x27, 0xae, 0xcf, 0x30, 0x54, 0x86, 0xd0, 0x87, 0x30, 0xef, 0x31, 0xde,
+	0xaa, 0xf9, 0xe9, 0x19, 0x91, 0x33, 0x37, 0x38, 0xb8, 0x24, 0x70, 0x22, 0x9c, 0x94, 0x30, 0x4a,
+	0x7d, 0x4e, 0xb0, 0x85, 0x68, 0x2c, 0x16, 0xf2, 0x71, 0x1f, 0x67, 0xef, 0x8c, 0x74, 0x56, 0x06,
+	0x27, 0xac, 0x7d, 0x08, 0x73, 0x41, 0x8d, 0x61, 0x6d, 0xea, 0x50, 0x79, 0x22, 0x3c, 0xac, 0x4f,
+	0x84, 0xa9, 0x5b, 0x90, 0x8a, 0xe4, 0x15, 0xdb, 0x9f, 0x98, 0x61, 0xeb, 0xff, 0x07, 0xd3, 0xb6,
+	0x29, 0x84, 0xcd, 0x96, 0xa6, 0x6d, 0x53, 0x65, 0xb0, 0xda, 0x85, 0xc3, 0x4a, 0x1e, 0xc3, 0x8a,
+	0x1f, 0x63, 0xc7, 0x5a, 0xc6, 0xd7, 0x91, 0x88, 0x56, 0x2b, 0x90, 0x96, 0x47, 0x9b, 0x39, 0xa6,
+	0xed, 0x58, 0x6f, 0xe2, 0x34, 0xaa, 0x3f, 0x13, 0x58, 0xeb, 0x93, 0x64, 0xd2, 0x9d, 0xd9, 0x4d,
+	0x76, 0x66, 0xf4, 0x61, 0xc5, 0x8e, 0x7c, 0x11, 0x7e, 0xbb, 0xc5, 0xa4, 0x98, 0x78, 0xf5, 0xcf,
+	0x09, 0x76, 0x3c, 0xe2, 0x9f, 0x74, 0xe1, 0xef, 0xc3, 0x82, 0x9c, 0x72, 0x61, 0xe9, 0x83, 0x06,
+	0x91, 0x00, 0x61, 0xf1, 0x61, 0x88, 0xfa, 0x0b, 0x81, 0x4c, 0x5c, 0x5f, 0xb1, 0xfd, 0xc4, 0xa8,
+	0xd9, 0x66, 0x30, 0x0f, 0x26, 0x3d, 0x96, 0x3e, 0x80, 0xa5, 0xa3, 0x90, 0x1b, 0x07, 0xd3, 0xe6,
+	0xab, 0x17, 0x3b, 0x1b, 0xc8, 0xf4, 0x51, 0x50, 0x99, 0xc3, 0x5b, 0x3c, 0x39, 0x9d, 0x3a, 0x31,
+	0xea, 0x0f, 0x04, 0xb2, 0x03, 0xb5, 0x4e, 0xda, 0xd6, 0x4c, 0xd2, 0xd6, 0xa5, 0x6e, 0xe3, 0x0a,
+	0xb0, 0x1e, 0xd3, 0x12, 0x09, 0x89, 0x0e, 0x10, 0x85, 0x59, 0xc7, 0xa8, 0xcb, 0x2f, 0xe8, 0x52,
+	0x49, 0x7c, 0x56, 0x4f, 0xe1, 0xca, 0x7e, 0x8b, 0xb5, 0xd8, 0x9e, 0x67, 0xbb, 0x9e, 0xed, 0xb7,
+	0xe9, 0x5e, 0xdc, 0x92, 0x00, 0xb9, 0x52, 0x2c, 0xfc, 0x7b, 0x9e, 0xd5, 0x2c, 0xdb, 0x7f, 0xda,
+	0xaa, 0x68, 0x55, 0xb7, 0x8e, 0xd7, 0x2a, 0xfe, 0xdb, 0xe1, 0xe6, 0xa1, 0xee, 0xb7, 0x1b, 0x4c,
+	0xda, 0x85, 0x4e, 0xc5, 0x3c, 0xa2, 0x0a, 0x2c, 0x36, 0x90, 0x5d, 0x78, 0x3c, 0x53, 0x8a, 0xd6,
+	0xea, 0x31, 0x2c, 0x8b, 0xf4, 0x9f, 0x31, 0xdb, 0x7a, 0xea, 0xbf, 0x81, 0xe4, 0x37, 0x60, 0xfe,
+	0x58, 0x70, 0x63, 0x6a, 0x5c, 0xa9, 0xff, 0x10, 0xd8, 0x18, 0x60, 0x16, 0xb6, 0xed, 0x1d, 0xa0,
+	0xcd, 0x40, 0x5a, 0xd9, 0x77, 0x7d, 0xa3, 0x56, 0x46, 0x16, 0x22, 0x58, 0xae, 0x8a, 0x27, 0x07,
+	0xc1, 0x03, 0x54, 0x7e, 0x00, 0x72, 0xaf, 0x8c, 0xa5, 0xd9, 0xd1, 0x65, 0x73, 0xbb, 0xff, 0xd9,
+	0x4f, 0xb8, 0x8e, 0x9d, 0xfc, 0x7f, 0x33, 0xb6, 0x69, 0x33, 0x4e, 0x1f, 0xc3, 0x15, 0xc9, 0x2a,
+	0xb3, 0xf3, 0xf4, 0x8c, 0xa0, 0xdc, 0x1c, 0x42, 0x29, 0xf5, 0x84, 0xa3, 0xb5, 0xd9, 0xd9, 0xe2,
+	0x85, 0xef, 0x17, 0x61, 0x4e, 0xd4, 0x4c, 0x4f, 0x60, 0x5e, 0xbe, 0x04, 0xd0, 0xfc, 0x40, 0xaa,
+	0xae, 0x77, 0x0e, 0xe5, 0xad, 0x31, 0x90, 0x38, 0xc3, 0xd7, 0xbf, 0xfd, 0xe3, 0xef, 0x67, 0xd3,
+	0x37, 0x68, 0x4a, 0x4f, 0xbc, 0xde, 0xc8, 0x37, 0x0d, 0x7a, 0x0c, 0x73, 0x62, 0xe0, 0xd2, 0x3b,
+	0x43, 0x18, 0xe3, 0x73, 0x5f, 0xc9, 0x8f, 0x06, 0x62, 0xe6, 0x5b, 0x22, 0xf3, 0x2a, 0xbd, 0x9e,
+	0xcc, 0x2c, 0xe6, 0x2a, 0xfd, 0x8e, 0xc0, 0x62, 0x78, 0x7b, 0xd1, 0xed, 0x11, 0x9c, 0xb1, 0xab,
+	0x50, 0x79, 0x7b, 0x2c, 0x2c, 0x4a, 0xc8, 0x0a, 0x09, 0x6b, 0xf4, 0x66, 0xaf, 0x04, 0xfd, 0xc4,
+	0x36, 0x4f, 0xe9, 0x4f, 0x04, 0x56, 0xe2, 0x17, 0x0f, 0xd5, 0x86, 0x39, 0xdb, 0x7b, 0x0d, 0x2a,
+	0xfa, 0xd8, 0x78, 0x94, 0x74, 0x5b, 0x48, 0xda, 0xa0, 0xb7, 0xba, 0xfa, 0x21, 0xb1, 0x65, 0xe9,
+	0xce, 0x37, 0xb0, 0x80, 0x43, 0x8c, 0x0e, 0x6d, 0x75, 0xe2, 0x52, 0x52, 0xb6, 0xc7, 0x81, 0xa2,
+	0x8c, 0x0d, 0x21, 0xe3, 0x26, 0x5d, 0xed, 0x92, 0x81, 0x59, 0x7f, 0x25, 0x70, 0xb5, 0xfb, 0xdb,
+	0x48, 0x0b, 0x23, 0xf9, 0x7b, 0xe6, 0x9c, 0x72, 0xef, 0xb5, 0x62, 0x50, 0x9c, 0x26, 0xc4, 0xe5,
+	0xe9, 0x56, 0x3f, 0x71, 0xe5, 0x68, 0xa0, 0x70, 0xfd, 0x24, 0x98, 0x9b, 0xa7, 0xf4, 0x37, 0x02,
+	0xb4, 0x77, 0xe8, 0xd3, 0xfb, 0xa3, 0xfd, 0xe8, 0xbd, 0xcf, 0x94, 0xf7, 0x5e, 0x33, 0x0a, 0x35,
+	0xef, 0x0a, 0xcd, 0xef, 0x52, 0xad, 0xaf, 0xa1, 0xe5, 0x4a, 0xbb, 0xa3, 0x5b, 0x3f, 0x89, 0x3e,
+	0x9e, 0x16, 0xbf, 0x3c, 0xbb, 0xc8, 0x90, 0x97, 0x17, 0x19, 0xf2, 0xd7, 0x45, 0x86, 0xfc, 0x78,
+	0x99, 0x99, 0x7a, 0x79, 0x99, 0x99, 0xfa, 0xf3, 0x32, 0x33, 0xf5, 0xf9, 0xa3, 0xd8, 0xa4, 0x95,
+	0x9c, 0x3b, 0xe2, 0x77, 0x48, 0xd5, 0xad, 0xe1, 0xba, 0x6b, 0xa9, 0x7f, 0x1d, 0x9e, 0xef, 0x60,
+	0x0a, 0x87, 0xbf, 0x60, 0x2a, 0xf3, 0x02, 0x76, 0xef, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xef,
+	0xa0, 0x4f, 0x88, 0x07, 0x0e, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -655,14 +983,16 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Queries a list of Futures.
-	Futures(ctx context.Context, in *QueryFuturesRequest, opts ...grpc.CallOption) (*QueryFuturesResponse, error)
-	// Queries a Future by its id.
-	FutureById(ctx context.Context, in *QueryFutureByIdRequest, opts ...grpc.CallOption) (*QueryFutureByIdResponse, error)
-	// Queries Futures that do not have a result yet.
-	PendingFutures(ctx context.Context, in *QueryPendingFuturesRequest, opts ...grpc.CallOption) (*QueryPendingFuturesResponse, error)
-	// Queries Handlers by validator.
-	HandlersByValidator(ctx context.Context, in *QueryHandlersByValidatorRequest, opts ...grpc.CallOption) (*QueryHandlersByValidatorResponse, error)
+	// Queries a list of Tasks.
+	Tasks(ctx context.Context, in *QueryTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
+	// Queries a Task by its id.
+	TaskById(ctx context.Context, in *QueryTaskByIdRequest, opts ...grpc.CallOption) (*QueryTaskByIdResponse, error)
+	// Queries Tasks that do not have a result yet.
+	PendingTasks(ctx context.Context, in *QueryPendingTasksRequest, opts ...grpc.CallOption) (*QueryPendingTasksResponse, error)
+	Plugins(ctx context.Context, in *QueryPluginsRequest, opts ...grpc.CallOption) (*QueryPluginsResponse, error)
+	PluginValidators(ctx context.Context, in *QueryPluginValidatorsRequest, opts ...grpc.CallOption) (*QueryPluginValidatorsResponse, error)
+	// Queries Plugins by validator.
+	PluginsByValidator(ctx context.Context, in *QueryPluginsByValidatorRequest, opts ...grpc.CallOption) (*QueryPluginsByValidatorResponse, error)
 }
 
 type queryClient struct {
@@ -682,36 +1012,54 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Futures(ctx context.Context, in *QueryFuturesRequest, opts ...grpc.CallOption) (*QueryFuturesResponse, error) {
-	out := new(QueryFuturesResponse)
-	err := c.cc.Invoke(ctx, "/warden.async.v1beta1.Query/Futures", in, out, opts...)
+func (c *queryClient) Tasks(ctx context.Context, in *QueryTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error) {
+	out := new(QueryTasksResponse)
+	err := c.cc.Invoke(ctx, "/warden.async.v1beta1.Query/Tasks", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) FutureById(ctx context.Context, in *QueryFutureByIdRequest, opts ...grpc.CallOption) (*QueryFutureByIdResponse, error) {
-	out := new(QueryFutureByIdResponse)
-	err := c.cc.Invoke(ctx, "/warden.async.v1beta1.Query/FutureById", in, out, opts...)
+func (c *queryClient) TaskById(ctx context.Context, in *QueryTaskByIdRequest, opts ...grpc.CallOption) (*QueryTaskByIdResponse, error) {
+	out := new(QueryTaskByIdResponse)
+	err := c.cc.Invoke(ctx, "/warden.async.v1beta1.Query/TaskById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) PendingFutures(ctx context.Context, in *QueryPendingFuturesRequest, opts ...grpc.CallOption) (*QueryPendingFuturesResponse, error) {
-	out := new(QueryPendingFuturesResponse)
-	err := c.cc.Invoke(ctx, "/warden.async.v1beta1.Query/PendingFutures", in, out, opts...)
+func (c *queryClient) PendingTasks(ctx context.Context, in *QueryPendingTasksRequest, opts ...grpc.CallOption) (*QueryPendingTasksResponse, error) {
+	out := new(QueryPendingTasksResponse)
+	err := c.cc.Invoke(ctx, "/warden.async.v1beta1.Query/PendingTasks", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) HandlersByValidator(ctx context.Context, in *QueryHandlersByValidatorRequest, opts ...grpc.CallOption) (*QueryHandlersByValidatorResponse, error) {
-	out := new(QueryHandlersByValidatorResponse)
-	err := c.cc.Invoke(ctx, "/warden.async.v1beta1.Query/HandlersByValidator", in, out, opts...)
+func (c *queryClient) Plugins(ctx context.Context, in *QueryPluginsRequest, opts ...grpc.CallOption) (*QueryPluginsResponse, error) {
+	out := new(QueryPluginsResponse)
+	err := c.cc.Invoke(ctx, "/warden.async.v1beta1.Query/Plugins", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) PluginValidators(ctx context.Context, in *QueryPluginValidatorsRequest, opts ...grpc.CallOption) (*QueryPluginValidatorsResponse, error) {
+	out := new(QueryPluginValidatorsResponse)
+	err := c.cc.Invoke(ctx, "/warden.async.v1beta1.Query/PluginValidators", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) PluginsByValidator(ctx context.Context, in *QueryPluginsByValidatorRequest, opts ...grpc.CallOption) (*QueryPluginsByValidatorResponse, error) {
+	out := new(QueryPluginsByValidatorResponse)
+	err := c.cc.Invoke(ctx, "/warden.async.v1beta1.Query/PluginsByValidator", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -722,14 +1070,16 @@ func (c *queryClient) HandlersByValidator(ctx context.Context, in *QueryHandlers
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Queries a list of Futures.
-	Futures(context.Context, *QueryFuturesRequest) (*QueryFuturesResponse, error)
-	// Queries a Future by its id.
-	FutureById(context.Context, *QueryFutureByIdRequest) (*QueryFutureByIdResponse, error)
-	// Queries Futures that do not have a result yet.
-	PendingFutures(context.Context, *QueryPendingFuturesRequest) (*QueryPendingFuturesResponse, error)
-	// Queries Handlers by validator.
-	HandlersByValidator(context.Context, *QueryHandlersByValidatorRequest) (*QueryHandlersByValidatorResponse, error)
+	// Queries a list of Tasks.
+	Tasks(context.Context, *QueryTasksRequest) (*QueryTasksResponse, error)
+	// Queries a Task by its id.
+	TaskById(context.Context, *QueryTaskByIdRequest) (*QueryTaskByIdResponse, error)
+	// Queries Tasks that do not have a result yet.
+	PendingTasks(context.Context, *QueryPendingTasksRequest) (*QueryPendingTasksResponse, error)
+	Plugins(context.Context, *QueryPluginsRequest) (*QueryPluginsResponse, error)
+	PluginValidators(context.Context, *QueryPluginValidatorsRequest) (*QueryPluginValidatorsResponse, error)
+	// Queries Plugins by validator.
+	PluginsByValidator(context.Context, *QueryPluginsByValidatorRequest) (*QueryPluginsByValidatorResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -739,17 +1089,23 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) Futures(ctx context.Context, req *QueryFuturesRequest) (*QueryFuturesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Futures not implemented")
+func (*UnimplementedQueryServer) Tasks(ctx context.Context, req *QueryTasksRequest) (*QueryTasksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Tasks not implemented")
 }
-func (*UnimplementedQueryServer) FutureById(ctx context.Context, req *QueryFutureByIdRequest) (*QueryFutureByIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FutureById not implemented")
+func (*UnimplementedQueryServer) TaskById(ctx context.Context, req *QueryTaskByIdRequest) (*QueryTaskByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskById not implemented")
 }
-func (*UnimplementedQueryServer) PendingFutures(ctx context.Context, req *QueryPendingFuturesRequest) (*QueryPendingFuturesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PendingFutures not implemented")
+func (*UnimplementedQueryServer) PendingTasks(ctx context.Context, req *QueryPendingTasksRequest) (*QueryPendingTasksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PendingTasks not implemented")
 }
-func (*UnimplementedQueryServer) HandlersByValidator(ctx context.Context, req *QueryHandlersByValidatorRequest) (*QueryHandlersByValidatorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method HandlersByValidator not implemented")
+func (*UnimplementedQueryServer) Plugins(ctx context.Context, req *QueryPluginsRequest) (*QueryPluginsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Plugins not implemented")
+}
+func (*UnimplementedQueryServer) PluginValidators(ctx context.Context, req *QueryPluginValidatorsRequest) (*QueryPluginValidatorsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PluginValidators not implemented")
+}
+func (*UnimplementedQueryServer) PluginsByValidator(ctx context.Context, req *QueryPluginsByValidatorRequest) (*QueryPluginsByValidatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PluginsByValidator not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -774,74 +1130,110 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Futures_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryFuturesRequest)
+func _Query_Tasks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTasksRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Futures(ctx, in)
+		return srv.(QueryServer).Tasks(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/warden.async.v1beta1.Query/Futures",
+		FullMethod: "/warden.async.v1beta1.Query/Tasks",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Futures(ctx, req.(*QueryFuturesRequest))
+		return srv.(QueryServer).Tasks(ctx, req.(*QueryTasksRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_FutureById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryFutureByIdRequest)
+func _Query_TaskById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTaskByIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).FutureById(ctx, in)
+		return srv.(QueryServer).TaskById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/warden.async.v1beta1.Query/FutureById",
+		FullMethod: "/warden.async.v1beta1.Query/TaskById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).FutureById(ctx, req.(*QueryFutureByIdRequest))
+		return srv.(QueryServer).TaskById(ctx, req.(*QueryTaskByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_PendingFutures_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryPendingFuturesRequest)
+func _Query_PendingTasks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPendingTasksRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).PendingFutures(ctx, in)
+		return srv.(QueryServer).PendingTasks(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/warden.async.v1beta1.Query/PendingFutures",
+		FullMethod: "/warden.async.v1beta1.Query/PendingTasks",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).PendingFutures(ctx, req.(*QueryPendingFuturesRequest))
+		return srv.(QueryServer).PendingTasks(ctx, req.(*QueryPendingTasksRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_HandlersByValidator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryHandlersByValidatorRequest)
+func _Query_Plugins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPluginsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).HandlersByValidator(ctx, in)
+		return srv.(QueryServer).Plugins(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/warden.async.v1beta1.Query/HandlersByValidator",
+		FullMethod: "/warden.async.v1beta1.Query/Plugins",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).HandlersByValidator(ctx, req.(*QueryHandlersByValidatorRequest))
+		return srv.(QueryServer).Plugins(ctx, req.(*QueryPluginsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_PluginValidators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPluginValidatorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).PluginValidators(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/warden.async.v1beta1.Query/PluginValidators",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).PluginValidators(ctx, req.(*QueryPluginValidatorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_PluginsByValidator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPluginsByValidatorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).PluginsByValidator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/warden.async.v1beta1.Query/PluginsByValidator",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).PluginsByValidator(ctx, req.(*QueryPluginsByValidatorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -856,20 +1248,28 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "Futures",
-			Handler:    _Query_Futures_Handler,
+			MethodName: "Tasks",
+			Handler:    _Query_Tasks_Handler,
 		},
 		{
-			MethodName: "FutureById",
-			Handler:    _Query_FutureById_Handler,
+			MethodName: "TaskById",
+			Handler:    _Query_TaskById_Handler,
 		},
 		{
-			MethodName: "PendingFutures",
-			Handler:    _Query_PendingFutures_Handler,
+			MethodName: "PendingTasks",
+			Handler:    _Query_PendingTasks_Handler,
 		},
 		{
-			MethodName: "HandlersByValidator",
-			Handler:    _Query_HandlersByValidator_Handler,
+			MethodName: "Plugins",
+			Handler:    _Query_Plugins_Handler,
+		},
+		{
+			MethodName: "PluginValidators",
+			Handler:    _Query_PluginValidators_Handler,
+		},
+		{
+			MethodName: "PluginsByValidator",
+			Handler:    _Query_PluginsByValidator_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -932,7 +1332,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryFuturesRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryTasksRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -942,12 +1342,12 @@ func (m *QueryFuturesRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryFuturesRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryTasksRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryFuturesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryTasksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -974,7 +1374,7 @@ func (m *QueryFuturesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *FutureResponse) Marshal() (dAtA []byte, err error) {
+func (m *TaskResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -984,12 +1384,12 @@ func (m *FutureResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *FutureResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *TaskResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *FutureResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *TaskResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1021,7 +1421,7 @@ func (m *FutureResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 	}
 	{
-		size, err := m.Future.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.Task.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -1033,7 +1433,7 @@ func (m *FutureResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryFuturesResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryTasksResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1043,20 +1443,20 @@ func (m *QueryFuturesResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryFuturesResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryTasksResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryFuturesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryTasksResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Futures) > 0 {
-		for iNdEx := len(m.Futures) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.Tasks) > 0 {
+		for iNdEx := len(m.Tasks) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.Futures[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.Tasks[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -1082,7 +1482,7 @@ func (m *QueryFuturesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryFutureByIdRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryTaskByIdRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1092,12 +1492,12 @@ func (m *QueryFutureByIdRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryFutureByIdRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryTaskByIdRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryFutureByIdRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryTaskByIdRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1110,7 +1510,7 @@ func (m *QueryFutureByIdRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryFutureByIdResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryTaskByIdResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1120,18 +1520,18 @@ func (m *QueryFutureByIdResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryFutureByIdResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryTaskByIdResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryFutureByIdResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryTaskByIdResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size, err := m.FutureResponse.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.TaskResponse.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -1143,7 +1543,7 @@ func (m *QueryFutureByIdResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryPendingFuturesRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryPendingTasksRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1153,12 +1553,12 @@ func (m *QueryPendingFuturesRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryPendingFuturesRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryPendingTasksRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryPendingFuturesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryPendingTasksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1178,7 +1578,7 @@ func (m *QueryPendingFuturesRequest) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryPendingFuturesResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryPendingTasksResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1188,20 +1588,20 @@ func (m *QueryPendingFuturesResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryPendingFuturesResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryPendingTasksResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryPendingFuturesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryPendingTasksResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Futures) > 0 {
-		for iNdEx := len(m.Futures) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.Tasks) > 0 {
+		for iNdEx := len(m.Tasks) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.Futures[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.Tasks[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -1227,7 +1627,7 @@ func (m *QueryPendingFuturesResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryHandlersByValidatorRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryPluginsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1237,12 +1637,96 @@ func (m *QueryHandlersByValidatorRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryHandlersByValidatorRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryPluginsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryHandlersByValidatorRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryPluginsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryPluginsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPluginsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryPluginsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Plugins) > 0 {
+		for iNdEx := len(m.Plugins) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Plugins[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryPluginsByValidatorRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPluginsByValidatorRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryPluginsByValidatorRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1269,7 +1753,7 @@ func (m *QueryHandlersByValidatorRequest) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryHandlersByValidatorResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryPluginsByValidatorResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1279,21 +1763,21 @@ func (m *QueryHandlersByValidatorResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryHandlersByValidatorResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryPluginsByValidatorResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryHandlersByValidatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryPluginsByValidatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Handlers) > 0 {
-		for iNdEx := len(m.Handlers) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Handlers[iNdEx])
-			copy(dAtA[i:], m.Handlers[iNdEx])
-			i = encodeVarintQuery(dAtA, i, uint64(len(m.Handlers[iNdEx])))
+	if len(m.Plugins) > 0 {
+		for iNdEx := len(m.Plugins) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Plugins[iNdEx])
+			copy(dAtA[i:], m.Plugins[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Plugins[iNdEx])))
 			i--
 			dAtA[i] = 0x12
 		}
@@ -1309,6 +1793,162 @@ func (m *QueryHandlersByValidatorResponse) MarshalToSizedBuffer(dAtA []byte) (in
 		}
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryPluginValidatorsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPluginValidatorsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryPluginValidatorsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueuePriority) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueuePriority) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueuePriority) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Priority != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Priority))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueueWeight) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueueWeight) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueueWeight) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Weight != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Weight))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryPluginValidatorsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPluginValidatorsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryPluginValidatorsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.QueueWeights) > 0 {
+		for iNdEx := len(m.QueueWeights) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.QueueWeights[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.QueuePriorities) > 0 {
+		for iNdEx := len(m.QueuePriorities) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.QueuePriorities[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.QueueTotalWeight != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.QueueTotalWeight))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1344,7 +1984,7 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryFuturesRequest) Size() (n int) {
+func (m *QueryTasksRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1361,13 +2001,13 @@ func (m *QueryFuturesRequest) Size() (n int) {
 	return n
 }
 
-func (m *FutureResponse) Size() (n int) {
+func (m *TaskResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.Future.Size()
+	l = m.Task.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	if len(m.Votes) > 0 {
 		for _, e := range m.Votes {
@@ -1382,7 +2022,7 @@ func (m *FutureResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryFuturesResponse) Size() (n int) {
+func (m *QueryTasksResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1392,8 +2032,8 @@ func (m *QueryFuturesResponse) Size() (n int) {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if len(m.Futures) > 0 {
-		for _, e := range m.Futures {
+	if len(m.Tasks) > 0 {
+		for _, e := range m.Tasks {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
@@ -1401,7 +2041,7 @@ func (m *QueryFuturesResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryFutureByIdRequest) Size() (n int) {
+func (m *QueryTaskByIdRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1413,18 +2053,18 @@ func (m *QueryFutureByIdRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryFutureByIdResponse) Size() (n int) {
+func (m *QueryTaskByIdResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.FutureResponse.Size()
+	l = m.TaskResponse.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
-func (m *QueryPendingFuturesRequest) Size() (n int) {
+func (m *QueryPendingTasksRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1437,7 +2077,7 @@ func (m *QueryPendingFuturesRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryPendingFuturesResponse) Size() (n int) {
+func (m *QueryPendingTasksResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1447,8 +2087,8 @@ func (m *QueryPendingFuturesResponse) Size() (n int) {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if len(m.Futures) > 0 {
-		for _, e := range m.Futures {
+	if len(m.Tasks) > 0 {
+		for _, e := range m.Tasks {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
@@ -1456,7 +2096,39 @@ func (m *QueryPendingFuturesResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryHandlersByValidatorRequest) Size() (n int) {
+func (m *QueryPluginsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryPluginsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if len(m.Plugins) > 0 {
+		for _, e := range m.Plugins {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QueryPluginsByValidatorRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1473,7 +2145,7 @@ func (m *QueryHandlersByValidatorRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryHandlersByValidatorResponse) Size() (n int) {
+func (m *QueryPluginsByValidatorResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1483,9 +2155,78 @@ func (m *QueryHandlersByValidatorResponse) Size() (n int) {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if len(m.Handlers) > 0 {
-		for _, s := range m.Handlers {
+	if len(m.Plugins) > 0 {
+		for _, s := range m.Plugins {
 			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QueryPluginValidatorsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueuePriority) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Priority != 0 {
+		n += 1 + sovQuery(uint64(m.Priority))
+	}
+	return n
+}
+
+func (m *QueueWeight) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Weight != 0 {
+		n += 1 + sovQuery(uint64(m.Weight))
+	}
+	return n
+}
+
+func (m *QueryPluginValidatorsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.QueueTotalWeight != 0 {
+		n += 1 + sovQuery(uint64(m.QueueTotalWeight))
+	}
+	if len(m.QueuePriorities) > 0 {
+		for _, e := range m.QueuePriorities {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if len(m.QueueWeights) > 0 {
+		for _, e := range m.QueueWeights {
+			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
 	}
@@ -1631,7 +2372,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryFuturesRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryTasksRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1654,10 +2395,10 @@ func (m *QueryFuturesRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryFuturesRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryTasksRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryFuturesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryTasksRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1749,7 +2490,7 @@ func (m *QueryFuturesRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *FutureResponse) Unmarshal(dAtA []byte) error {
+func (m *TaskResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1772,15 +2513,15 @@ func (m *FutureResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: FutureResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: TaskResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: FutureResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: TaskResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Future", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Task", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1807,7 +2548,7 @@ func (m *FutureResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Future.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Task.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1840,7 +2581,7 @@ func (m *FutureResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Votes = append(m.Votes, FutureVote{})
+			m.Votes = append(m.Votes, TaskVote{})
 			if err := m.Votes[len(m.Votes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1875,7 +2616,7 @@ func (m *FutureResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Result == nil {
-				m.Result = &FutureResult{}
+				m.Result = &TaskResult{}
 			}
 			if err := m.Result.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1902,7 +2643,7 @@ func (m *FutureResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryFuturesResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryTasksResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1925,10 +2666,10 @@ func (m *QueryFuturesResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryFuturesResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryTasksResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryFuturesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryTasksResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1969,7 +2710,7 @@ func (m *QueryFuturesResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Futures", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Tasks", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1996,8 +2737,8 @@ func (m *QueryFuturesResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Futures = append(m.Futures, FutureResponse{})
-			if err := m.Futures[len(m.Futures)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Tasks = append(m.Tasks, TaskResponse{})
+			if err := m.Tasks[len(m.Tasks)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2022,7 +2763,7 @@ func (m *QueryFuturesResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryFutureByIdRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryTaskByIdRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2045,10 +2786,10 @@ func (m *QueryFutureByIdRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryFutureByIdRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryTaskByIdRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryFutureByIdRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryTaskByIdRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2091,7 +2832,7 @@ func (m *QueryFutureByIdRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryFutureByIdResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryTaskByIdResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2114,15 +2855,15 @@ func (m *QueryFutureByIdResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryFutureByIdResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryTaskByIdResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryFutureByIdResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryTaskByIdResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field FutureResponse", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TaskResponse", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -2149,7 +2890,7 @@ func (m *QueryFutureByIdResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.FutureResponse.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.TaskResponse.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2174,7 +2915,7 @@ func (m *QueryFutureByIdResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryPendingFuturesRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryPendingTasksRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2197,10 +2938,10 @@ func (m *QueryPendingFuturesRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryPendingFuturesRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryPendingTasksRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryPendingFuturesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryPendingTasksRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2260,7 +3001,7 @@ func (m *QueryPendingFuturesRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryPendingFuturesResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryPendingTasksResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2283,10 +3024,10 @@ func (m *QueryPendingFuturesResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryPendingFuturesResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryPendingTasksResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryPendingFuturesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryPendingTasksResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2327,7 +3068,7 @@ func (m *QueryPendingFuturesResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Futures", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Tasks", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -2354,8 +3095,8 @@ func (m *QueryPendingFuturesResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Futures = append(m.Futures, Future{})
-			if err := m.Futures[len(m.Futures)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Tasks = append(m.Tasks, Task{})
+			if err := m.Tasks[len(m.Tasks)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2380,7 +3121,7 @@ func (m *QueryPendingFuturesResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryHandlersByValidatorRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryPluginsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2403,10 +3144,216 @@ func (m *QueryHandlersByValidatorRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryHandlersByValidatorRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryPluginsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryHandlersByValidatorRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryPluginsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPluginsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPluginsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPluginsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Plugins", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Plugins = append(m.Plugins, Plugin{})
+			if err := m.Plugins[len(m.Plugins)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPluginsByValidatorRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPluginsByValidatorRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPluginsByValidatorRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2498,7 +3445,7 @@ func (m *QueryHandlersByValidatorRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryHandlersByValidatorResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryPluginsByValidatorResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2521,10 +3468,10 @@ func (m *QueryHandlersByValidatorResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryHandlersByValidatorResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryPluginsByValidatorResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryHandlersByValidatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryPluginsByValidatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2565,7 +3512,7 @@ func (m *QueryHandlersByValidatorResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Handlers", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Plugins", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2593,7 +3540,432 @@ func (m *QueryHandlersByValidatorResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Handlers = append(m.Handlers, string(dAtA[iNdEx:postIndex]))
+			m.Plugins = append(m.Plugins, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPluginValidatorsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPluginValidatorsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPluginValidatorsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueuePriority) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueuePriority: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueuePriority: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = append(m.Validator[:0], dAtA[iNdEx:postIndex]...)
+			if m.Validator == nil {
+				m.Validator = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Priority", wireType)
+			}
+			m.Priority = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Priority |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueueWeight) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueueWeight: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueueWeight: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = append(m.Validator[:0], dAtA[iNdEx:postIndex]...)
+			if m.Validator == nil {
+				m.Validator = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Weight", wireType)
+			}
+			m.Weight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Weight |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPluginValidatorsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPluginValidatorsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPluginValidatorsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field QueueTotalWeight", wireType)
+			}
+			m.QueueTotalWeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.QueueTotalWeight |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field QueuePriorities", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.QueuePriorities = append(m.QueuePriorities, QueuePriority{})
+			if err := m.QueuePriorities[len(m.QueuePriorities)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field QueueWeights", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.QueueWeights = append(m.QueueWeights, QueueWeight{})
+			if err := m.QueueWeights[len(m.QueueWeights)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

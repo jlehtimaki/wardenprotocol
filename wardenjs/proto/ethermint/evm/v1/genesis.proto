@@ -7,7 +7,7 @@ import "amino/amino.proto";
 import "ethermint/evm/v1/evm.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/evmos/evmos/v20/x/evm/types";
+option go_package = "github.com/cosmos/evm/x/evm/types";
 
 // GenesisState defines the evm module's genesis state.
 message GenesisState {
@@ -21,7 +21,7 @@ message GenesisState {
 // Its main difference between with Geth's GenesisAccount is that it uses a
 // custom storage type and that it doesn't contain the private key field.
 message GenesisAccount {
-  // address defines an ethereum hex formated address of an account
+  // address defines an ethereum hex formatted address of an account
   string address = 1;
   // code defines the hex bytes of the account code.
   string code = 2;

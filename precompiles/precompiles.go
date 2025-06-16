@@ -2,18 +2,32 @@ package precompiles
 
 import (
 	ethcmn "github.com/ethereum/go-ethereum/common"
-	"github.com/evmos/evmos/v20/x/evm/core/vm"
+	"github.com/ethereum/go-ethereum/core/vm"
 	oraclekeeper "github.com/skip-mev/slinky/x/oracle/keeper"
 
 	actprecompile "github.com/warden-protocol/wardenprotocol/precompiles/act"
 	asyncprecompile "github.com/warden-protocol/wardenprotocol/precompiles/async"
 	cmn "github.com/warden-protocol/wardenprotocol/precompiles/common"
+	jsonprecompile "github.com/warden-protocol/wardenprotocol/precompiles/json"
+	schedprecompile "github.com/warden-protocol/wardenprotocol/precompiles/sched"
 	slinkyprecompile "github.com/warden-protocol/wardenprotocol/precompiles/slinky"
 	wardenprecompile "github.com/warden-protocol/wardenprotocol/precompiles/warden"
 	actkeeper "github.com/warden-protocol/wardenprotocol/warden/x/act/keeper"
 	asynckeeper "github.com/warden-protocol/wardenprotocol/warden/x/async/keeper"
+	schedkeeper "github.com/warden-protocol/wardenprotocol/warden/x/sched/keeper"
 	wardenkeeper "github.com/warden-protocol/wardenprotocol/warden/x/warden/keeper"
 )
+
+func WardenPrecompilesAddresses() []string {
+	return []string{
+		actprecompile.PrecompileAddress,
+		slinkyprecompile.PrecompileAddress,
+		jsonprecompile.PrecompileAddress,
+		schedprecompile.PrecompileAddress,
+		wardenprecompile.PrecompileAddress,
+		asyncprecompile.PrecompileAddress,
+	}
+}
 
 // Single point of all wardenprotocol precompiles initialization, including precompiles and events registry.
 func NewWardenPrecompiles(
@@ -21,6 +35,7 @@ func NewWardenPrecompiles(
 	actkeeper actkeeper.Keeper,
 	oraclekeeper oraclekeeper.Keeper,
 	asynckeeper asynckeeper.Keeper,
+	schedkeeper schedkeeper.Keeper,
 ) (map[ethcmn.Address]vm.PrecompiledContract, error) {
 	precompiles := make(map[ethcmn.Address]vm.PrecompiledContract)
 	eventsRegistry := cmn.NewEthEventsRegistry()
@@ -76,7 +91,21 @@ func NewWardenPrecompiles(
 
 	precompiles[newAsyncPrecompile.Address()] = newAsyncPrecompile
 
-	eventsRegistry.RegisterEvent("warden.async.v1beta1.EventCreateFuture", newAsyncPrecompile.GetCreateFutureEvent)
+	eventsRegistry.RegisterEvent("warden.async.v1beta1.EventCreateTask", newAsyncPrecompile.GetCreateTaskEvent)
+
+	newJsonPrecompile, err := jsonprecompile.NewPrecompile(cmn.NewAbiEncoder())
+	if err != nil {
+		return nil, err
+	}
+
+	precompiles[newJsonPrecompile.Address()] = newJsonPrecompile
+
+	newSchedPrecompile, err := schedprecompile.NewPrecompile(schedkeeper, eventsRegistry)
+	if err != nil {
+		return nil, err
+	}
+
+	precompiles[newSchedPrecompile.Address()] = newSchedPrecompile
 
 	return precompiles, nil
 }

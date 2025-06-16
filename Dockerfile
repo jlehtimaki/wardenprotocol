@@ -31,7 +31,7 @@ RUN apt update && \
     useradd -M -u 1000 -U -s /bin/sh -d /data warden && \
     install -o 1000 -g 1000 -d /data
 COPY --from=wardend-build --chown=warden:warden /build/wardend /usr/bin/wardend
-ADD --chmod=444 --checksum=sha256:015bdae5e70304f1e487981f90e3956754718fe7bdac4446aab0838fcb8b33e0 --chown=warden:warden https://github.com/CosmWasm/wasmvm/releases/download/v2.1.2/libwasmvm.x86_64.so /lib/libwasmvm.x86_64.so
+ADD --chmod=444 --checksum=sha256:a7f6f5a79f41c756f87e4e3de86439a18fec07238c2521ac21ac2e5655751460 --chown=warden:warden https://github.com/CosmWasm/wasmvm/releases/download/v2.2.4/libwasmvm.x86_64.so /lib/libwasmvm.x86_64.so
 
 USER warden
 CMD ["wardend", "start"]
@@ -51,7 +51,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=wardend-build --chown=warden:warden /build/wardend /usr/bin/wardend
 COPY --from=wardend-build --chown=warden:warden /build/faucet /usr/bin/faucet
-ADD --chmod=444 --checksum=sha256:015bdae5e70304f1e487981f90e3956754718fe7bdac4446aab0838fcb8b33e0 https://github.com/CosmWasm/wasmvm/releases/download/v2.1.2/libwasmvm.x86_64.so /lib/libwasmvm.x86_64.so
+ADD --chmod=444 --checksum=sha256:a7f6f5a79f41c756f87e4e3de86439a18fec07238c2521ac21ac2e5655751460 https://github.com/CosmWasm/wasmvm/releases/download/v2.2.4/libwasmvm.x86_64.so /lib/libwasmvm.x86_64.so
 
 USER warden
 
@@ -74,7 +74,7 @@ RUN --mount=type=bind,source=.,target=.,readonly\
 
 FROM debian:bookworm-slim AS wardenkms
 COPY --chown=nobody:nogroup --from=wardenkms-build /build/wardenkms /
-ADD --chmod=444 --chown=nobody:nogroup --checksum=sha256:015bdae5e70304f1e487981f90e3956754718fe7bdac4446aab0838fcb8b33e0 https://github.com/CosmWasm/wasmvm/releases/download/v2.1.2/libwasmvm.x86_64.so /lib/libwasmvm.x86_64.so
+ADD --chmod=444 --chown=nobody:nogroup --checksum=sha256:a7f6f5a79f41c756f87e4e3de86439a18fec07238c2521ac21ac2e5655751460 https://github.com/CosmWasm/wasmvm/releases/download/v2.2.4/libwasmvm.x86_64.so /lib/libwasmvm.x86_64.so
 
 USER nobody
 ENTRYPOINT ["/wardenkms"]
@@ -97,12 +97,16 @@ COPY --chown=node:node automated-orders/packages/blockchain-library packages/blo
 RUN yarn install --frozen-lockfile && \
     yarn build:libs && \
     rm -rf packages/*/src packages/*/node_modules packages/*/tsconfig*
- 
+
 ## snap
 FROM node-build-env AS snap-builder
 WORKDIR /snap
 COPY snap/package*.json ./
-RUN npm ci
+RUN npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000 \
+    && npm config set fetch-timeout 600000 \
+    && npm ci --prefer-offline --no-audit
 COPY snap/ .
 RUN npm run build
 
@@ -139,6 +143,7 @@ ENV VITE_WARDEN_STORYBLOK_TOKEN=%WARDEN_STORYBLOK_TOKEN%
 ENV VITE_WARDEN_ETHEREUM_ANALYZER_CONTRACT=%WARDEN_ETHEREUM_ANALYZER_CONTRACT%
 ENV VITE_WARDEN_AMINO_ANALYZER_CONTRACT=%WARDEN_AMINO_ANALYZER_CONTRACT%
 
+ENV NODE_OPTIONS="--max_old_space_size=6144"
 RUN cd spaceward && pnpm run build
 
 COPY --from=snap-builder /snap/snap.manifest.json /wardenprotocol/spaceward/dist

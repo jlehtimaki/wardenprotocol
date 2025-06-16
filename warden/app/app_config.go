@@ -10,7 +10,6 @@ import (
 	bankmodulev1 "cosmossdk.io/api/cosmos/bank/module/v1"
 	circuitmodulev1 "cosmossdk.io/api/cosmos/circuit/module/v1"
 	consensusmodulev1 "cosmossdk.io/api/cosmos/consensus/module/v1"
-	crisismodulev1 "cosmossdk.io/api/cosmos/crisis/module/v1"
 	distrmodulev1 "cosmossdk.io/api/cosmos/distribution/module/v1"
 	evidencemodulev1 "cosmossdk.io/api/cosmos/evidence/module/v1"
 	feegrantmodulev1 "cosmossdk.io/api/cosmos/feegrant/module/v1"
@@ -48,8 +47,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	_ "github.com/cosmos/cosmos-sdk/x/consensus" // import for side-effects
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	_ "github.com/cosmos/cosmos-sdk/x/crisis" // import for side-effects
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	_ "github.com/cosmos/cosmos-sdk/x/distribution" // import for side-effects
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
@@ -64,17 +61,16 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side-effects
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
-	_ "github.com/cosmos/ibc-go/modules/capability" // import for side-effects
-	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-	_ "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts" // import for side-effects
-	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
-	_ "github.com/cosmos/ibc-go/v8/modules/apps/29-fee" // import for side-effects
-	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
-	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
-	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-	evmtypes "github.com/evmos/evmos/v20/x/evm/types"
-	feemarkettypes "github.com/evmos/evmos/v20/x/feemarket/types"
+	erc20types "github.com/cosmos/evm/x/erc20/types"
+	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
+	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
+	_ "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts" // import for side-effects
+	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
+	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
+	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
+	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 	marketmapmodulev1 "github.com/skip-mev/slinky/api/slinky/marketmap/module/v1"
 	oraclemodulev1 "github.com/skip-mev/slinky/api/slinky/oracle/module/v1"
 	_ "github.com/skip-mev/slinky/x/marketmap" // import for side-effects
@@ -85,29 +81,25 @@ import (
 
 	actmodulev1 "github.com/warden-protocol/wardenprotocol/api/warden/act/module"
 	asyncmodulev1 "github.com/warden-protocol/wardenprotocol/api/warden/async/module"
+	schedmodulev1 "github.com/warden-protocol/wardenprotocol/api/warden/sched/module"
 	wardenmodulev1 "github.com/warden-protocol/wardenprotocol/api/warden/warden/module"
+	wardenconfig "github.com/warden-protocol/wardenprotocol/cmd/wardend/config"
 	_ "github.com/warden-protocol/wardenprotocol/warden/x/act/module" // import for side-effects
 	actmoduletypes "github.com/warden-protocol/wardenprotocol/warden/x/act/types/v1beta1"
 	_ "github.com/warden-protocol/wardenprotocol/warden/x/async/module" // import for side-effects
 	asyncmoduletypes "github.com/warden-protocol/wardenprotocol/warden/x/async/types/v1beta1"
-	gmpmoduletypes "github.com/warden-protocol/wardenprotocol/warden/x/gmp/types"
+	_ "github.com/warden-protocol/wardenprotocol/warden/x/sched/module" // import for side-effects
+	schedmoduletypes "github.com/warden-protocol/wardenprotocol/warden/x/sched/types/v1beta1"
 	_ "github.com/warden-protocol/wardenprotocol/warden/x/warden/module" // import for side-effects
 	wardenmoduletypes "github.com/warden-protocol/wardenprotocol/warden/x/warden/types/v1beta3"
 )
 
 func init() {
-	// Set prefixes
-	accountPubKeyPrefix := AccountAddressPrefix + "pub"
-	validatorAddressPrefix := AccountAddressPrefix + "valoper"
-	validatorPubKeyPrefix := AccountAddressPrefix + "valoperpub"
-	consNodeAddressPrefix := AccountAddressPrefix + "valcons"
-	consNodePubKeyPrefix := AccountAddressPrefix + "valconspub"
-
-	// Set and seal config
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(AccountAddressPrefix, accountPubKeyPrefix)
-	config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
-	config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
+
+	wardenconfig.SetBech32Prefixes(config)
+	wardenconfig.SetBip44CoinType(config)
+
 	config.Seal()
 }
 
@@ -120,14 +112,10 @@ var (
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
 	// NOTE: The genutils module must also occur after auth so that it can access the params from auth.
-	// NOTE: Capability module must occur first so that it can initialize any capabilities
-	// so that other modules that want to create or claim capabilities afterwards in InitChain
-	// can do so safely.
 	// NOTE: wasm module should be at the end as it can call other module functionality direct or via message dispatching during
 	// genesis phase. For example bank transfer, auth account check, staking, ...
 	genesisModuleOrder = []string{
 		// cosmos-sdk/ibc modules
-		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
@@ -135,20 +123,20 @@ var (
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
 		minttypes.ModuleName,
-		crisistypes.ModuleName,
 		ibcexported.ModuleName,
-		// evmOS modules
+		// evm modules
 		evmtypes.ModuleName,
 		// NOTE: feemarket module needs to be initialized before genutil module:
 		// gentx transactions use MinGasPriceDecorator.AnteHandle
 		feemarkettypes.ModuleName,
+		erc20types.ModuleName,
+		precisebanktypes.ModuleName,
 
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
@@ -161,8 +149,7 @@ var (
 		wardenmoduletypes.ModuleName,
 		actmoduletypes.ModuleName,
 		asyncmoduletypes.ModuleName,
-		gmpmoduletypes.ModuleName,
-		ibchookstypes.ModuleName,
+		schedmoduletypes.ModuleName,
 		// wasm module
 		wasmtypes.ModuleName,
 		// slinky modules
@@ -173,42 +160,44 @@ var (
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
-	// NOTE: capability module's beginblocker must come before any modules using capabilities (e.g. IBC).
 	beginBlockers = []string{
-		// cosmos sdk modules
 		minttypes.ModuleName,
+
+		// ibc modules
+		ibcexported.ModuleName,
+		ibctransfertypes.ModuleName,
+		icatypes.ModuleName,
+		wasmtypes.ModuleName,
+
+		// evm modules
+		erc20types.ModuleName,
+		feemarkettypes.ModuleName,
+		evmtypes.ModuleName,
+
+		// cosmos sdk modules
+
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
 		authz.ModuleName,
 		genutiltypes.ModuleName,
-		// ibc modules
-		capabilitytypes.ModuleName,
-		ibcexported.ModuleName,
-		ibctransfertypes.ModuleName,
-		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
-		gmpmoduletypes.ModuleName,
-		ibchookstypes.ModuleName,
-		wasmtypes.ModuleName,
+
 		// chain modules
 		wardenmoduletypes.ModuleName,
 		actmoduletypes.ModuleName,
 		asyncmoduletypes.ModuleName,
+		schedmoduletypes.ModuleName,
 		// slinky modules
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
-
-		// evmOS modules
-		evmtypes.ModuleName,
-		feemarkettypes.ModuleName,
+		precisebanktypes.ModuleName,
+		vestingtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
 	endBlockers = []string{
 		// cosmos sdk modules
-		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		feegrant.ModuleName,
@@ -217,23 +206,24 @@ var (
 		// ibc modules
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
-		capabilitytypes.ModuleName,
 		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
-		gmpmoduletypes.ModuleName,
-		ibchookstypes.ModuleName,
 		wasmtypes.ModuleName,
 		// chain modules
 		wardenmoduletypes.ModuleName,
 		actmoduletypes.ModuleName,
 		asyncmoduletypes.ModuleName,
+		schedmoduletypes.ModuleName,
 		// slinky modules
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 
-		// evmOS modules
+		// evm modules
 		evmtypes.ModuleName,
 		feemarkettypes.ModuleName,
+		erc20types.ModuleName,
+
+		precisebanktypes.ModuleName,
+		vestingtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -251,13 +241,16 @@ var (
 		{Account: stakingtypes.NotBondedPoolName, Permissions: []string{authtypes.Burner, stakingtypes.ModuleName}},
 		{Account: govtypes.ModuleName, Permissions: []string{authtypes.Burner}},
 		{Account: ibctransfertypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
-		{Account: ibcfeetypes.ModuleName},
 		{Account: icatypes.ModuleName},
 		{Account: actmoduletypes.ModuleName},
 		{Account: asyncmoduletypes.ModuleName},
+		{Account: schedmoduletypes.ModuleName},
 		{Account: oracletypes.ModuleName, Permissions: []string{}},
 		{Account: wardenmoduletypes.ModuleName, Permissions: []string{}},
-		{Account: evmtypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}}, // used for secure addition and subtraction of balance using module account
+		{Account: evmtypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},         // Allows EVM module to mint/burn
+		{Account: feemarkettypes.ModuleName, Permissions: nil},                                            // Fee market doesn't need permissions
+		{Account: erc20types.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},       // Allows erc20 module to mint/burn for token pairs
+		{Account: precisebanktypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}}, // Allows precise bank module to mint/burn for token pairs
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 
@@ -302,7 +295,7 @@ func moduleConfig() depinject.Config {
 				{
 					Name: authtypes.ModuleName,
 					Config: appconfig.WrapAny(&authmodulev1.Module{
-						Bech32Prefix:             AccountAddressPrefix,
+						Bech32Prefix:             wardenconfig.Bech32PrefixAccAddr,
 						ModuleAccountPermissions: moduleAccPerms,
 						// By default modules authority is the governance module. This is configurable with the following:
 						// Authority: "group", // A custom module authority can be set using a module name
@@ -324,8 +317,8 @@ func moduleConfig() depinject.Config {
 					Config: appconfig.WrapAny(&stakingmodulev1.Module{
 						// NOTE: specifying a prefix is only necessary when using bech32 addresses
 						// If not specfied, the auth Bech32Prefix appended with "valoper" and "valcons" is used by default
-						Bech32PrefixValidator: AccountAddressPrefix + "valoper",
-						Bech32PrefixConsensus: AccountAddressPrefix + "valcons",
+						Bech32PrefixValidator: wardenconfig.Bech32PrefixValAddr,
+						Bech32PrefixConsensus: wardenconfig.Bech32PrefixConsAddr,
 					}),
 				},
 				{
@@ -386,10 +379,6 @@ func moduleConfig() depinject.Config {
 					Config: appconfig.WrapAny(&govmodulev1.Module{}),
 				},
 				{
-					Name:   crisistypes.ModuleName,
-					Config: appconfig.WrapAny(&crisismodulev1.Module{}),
-				},
-				{
 					Name:   consensustypes.ModuleName,
 					Config: appconfig.WrapAny(&consensusmodulev1.Module{}),
 				},
@@ -408,6 +397,10 @@ func moduleConfig() depinject.Config {
 				{
 					Name:   asyncmoduletypes.ModuleName,
 					Config: appconfig.WrapAny(&asyncmodulev1.Module{}),
+				},
+				{
+					Name:   schedmoduletypes.ModuleName,
+					Config: appconfig.WrapAny(&schedmodulev1.Module{}),
 				},
 				{
 					Name: marketmaptypes.ModuleName,

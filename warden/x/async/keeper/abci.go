@@ -1,8 +1,24 @@
+// Copyright (c) 2025 Warden Labs. All Rights Reserved.
+//
+// ** RESTRICTED LICENSE **
+//
+// This file is part of the 'async' module. It is NOT licensed
+// under the Apache 2.0 license governing the rest of the project.
+// Refer to the LICENSE file in this module's directory for full terms.
+// Use, modification, and distribution are strictly limited.
+// Do NOT use this file unless you agree to the terms stated in that license.
+//
+// SPDX-FileCopyrightText: 2025 Warden Labs
+// SPDX-License-Identifier: LicenseRef-Proprietary-RestrictedModule
+
 package keeper
 
 import (
+	"cmp"
 	"context"
+	"errors"
 	"fmt"
+	"slices"
 
 	"cosmossdk.io/collections"
 	cometabci "github.com/cometbft/cometbft/abci/types"
@@ -15,41 +31,98 @@ import (
 )
 
 func (k Keeper) BeginBlocker(ctx context.Context) error {
+	params := k.GetParams(ctx)
+	now := sdk.UnwrapSDKContext(ctx).BlockTime()
+
+	if params.TaskPruneTimeout > 0 {
+		// prune old completed tasks
+		iterator, err := k.tasks.results.Iterate(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer iterator.Close()
+
+		var oldTaskIDs []uint64
+		for ; iterator.Valid(); iterator.Next() {
+			v, err := iterator.Value()
+			if err != nil {
+				return err
+			}
+
+			if now.After(v.CreatedAt.Add(params.TaskPruneTimeout)) {
+				oldTaskIDs = append(oldTaskIDs, v.Id)
+			}
+		}
+
+		for _, id := range oldTaskIDs {
+			if err := k.tasks.pruneTask(ctx, id); err != nil {
+				return err
+			}
+		}
+	}
+
+	if params.MaxTaskTimeout > 0 {
+		pendingTasks, err := k.tasks.AllPendingTasks(ctx)
+		if err != nil {
+			return err
+		}
+
+		var timeoutTasks []types.Task
+		for _, t := range pendingTasks {
+			plugin, err := k.plugins.Get(ctx, t.Plugin)
+			if err != nil {
+				return err
+			}
+
+			timeout := min(plugin.Timeout, params.MaxTaskTimeout)
+			if now.After(t.CreatedAt.Add(timeout)) {
+				timeoutTasks = append(timeoutTasks, t)
+			}
+		}
+
+		for _, t := range timeoutTasks {
+			if err := k.AddTaskResult(ctx, t.Id, t.Solver, nil, "timeout"); err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 
-// EndBlocker schedules some pending futures to the Prophet's process.
+// EndBlocker schedules some pending tasks to the Prophet's process.
 //
-// Note: if a future remains pending for more blocks, it could be re-added to
+// Note: if a task remains pending for more blocks, it could be re-added to
 // Prophet even if it's already in the Prophet's queue or it's being processed.
-// This is not a problem as Prophet filters out incoming duplicate futures.
+// This is not a problem as Prophet filters out incoming duplicate tasks.
 func (k Keeper) EndBlocker(ctx context.Context) error {
-	futures, err := k.futures.PendingFutures(ctx, 10)
-	if err != nil {
-		return err
-	}
-
-	for _, f := range futures {
-		k.p.AddFuture(prophet.Future{
-			ID:      f.Id,
-			Handler: f.Handler,
-			Input:   f.Input,
-		})
-	}
-
+	// schedule new tasks
 	selfAddress := k.p.SelfAddress()
-
 	if len(selfAddress) == 0 {
 		return nil
 	}
 
-	futureWithResults, err := k.getCompletedFuturesWithoutValidatorVote(ctx, selfAddress, 10)
+	tasks, err := k.tasks.PendingTasks(ctx, selfAddress, 10)
 	if err != nil {
 		return err
 	}
 
-	for _, f := range futureWithResults {
-		k.p.AddFutureResult(f)
+	for _, f := range tasks {
+		k.p.AddTask(prophet.Task{
+			ID:     f.Id,
+			Plugin: f.Plugin,
+			Input:  f.Input,
+		})
+	}
+
+	// schedule new task verifications
+	taskWithResults, err := k.getCompletedTasksWithoutValidatorVote(ctx, selfAddress, 10)
+	if err != nil {
+		return err
+	}
+
+	for _, f := range taskWithResults {
+		k.p.AddTaskResult(f)
 	}
 
 	return nil
@@ -62,9 +135,14 @@ func (k Keeper) ExtendVoteHandler() sdk.ExtendVoteHandler {
 
 		results := make([]*types.VEResultItem, len(pResults))
 		for i, r := range pResults {
+			var errorReason string
+			if r.Error != nil {
+				errorReason = r.Error.Error()
+			}
 			results[i] = &types.VEResultItem{
-				FutureId: r.ID,
-				Output:   r.Output,
+				TaskId:      r.ID,
+				Output:      r.Output,
+				ErrorReason: errorReason,
 			}
 		}
 
@@ -74,51 +152,53 @@ func (k Keeper) ExtendVoteHandler() sdk.ExtendVoteHandler {
 		votes := make([]*types.VEVoteItem, len(pVotes))
 
 		for i, v := range pVotes {
-			vote := types.FutureVoteType_VOTE_TYPE_VERIFIED
+			vote := types.TaskVoteType_VOTE_TYPE_VERIFIED
 			if v.Err != nil {
-				vote = types.FutureVoteType_VOTE_TYPE_REJECTED
+				vote = types.TaskVoteType_VOTE_TYPE_REJECTED
 			}
 
 			votes[i] = &types.VEVoteItem{
-				FutureId: v.ID,
-				Vote:     vote,
+				TaskId: v.ID,
+				Vote:   vote,
 			}
 		}
 
-		var localHandlers []string
+		var localPlugins []string
 
-		updateHandlers := false
+		updatePlugins := false
 		selfConsAddress := k.p.SelfAddress()
 
 		if len(selfConsAddress) != 0 {
-			localHandlers = prophet.RegisteredHandlers()
+			localPlugins = prophet.RegisteredPlugins()
 
 			r := collections.NewPrefixedPairRange[sdk.ConsAddress, string](sdk.ConsAddress(selfConsAddress))
 
-			iterator, err := k.handlersByValidator.Iterate(ctx, r)
+			iterator, err := k.pluginsByValidator.Iterate(ctx, r)
 			if err != nil {
 				return nil, fmt.Errorf("failed to iterate by validator: %w", err)
 			}
 
-			onchainHandlers, err := iterator.Keys()
+			onchainPlugins, err := iterator.Keys()
 			if err != nil {
 				return nil, fmt.Errorf("failed to get keys: %w", err)
 			}
 
-			isEqual := isEqualLocalAndOnchainHandlers(localHandlers, onchainHandlers)
+			isEqual := isEqualLocalAndOnchainPlugins(localPlugins, onchainPlugins)
 
 			if isEqual {
-				localHandlers = nil
+				localPlugins = nil
+			} else {
+				slices.Sort(localPlugins)
 			}
 
-			updateHandlers = !isEqual
+			updatePlugins = !isEqual
 		}
 
 		asyncve := types.AsyncVoteExtension{
-			Results:        results,
-			Votes:          votes,
-			Handlers:       localHandlers,
-			UpdateHandlers: updateHandlers,
+			Results:       results,
+			Votes:         votes,
+			Plugins:       localPlugins,
+			UpdatePlugins: updatePlugins,
 		}
 
 		asyncveBytes, err := asyncve.Marshal()
@@ -239,7 +319,7 @@ func (k Keeper) PreBlocker() sdk.PreBlocker {
 				return resp, nil
 			}
 
-			// todo: check VE signature, or maybe do it in the verify ve handler?
+			// todo: check VE signature, or maybe do it in the verify ve plugin?
 
 			if len(w.Extensions) < 2 {
 				continue
@@ -250,7 +330,7 @@ func (k Keeper) PreBlocker() sdk.PreBlocker {
 				return resp, fmt.Errorf("failed to unmarshal x/async vote extension: %w", err)
 			}
 
-			if err := k.processVE(ctx, v.Validator.Address, asyncve); err != nil {
+			if err := k.processVE(ctx, sdk.ConsAddress(v.Validator.Address), asyncve); err != nil {
 				return resp, fmt.Errorf("failed to process vote extension: %w", err)
 			}
 		}
@@ -259,36 +339,138 @@ func (k Keeper) PreBlocker() sdk.PreBlocker {
 	}
 }
 
-func (k Keeper) processVE(ctx sdk.Context, fromAddr []byte, ve types.AsyncVoteExtension) error {
+func (k Keeper) processVE(ctx sdk.Context, fromAddr sdk.ConsAddress, ve types.AsyncVoteExtension) error {
 	for _, r := range ve.Results {
-		if err := k.AddFutureResult(ctx, r.FutureId, fromAddr, r.Output); err != nil {
-			if err == types.ErrFutureAlreadyHasResult {
+		if err := k.AddTaskResult(ctx, r.TaskId, fromAddr, r.Output, r.ErrorReason); err != nil {
+			if err == types.ErrTaskAlreadyHasResult {
 				continue
 			}
 
-			return fmt.Errorf("failed to add future result: %w", err)
+			return fmt.Errorf("add task result: %w", err)
 		}
 	}
 
 	for _, vote := range ve.Votes {
-		if err := k.SetFutureVote(ctx, vote.FutureId, fromAddr, vote.Vote); err != nil {
-			return fmt.Errorf("failed to set task vote: %w", err)
+		if err := k.SetTaskVote(ctx, vote.TaskId, fromAddr, vote.Vote); err != nil {
+			return fmt.Errorf("set task vote: %w", err)
 		}
 	}
 
-	if ve.UpdateHandlers {
-		if err := k.ClearHandlers(ctx, fromAddr); err != nil {
-			return fmt.Errorf("clear handlers: %w", err)
+	ranger := collections.NewPrefixedPairRange[sdk.ConsAddress, string](fromAddr)
+	it, err := k.pluginsByValidator.Iterate(ctx, ranger)
+	if err != nil {
+		return fmt.Errorf("building iterator over registered plugins for %s", fromAddr.String())
+	}
+	keys, err := it.Keys()
+	if err != nil {
+		return fmt.Errorf("iterating over registered plugins for %s: %w", fromAddr.String(), err)
+	}
+	oldPlugins := make([]string, 0, len(keys))
+	for _, k := range keys {
+		oldPlugins = append(oldPlugins, k.K2())
+	}
+	if err := it.Close(); err != nil {
+		return fmt.Errorf("close iterator: %w", err)
+	}
+
+	weight, err := k.getValidatorStakingWeight(ctx, fromAddr)
+	if err != nil {
+		return fmt.Errorf("get staking weight of %s: %w", fromAddr.String(), err)
+	}
+
+	if ve.UpdatePlugins {
+		// oldPlugins is already sorted ascending, given how iterators work
+		if !slices.IsSorted(oldPlugins) {
+			return errors.New("iterator returned registered plugins unsorted")
+		}
+		// ve.Plugins is already sorted ascending, by the validator that included it
+		if !slices.IsSorted(ve.Plugins) {
+			return errors.New("vote extensions contained plugins unsorted, if this happens it means that the vote extension payload was crafted by a bad actor")
 		}
 
-		for _, h := range ve.Handlers {
-			if err := k.RegisterHandler(ctx, fromAddr, h); err != nil {
-				return fmt.Errorf("register validator: %w", err)
+		added, removed, equals := diffSortedSlice(oldPlugins, ve.Plugins)
+
+		for _, r := range removed {
+			if err := k.removeQueueParticipant(ctx, QueueID(r), fromAddr); err != nil {
+				return fmt.Errorf("remove %s from %s queue: %w", fromAddr.String(), r, err)
+			}
+			if err := k.pluginsByValidator.Remove(ctx, collections.Join(fromAddr, r)); err != nil {
+				return fmt.Errorf("remove %s from %s validators: %w", fromAddr.String(), r, err)
+			}
+		}
+
+		for _, r := range added {
+			if err := k.newQueueParticipant(ctx, QueueID(r), fromAddr, weight); err != nil {
+				return fmt.Errorf("add %s to %s queue: %w", fromAddr.String(), r, err)
+			}
+			if err := k.pluginsByValidator.Set(ctx, collections.Join(fromAddr, r)); err != nil {
+				return fmt.Errorf("add %s to %s validators: %w", fromAddr.String(), r, err)
+			}
+		}
+
+		for _, p := range equals {
+			if err := k.updateQueueWeight(ctx, QueueID(p), fromAddr, weight); err != nil {
+				return fmt.Errorf("update %s weight for %s queue: %w", fromAddr.String(), p, err)
+			}
+		}
+	} else {
+		for _, p := range oldPlugins {
+			if err := k.updateQueueWeight(ctx, QueueID(p), fromAddr, weight); err != nil {
+				return fmt.Errorf("no plugins registered/removed, updating %s weight for %s queue: %w", fromAddr.String(), p, err)
 			}
 		}
 	}
 
 	return nil
+}
+
+// diffSortedSlice takes two sorted slices and returns the elements that are
+// only in a, only in b, or the ones that are present in both.
+func diffSortedSlice[T cmp.Ordered](a, b []T) (onlyB, onlyA, both []T) {
+	var i, j int
+
+	for i < len(a) && j < len(b) {
+		if a[i] == b[j] {
+			both = append(both, a[i])
+			i++
+			j++
+			continue
+		}
+
+		if a[i] < b[j] {
+			onlyA = append(onlyA, a[i])
+			i++
+			continue
+		}
+
+		if a[i] > b[j] {
+			onlyB = append(onlyB, b[j])
+			j++
+			continue
+		}
+	}
+
+	for ; i < len(a); i++ {
+		onlyA = append(onlyA, a[i])
+	}
+	for ; j < len(b); j++ {
+		onlyB = append(onlyB, b[j])
+	}
+
+	return onlyB, onlyA, both
+}
+
+// getValidatorStakingWeight returns the staking weight of a validator.
+func (k *Keeper) getValidatorStakingWeight(ctx context.Context, addr sdk.ConsAddress) (Weight, error) {
+	v, err := k.stakingKeeper.ValidatorByConsAddr(ctx, addr)
+	if err != nil {
+		return 0, err
+	}
+
+	reduction := k.stakingKeeper.PowerReduction(ctx)
+	w := v.GetConsensusPower(reduction)
+
+	return Weight(w), nil
 }
 
 func (k Keeper) buildAsyncTx(votes []cometabci.ExtendedVoteInfo) ([]byte, error) {
@@ -338,13 +520,13 @@ func trimExcessBytes(txs [][]byte, maxSizeBytes int64) [][]byte {
 	return returnedTxs
 }
 
-func isEqualLocalAndOnchainHandlers(localHandlers []string, onchainKeys []collections.Pair[sdk.ConsAddress, string]) bool {
-	if len(localHandlers) != len(onchainKeys) {
+func isEqualLocalAndOnchainPlugins(localPlugins []string, onchainKeys []collections.Pair[sdk.ConsAddress, string]) bool {
+	if len(localPlugins) != len(onchainKeys) {
 		return false
 	}
 
-	set := make(map[string]struct{}, len(localHandlers))
-	for _, str := range localHandlers {
+	set := make(map[string]struct{}, len(localPlugins))
+	for _, str := range localPlugins {
 		set[str] = struct{}{}
 	}
 
