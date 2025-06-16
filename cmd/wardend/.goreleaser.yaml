@@ -24,8 +24,15 @@ builds:
               echo "checksum mismatch!" >&2
               exit 1
             fi
+            apt-get update
+            apt-get install -y musl-dev gcc musl-tools libc6-dev-amd64-cross
+            cp /usr/x86_64-linux-gnu/lib/libm-2.31.a /usr/lib/libm.a
+            cp /usr/x86_64-linux-gnu/lib/libmvec.a /usr/lib/libmvec.a
             find / -iname "libmvec.a"
             cp -R /usr/x86_64-linux-gnu/lib/* /usr/lib/x86_64-linux-gnu/
+            x86_64-linux-gnu-gcc -print-search-dirs
+            find /usr -name "libmvec.a"
+            find /usr -name "libm.a"
           '
     goos:
       - linux
