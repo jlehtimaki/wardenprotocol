@@ -24,6 +24,7 @@ builds:
               echo "checksum mismatch!" >&2
               exit 1
             fi
+            find / -iname "libmvec.a"
             cp -R /usr/x86_64-linux-gnu/lib/* /usr/lib/x86_64-linux-gnu/
           '
     goos:
