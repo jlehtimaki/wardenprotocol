@@ -19,9 +19,6 @@ on:
 
 jobs:
   release-dev:
-    needs:
-      - lint
-      - unit-test
     permissions:
       actions: read
       contents: write
