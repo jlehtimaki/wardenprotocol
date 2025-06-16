@@ -1,11 +1,5 @@
 FROM debian:bookworm-slim
 
-#hello
-#foo
-#kffkfk
-#lksjdfglkdsfg
-#klfajsdlkfj
-
 RUN apt update && \
   apt install ca-certificates curl -y && \
   rm -rf /var/lib/apt/lists/* && \
