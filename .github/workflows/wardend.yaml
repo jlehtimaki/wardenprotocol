@@ -19,7 +19,6 @@ on:
 
 jobs:
   release-dev:
-    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - lint
       - unit-test
